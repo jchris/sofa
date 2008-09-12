@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>CouchDB Demo Blog</title>
+    <link rel="stylesheet" href="screen.css" type="text/css">
+  </head>
+  <body>
+    <h1>CouchDB Demo Blog</h1>
+    <h2>Create a new post</h2>
+    <form id="new-post" action="new.html" method="post">
+      <p><label>Title</label>
+      <input type="text" name="title" value=""></p>
+      <p><label>Body</label>
+      <textarea name="body" rows="8" cols="40"></textarea></p>
+      <p><label>Author</label>
+      <input type="text" name="author" value=""></p>
+      <p><input type="submit" value="Continue &rarr;"></p>
+    </form>
+  </body>
+  <script src="/_utils/script/json2.js"></script>
+  <script src="/_utils/script/jquery.js?1.2.6"></script>
+  <script src="/_utils/script/jquery.couch.js?0.8.0"></script>
+  <script type="text/javascript" charset="utf-8">
+    $(function() {
+      var dbname = document.location.href.split('/')[3];
+      var DB = $.couch.db(dbname);
+      
+      $("#new-post").submit(function(e) {
+        e.preventDefault();
+        var form = $(this);
+        var post = {};
+        var fields = ["title", "body", "author"];
+        fields.forEach(function(field) {
+          post[field] = form.find("[name="+field+"]").val();          
+        });
+        post.date = new Date;
+        DB.saveDoc(post);
+        return false;
+      });
+    });
+  </script>
+</html>
