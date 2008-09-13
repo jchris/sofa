@@ -17,8 +17,12 @@
     $(function() {
       var dbname = document.location.href.split('/')[3];
       var DB = $.couch.db(dbname);
-      
-      $("#posts").html("hello");
+      DB.view("posts/recent-map",{descending: true, success: function(json) {
+        $("#posts").html(json.rows.map(function(row) {
+          var post = row.value;
+          return '<li><h3>'+post.title+'</h3><p>'+post.body+'</p><span>'+post.author+'</span></li>';
+        }).join(''));
+      }});
     });
   </script>
 </html>
