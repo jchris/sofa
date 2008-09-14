@@ -8,6 +8,7 @@
     <h1>CouchDB Demo Blog</h1>
     <p><a href="index.html">Back to index</a></p>
     <div id="post"></div>
+    <h3>Comment on this post</h3>
     <!-- form to create a comment -->
     <form id="new-comment" action="post.html" method="post">
       <p><label>Name</label>
@@ -34,13 +35,14 @@
       $("#new-comment").submit(function(e) {
         e.preventDefault();
         var form = $(this);
-        var post = {};
+        var comment = {};
         var fields = ["name", "comment"];
         fields.forEach(function(field) {
-          post[field] = form.find("[name="+field+"]").val();          
+          comment[field] = form.find("[name="+field+"]").val();          
         });
-        post.date = new Date;
-        DB.saveDoc(post);
+        comment.postid = docid;
+        comment.date = new Date;
+        DB.saveDoc(comment);
         return false;
       });
     });
