@@ -1,3 +1,3 @@
 function(doc) {
-  if (doc.date) emit(doc.date, doc);
+  if (doc.date && doc.body) emit(doc.date, doc);
 };
