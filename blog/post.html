@@ -6,9 +6,8 @@
   </head>
   <body>
     <h1>CouchDB Demo Blog</h1>
-    <h2>Most recent posts</h2>
-    <p><a href="new.html">Create a new post</a></p>
-    <ul id="posts"></ul>
+    <p><a href="index.html">Back to index</a></p>
+    <div id="post"></div>
   </body>
   <script src="/_utils/script/json2.js"></script>
   <script src="/_utils/script/jquery.js?1.2.6"></script>
@@ -17,11 +16,11 @@
     $(function() {
       var dbname = document.location.href.split('/')[3];
       var DB = $.couch.db(dbname);
-      DB.view("posts/recent-map",{descending: true, success: function(json) {
-        $("#posts").html(json.rows.map(function(row) {
-          var post = row.value;
-          return '<li><h3><a href="post.html#'+row.id+'">'+post.title+'</a></h3><p>'+post.body+'</p><span>'+post.author+'</span></li>';
-        }).join(''));
+      var docid = document.location.hash.replace('#','');
+      DB.openDoc(docid, {success: function(doc) {
+        $('h1').text(doc.title);
+        $('#post').html('<p>'+doc.body+'</p><span>'+doc.author+' at '+doc.date+'</span>');
+        console.log(doc)
       }});
     });
   </script>
