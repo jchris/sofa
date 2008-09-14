@@ -8,6 +8,14 @@
     <h1>CouchDB Demo Blog</h1>
     <p><a href="index.html">Back to index</a></p>
     <div id="post"></div>
+    <!-- form to create a comment -->
+    <form id="new-comment" action="post.html" method="post">
+      <p><label>Name</label>
+      <input type="name" name="title" value=""></p>
+      <p><label>Comment</label>
+      <textarea name="Comment" rows="8" cols="40"></textarea></p>
+      <p><input type="submit" value="Continue &rarr;"></p>
+    </form>
   </body>
   <script src="/_utils/script/json2.js"></script>
   <script src="/_utils/script/jquery.js?1.2.6"></script>
@@ -22,6 +30,19 @@
         $('#post').html('<p>'+doc.body+'</p><span>'+doc.author+' at '+doc.date+'</span>');
         console.log(doc)
       }});
+      
+      $("#new-comment").submit(function(e) {
+        e.preventDefault();
+        var form = $(this);
+        var post = {};
+        var fields = ["name", "comment"];
+        fields.forEach(function(field) {
+          post[field] = form.find("[name="+field+"]").val();          
+        });
+        post.date = new Date;
+        DB.saveDoc(post);
+        return false;
+      });
     });
   </script>
 </html>
