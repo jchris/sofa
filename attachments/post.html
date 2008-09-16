@@ -8,13 +8,14 @@
     <h1>CouchDB Demo Blog</h1>
     <p><a href="index.html">Back to index</a></p>
     <div id="post"></div>
+    <ul id="comments"></ul>
     <h3>Comment on this post</h3>
     <!-- form to create a comment -->
     <form id="new-comment" action="post.html" method="post">
       <p><label>Name</label>
-      <input type="name" name="title" value=""></p>
+      <input type="text" name="name" value=""></p>
       <p><label>Comment</label>
-      <textarea name="Comment" rows="8" cols="40"></textarea></p>
+      <textarea name="comment" rows="8" cols="40"></textarea></p>
       <p><input type="submit" value="Continue &rarr;"></p>
     </form>
   </body>
@@ -29,7 +30,16 @@
       DB.openDoc(docid, {success: function(doc) {
         $('h1').text(doc.title);
         $('#post').html('<p>'+doc.body+'</p><span>'+doc.author+' at '+doc.date+'</span>');
-        console.log(doc)
+      }});
+      
+      DB.view("posts/comments-map",{descending: true, 
+        endkey: [docid],
+        startkey: [docid, {}],
+        success: function(json) {
+        $("#comments").html(json.rows.map(function(row) {
+          var comment = row.value;
+          return '<li><h4>'+comment.name+' at '+comment.date+'</h4><p>'+comment.comment+'</p></li>';
+        }).join(''));
       }});
       
       $("#new-comment").submit(function(e) {
