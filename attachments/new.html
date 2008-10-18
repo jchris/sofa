@@ -6,7 +6,7 @@
   </head>
   <body>
     <h1>CouchDB Demo Blog</h1>
-    <p><a id="blog-index" href="blog.html">See all the posts</a></p>
+    <p><a id="blog-index" href="index.html">See all the posts</a></p>
     <h2>Create a new post</h2>
     <!-- form to create a post -->
     <form id="new-post" action="new.html" method="post">
@@ -37,6 +37,7 @@
         });
         post.date = new Date;
         DB.saveDoc(post);
+        $("#new-post").html('<h2>Success!</h2>')
         return false;
       });
     });
