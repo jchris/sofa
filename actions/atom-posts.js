@@ -1,5 +1,5 @@
 function(req, db) {
-  var blog = db.open('_design/purecouchblog').blog;
+  var blog = db.open('_design/couchdb-example-blog').blog;
   
   var feed = <feed xmlns="http://www.w3.org/2005/Atom">
     <title>{blog.title}</title>
@@ -11,7 +11,7 @@ function(req, db) {
     <id>{blog.url}</id>
   </feed>
 
-  var view = db.view('purecouchblog/recent',{count:10,descending:true});
+  var view = db.view('couchdb-example-blog/recent',{count:10,descending:true});
     
   for (r in view.rows) {
     var row = view.rows[r];
