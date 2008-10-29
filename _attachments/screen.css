@@ -7,6 +7,10 @@ h1 {
   padding:10px;
 }
 
+img#logo {
+  float:right;
+}
+
 label {
   display:block;
 }
