@@ -9,7 +9,7 @@ function(req, db) {
       <name>{blog.author.name}</name>
     </author>
     <id>{blog.url}</id>
-</feed>
+  </feed>
 
   var view = db.view('purecouchblog/recent',{count:10,descending:true});
     
