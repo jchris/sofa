@@ -1,29 +1,27 @@
 function(req, db) {
+  var blog = db.open('_design/purecouchblog').blog;
   
+  var feed = <feed xmlns="http://www.w3.org/2005/Atom">
+    <title>{blog.title}</title>
+    <link href={blog.url}/>
+    <updated>2003-12-13T18:30:02Z</updated>
+    <author>
+      <name>{blog.author.name}</name>
+    </author>
+    <id>{blog.url}</id>
+</feed>
+
   var view = db.view('purecouchblog/recent',{count:10,descending:true});
-  
-  // var view = {"total_rows":2,"offset":0,"rows":[
-  // {
-  //   "id":"75c2c107ef89d8fd8a33f9ce8cd38b83",
-  //   "key":"2008-10-28T19:34:23Z",
-  //   "value":{"_id":"75c2c107ef89d8fd8a33f9ce8cd38b83","_rev":"34647434",
-  //     "title":"First Post",
-  //     "body":"Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n",
-  //     "author":"Chris Anderson","date":"2008-10-28T19:34:23Z"}},
-  // {
-  //   "id":"64ac01b140cb5d1010e1d02637b756aa",
-  //   "key":"2008-10-28T19:37:36Z",
-  //   "value":{"_id":"64ac01b140cb5d1010e1d02637b756aa","_rev":"855586439",
-  //   "title":"Danger","body":"Toast is the most.","date":"2008-10-28T19:37:36Z"}}
-  // ]};
-  
-  var feed = <feed><entries></entries></feed>;
+    
   for (r in view.rows) {
-    var post = view.rows[r].value;
+    var row = view.rows[r];
+    var post = row.value;
     var entry = <entry/>;
+    entry.id = blog.url + '/' + row.id;
     entry.title = post.title;
-    entry.body = post.body;
-    feed.entries.entry += entry;    
+    entry.updated = post.date;
+    entry.content = post.body;
+    feed.entry += entry;    
   }
   
   return {body: feed.toXMLString()};
