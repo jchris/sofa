@@ -8,12 +8,7 @@
     <h1>CouchDB Demo Blog</h1>
     <h2>Most recent posts</h2>
     <p><a href="new.html">Create a new post</a></p>
-    <ul id="posts">
-      
-      
-      
-      
-    </ul>
+    <ul id="posts"></ul>
   </body>
   <script src="/_utils/script/json2.js"></script>
   <script src="/_utils/script/jquery.js?1.2.6"></script>
@@ -26,7 +21,7 @@
       DB.view(design+"/recent",{descending: true, success: function(json) {
         $("#posts").html(json.rows.map(function(row) {
           var post = row.value;
-          return '<li><h3><a href="post.html#'+row.id+'">'+post.title+'</a></h3><p>'+post.body+'</p><span>'+post.author+'</span></li>';
+          return '<li><h3><a href="post.html#'+row.id+'">'+post.title+'</a></h3><p>'+post.body+'</p></li>';
         }).join(''));
       }});
     });

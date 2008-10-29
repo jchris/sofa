@@ -1,0 +1,16 @@
+body {
+  font: 1em Arial, sans-serif;
+}
+
+h1 {
+  background:#daa;
+  padding:10px;
+}
+
+label {
+  display:block;
+}
+
+#posts {
+  width:60%;
+}
