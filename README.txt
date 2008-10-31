@@ -34,7 +34,7 @@ gem build couchrest.gemspec
 
 # gonna need deps (maybe I should make a standalone `couchapp`...)
 sudo gem install extlib
-sudo gem install restclient
+sudo gem install rest-client
 sudo gem isntall json
 
 # sudo due to executables...
