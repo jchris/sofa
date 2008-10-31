@@ -16,7 +16,9 @@ Here's how:
 
 git clone git://github.com/jchris/couchdb.git
 cd couchdb
-git pull origin action2
+git checkout origin/action2
+git checkout -b action2
+cd trunk
 ./bootstrap
 ./configure
 make && sudo make install
@@ -30,7 +32,13 @@ and the blog software.
 
 git clone git://github.com/jchris/couchrest.git
 cd couchrest
+rake gemspec
 gem build couchrest.gemspec
+
+# if you have problems with the gem build, try running
+sudo gem update --system
+# and then gem build again
+
 
 # gonna need deps (maybe I should make a standalone `couchapp`...)
 sudo gem install extlib
