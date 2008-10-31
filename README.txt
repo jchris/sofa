@@ -43,7 +43,7 @@ sudo gem update --system
 # gonna need deps (maybe I should make a standalone `couchapp`...)
 sudo gem install extlib
 sudo gem install rest-client
-sudo gem isntall json
+sudo gem install json
 
 # sudo due to executables...
 sudo gem install couchrest-*.gem
