@@ -2,17 +2,27 @@
 
 Showcases the practicality of pure CouchDB applications.
 
-It's just HTML + JavaScript plus a little bit of action servers and the magic of CouchDB.
+It's just HTML + JavaScript plus a little bit of action servers and the magic of
+CouchDB.
 
 When CouchDB's security model comes online there will be no reason not to deploy
 this in public.
 
-There are more dependencies than we'd expect to get it running. I will cut down on these. However, if you want to try it now (including the Atom feeds), you'll need to build from this version of CouchDB.
+There are more dependencies than we'd expect to get it running. I will cut down
+on these. However, if you want to try it now (including the Atom feeds), you'll
+need to build from this version of CouchDB: http://github.com/jchris/couchdb/tree/action2
 
-http://github.com/jchris/couchdb/tree/action2
+Here's how:
 
-Once you have that installed and the tests passing, you can install couchrest and the blog software.
+git clone git://github.com/jchris/couchdb.git
+cd couchdb
+git pull origin action2
+./bootstrap
+./configure
+make && sudo make install
 
+Once you have that installed and the tests passing, you can install couchrest
+and the blog software.
 
 # install the latest couchrest (all we really need is `couchapp`)
 # sudo gem install jchris-couchrest -s http://gems.github.com
