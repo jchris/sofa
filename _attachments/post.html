@@ -31,7 +31,7 @@
       var docid = document.location.hash.replace('#','');
       DB.openDoc(docid, {success: function(doc) {
         $('h1').text(doc.title);
-        $('#post').html('<p>'+doc.body+'</p><p>by '+doc.author+'<span> at '+doc.date+'</span></p>');
+        $('#post').html('<p>'+doc.body+'</p><p>by <em>'+doc.author+'</em><span> at '+doc.date+'</span></p>');
       }});
       
       DB.view(design+"/comments",{descending: true, 

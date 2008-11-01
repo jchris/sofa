@@ -13,8 +13,30 @@ img#logo {
 
 label {
   display:block;
+  clear:left;
 }
 
 #posts {
   width:60%;
+}
+
+.author {
+  font-size:80%;
+  margin-top:0;
+}
+
+p.post {
+  font-family: serif;
+}
+
+li p {
+  margin:10px;
+}
+
+fieldset {
+  background:#ddd;
+}
+fieldset.author {
+  float:left;
+  width:20%;
 }

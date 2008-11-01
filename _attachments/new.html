@@ -10,13 +10,18 @@
     <h2>Create a new post</h2>
     <!-- form to create a post -->
     <form id="new-post" action="new.html" method="post">
-      <p><label>Title</label>
-      <input type="text" name="title" value=""></p>
-      <p><label>Author</label>
-      <input type="author" name="author" value=""></p>
-      <p><label>Body</label>
-      <textarea name="body" rows="8" cols="40"></textarea></p>
-      <p><input type="submit" value="Continue &rarr;"></p>
+      <fieldset class="author">
+        <p><label>Author</label>
+        <input type="author" name="author" value=""></p>
+        <p><label>Author URL</label>
+        <input type="author_url" name="author_url" value=""></p>
+      </fieldset>
+      <fieldset>
+        <p><label>Title</label>
+          <input type="text" name="title" value=""></p>
+        <p><label>Body</label>
+      <textarea name="body" rows="18" cols="40"></textarea></p>
+      <p><input type="submit" value="Continue &rarr;"></p></fieldset>
     </form>
   </body>
   <script src="/_utils/script/json2.js"></script>
@@ -31,9 +36,10 @@
         e.preventDefault();
         var form = $(this);
         var post = {};
-        var fields = ["title", "body", "author"];
+        var fields = ["title", "body", "author", "author_url"];
         fields.forEach(function(field) {
-          post[field] = form.find("[name="+field+"]").val();          
+          var val = form.find("[name="+field+"]").val()
+          if (val) post[field] = val;
         });
         post.date = new Date;
         DB.saveDoc(post);
