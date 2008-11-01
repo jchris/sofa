@@ -31,7 +31,7 @@
       var docid = document.location.hash.replace('#','');
       DB.openDoc(docid, {success: function(doc) {
         $('h1').text(doc.title);
-        $('#post').html('<p>'+doc.body+'</p><span>at '+doc.date+'</span>');
+        $('#post').html('<p>'+doc.body+'</p><p>by '+doc.author+'<span> at '+doc.date+'</span></p>');
       }});
       
       DB.view(design+"/comments",{descending: true, 
@@ -40,7 +40,7 @@
         success: function(json) {
         $("#comments").html(json.rows.map(function(row) {
           var comment = row.value;
-          return '<li><h4>'+comment.name+' at '+comment.date+'</h4><p>'+comment.comment+'</p></li>';
+          return '<li><h4>'+comment.name+' at '+comment.date+'</h4><p>'+comment.comment+'</p><p>By: '+comment.author+'</p></li>';
         }).join(''));
       }});
       
@@ -48,7 +48,7 @@
         e.preventDefault();
         var form = $(this);
         var comment = {};
-        var fields = ["name", "comment"];
+        var fields = ["name", "comment", "author"];
         fields.forEach(function(field) {
           comment[field] = form.find("[name="+field+"]").val();          
         });

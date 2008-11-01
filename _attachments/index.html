@@ -23,7 +23,8 @@
       DB.view(design+"/recent",{descending: true, success: function(json) {
         $("#posts").html(json.rows.map(function(row) {
           var post = row.value;
-          return '<li><h3><a href="post.html#'+row.id+'">'+post.title+'</a></h3><p>'+post.body+'</p></li>';
+          return '<li><h3><a href="post.html#'+row.id+'">'+post.title+'</a></h3><p>'+post.body+'</p>' +
+          (post.author?'<p>'+post.author+'</p>':'')+'</li>';
         }).join(''));
       }});
     });

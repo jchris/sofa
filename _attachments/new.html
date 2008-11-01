@@ -12,6 +12,8 @@
     <form id="new-post" action="new.html" method="post">
       <p><label>Title</label>
       <input type="text" name="title" value=""></p>
+      <p><label>Author</label>
+      <input type="author" name="author" value=""></p>
       <p><label>Body</label>
       <textarea name="body" rows="8" cols="40"></textarea></p>
       <p><input type="submit" value="Continue &rarr;"></p>
@@ -29,7 +31,7 @@
         e.preventDefault();
         var form = $(this);
         var post = {};
-        var fields = ["title", "body"];
+        var fields = ["title", "body", "author"];
         fields.forEach(function(field) {
           post[field] = form.find("[name="+field+"]").val();          
         });
