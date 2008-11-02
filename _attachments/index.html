@@ -30,7 +30,7 @@
       DB.view(design+"/recent",{descending: true, success: function(json) {
         $("#posts").html(json.rows.map(function(row) {
           var post = row.value;
-          return '<li><h3><a href="post.html#'+row.id+'">'+post.title+'</a></h3><p class="post">'+post.body+'</p>'+B.author(post)+'</li>';
+          return '<li><h3><a href="post.html#'+row.id+'">'+B.safe(post.title)+'</a></h3><p class="post">'+B.safe(post.body)+'</p>'+B.author(post)+'</li>';
         }).join(''));
       }});
     });
