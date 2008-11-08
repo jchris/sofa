@@ -66,6 +66,7 @@ http://localhost:5984/blogdb/_design%2Fcouchdb-example-blog/index.html
 
 
 # TODO
+make nice simple css (jan)
 work out conventions with paths and dbnames to make it more foolproof.
 proper json date format with relative date display (about 2 hours ago)
 links in the atom feed are correct
