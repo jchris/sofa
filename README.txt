@@ -44,6 +44,7 @@ sudo gem update --system
 sudo gem install extlib
 sudo gem install rest-client
 sudo gem install json
+sudo gem install rspec
 
 # sudo due to executables...
 sudo gem install couchrest-*.gem
@@ -66,3 +67,7 @@ http://localhost:5984/blogdb/_design%2Fcouchdb-example-blog/index.html
 
 # TODO
 work out conventions with paths and dbnames to make it more foolproof.
+proper json date format with relative date display (about 2 hours ago)
+links in the atom feed are correct
+bring in davisp's markdown patches
+fulltext search?
