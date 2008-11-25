@@ -1,20 +1,18 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>CouchDB Demo Blog</title>
+    <title>Daytime Running Lights</title>
     <link rel="stylesheet" href="screen.css" type="text/css">
       <link rel="alternate" type="application/atom+xml" title="Atom Feed" href="/blogdb/_external/action/couchdb-example-blog/atom-posts" />
   </head>
   <body>
-    <h1>CouchDB Demo Blog</h1>
-    <div id="sidebar">
-      <img id="logo" src="/_utils/image/logo.png"/>
-    <p>Source code <a href="http://github.com/jchris/couchdb-example-blog/tree/master">is available on Github</a>, writeup is at <a href="http://jchris.mfdz.com/code/2008/10/standalone_applications_with_co"> my blog</a>.</p>      
+    <div id="header">
+      <h1>Daytime Running Lights</h1>
     </div>
     
-    <h2>Most recent posts</h2>
-    <p><a href="new.html">Create a new post</a></p>
-    <ul id="posts"></ul>
+    <div id="content">
+      <ul id="posts"></ul>      
+    </div>
 
   </body>
   <script src="/_utils/script/json2.js"></script>
@@ -22,14 +20,17 @@
   <script src="/_utils/script/jquery.couch.js?0.8.0"></script>
   <script src="blog.js"></script>
   <script type="text/javascript" charset="utf-8">
-
     $(function() {
       var dbname = document.location.href.split('/')[3];
       var design = unescape(document.location.href).split('/')[5];
       var DB = $.couch.db(dbname);
-      DB.view(design+"/recent",{descending: true, success: function(json) {
+      DB.view(design+"/recent-posts",{
+        descending: true, 
+        count:5, 
+        include_docs : true,
+        success: function(json) {
         $("#posts").html(json.rows.map(function(row) {
-          var post = row.value;
+          var post = row.doc;
           return '<li><h3><a href="post.html#'+row.id+'">'+B.safe(post.title)+'</a></h3><p class="post">'+B.safe(post.body)+'</p>'+B.author(post)+'</li>';
         }).join(''));
       }});
