@@ -1,5 +1,6 @@
 body {
-  font: 1em "Hoefler Text", Georgia, serif;
+  font: 1.2em "Hoefler Text", Georgia, serif;
+  line-height:1.2em;
   margin:0;
   padding:0;
 }
@@ -9,14 +10,14 @@ h1 {
   margin:0;
 }
 
-#header {
-  background:#ada;
-  padding:10px;
+h3 {
+  margin-bottom:0;
 }
 
-#sidebar {
-  width:200px;
-  float:right;
+#header {
+  background:#8d8;
+  padding:30px;
+  text-align:center;
 }
 
 label {
@@ -25,11 +26,17 @@ label {
 }
 
 #posts {
-  width:60%;
-  float:left;
+  width:700px;
+  margin:0 auto;
+  list-style: none;
 }
 
-.author {
+#posts .body {
+  padding:5px 10px;
+}
+
+
+.date {
   font-size:80%;
   margin-top:0;
 }

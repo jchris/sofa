@@ -18,6 +18,7 @@
   <script src="/_utils/script/json2.js"></script>
   <script src="/_utils/script/jquery.js?1.2.6"></script>
   <script src="/_utils/script/jquery.couch.js?0.8.0"></script>
+  <script src="showdown.js"></script>
   <script src="blog.js"></script>
   <script type="text/javascript" charset="utf-8">
     $(function() {
@@ -26,13 +27,13 @@
       var DB = $.couch.db(dbname);
       DB.view(design+"/recent-posts",{
         descending: true, 
-        count:5, 
+        count:3, 
         include_docs : true,
         success: function(json) {
-        $("#posts").html(json.rows.map(function(row) {
-          var post = row.doc;
-          return '<li><h3><a href="post.html#'+row.id+'">'+B.safe(post.title)+'</a></h3><p class="post">'+B.safe(post.body)+'</p>'+B.author(post)+'</li>';
-        }).join(''));
+          $.each(json.rows,function() {
+            var li = B.renderPost(this.doc);
+            $("#posts").append(li);
+          });
       }});
     });
   </script>
