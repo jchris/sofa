@@ -78,6 +78,10 @@ p.post {
   margin:10px;
 }
 
+#post, #comments {
+  display:none;
+}
+
 #comments {
   background:#fdfdfd;
   padding:12px;

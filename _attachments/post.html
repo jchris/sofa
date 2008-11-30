@@ -39,6 +39,7 @@
       DB.openDoc(docid, {success: function(doc) {
         $('h1').text(doc.title);
         $('#post').html(B.postToHTML(doc));
+        $('#post').show(800);
       }});
       
       DB.view(design+"/comments",{descending: true, 
@@ -50,6 +51,7 @@
             var c = json.rows[i].value;
             ul.append('<li><h4>'+c.name+' at '+c.date+'</h4><p>'+c.comment+'</p><p>By: '+c.author+'</p></li>');
           }
+          $('#comments').show(2000);      
         }
       });
       
@@ -67,6 +69,7 @@
         $("#new-comment").html('<h2>Success!</h2>')
         return false;
       });
+      
     });
   </script>
 </html>
