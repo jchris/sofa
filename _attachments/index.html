@@ -16,15 +16,13 @@
 
   </body>
   <script src="/_utils/script/json2.js"></script>
-  <script src="/_utils/script/jquery.js?1.2.6"></script>
-  <script src="/_utils/script/jquery.couch.js?0.8.0"></script>
+  <script src="/_utils/script/jquery.js"></script>
+  <script src="/_utils/script/jquery.couch.js"></script>
+  <script src="jquery.couchapp.js"></script>
   <script src="blog.js"></script>
   <script type="text/javascript" charset="utf-8">
-    $(function() {
-      var dbname = document.location.href.split('/')[3];
-      var design = unescape(document.location.href).split('/')[5];
-      var DB = $.couch.db(dbname);
-      DB.view(design+"/recent-posts",{
+    $.couchapp(function(app) {
+      app.design.view("recent-posts",{
         descending: true, 
         count:7, 
         success: function(json) {
@@ -33,8 +31,7 @@
             $("#posts").append(li);
             $("#posts").fadeIn(200);
           });
-      }});
+      }});      
     });
-    DB.view
   </script>
 </html>
