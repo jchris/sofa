@@ -21,18 +21,46 @@
     };
   };
   
-  function init(cb) {
+  function init(callback) {
     $(function() {
       var dbname = document.location.href.split('/')[3];
       var dname = unescape(document.location.href).split('/')[5];
       var db = $.couch.db(dbname);
       var design = new Design(db, dname);
       
-      cb({
+      callback({
         db : db,
-        design : design
-      })
-      
+        design : design,
+        docForm : function(formSelector, opts) {
+          var localFormDoc = {};
+          opts = opts || {};
+          opts.fields = opts.fields || [];
+          $(formSelector).submit(function(e) {
+            e.preventDefault();
+            var form = $(this);
+            opts.fields.forEach(function(field) {
+              var val = form.find("[name="+field+"]").val()
+              if (val) localFormDoc[field] = val;
+            });
+            if (opts.beforeSave) opts.beforeSave(localFormDoc);
+            console.log("save");
+            console.log(localFormDoc);
+            return false;
+          });
+          if (opts.id) {
+            db.openDoc(opts.id, {
+              success: function(doc) {
+                if (opts.onLoad) opts.onLoad(doc);
+                localFormDoc = doc;
+                var form = $(formSelector);
+                for (field in doc) { // todo $.each
+                  form.find("[name="+field+"]").val(doc[field]);
+                  // add hidden fields for any others?
+                }
+            }});
+          }
+        }
+      });
     });
   };
   

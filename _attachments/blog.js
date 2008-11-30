@@ -35,22 +35,13 @@ B = new (function() {
   
   function author(author) {
     if (!author) return '';
-    if (!author.url) return '<p class="author">by ' + author.name + '</p>';      
-    return '<p class="author">by <a href="'+author.url+'">' 
-      + author.name + '</a></p>';      
+    if (!author.url) return '<span class="author">by ' + safe(author.name) + '</span>';      
+    return '<span class="author">by <a href="'+author.url+'">' 
+      + safe(author.name) + '</a></span>';      
   };  
+
   
-  function formatBody(post) {
-    if (post.format && post.format == 'markdown') {
-      // convert on save, store html version
-      return "converter.makeHtml(post.body)";  
-          
-    } else {
-      return stripScripts(post.body);
-    }
-  };
-  
-  function dateLink(date) {
+  function niceDate(date) {
     return '<span class="date">'
     + prettyDate(date)
     +'</span>';
@@ -60,7 +51,7 @@ B = new (function() {
     return '<li><h3><a href="post.html#'+id+'">'
     + safe(post.title) 
     + '</a></h3>'
-    + dateLink(post.created_at)
+    + niceDate(post.created_at)
     + '<div class="body">'
     + post.summary
     + '</div>'
@@ -69,9 +60,18 @@ B = new (function() {
   
   this.postToHTML = function(post) {
     return '<div class="body">'
-    + formatBody(post)
+    + stripScripts(post.html)
     + '</div>'
     + author(post.author)
-    + dateLink(post.created_at);
+    + niceDate(post.created_at);
+  };
+  
+  this.commentListing = function(c) {
+    return '<li><h4>'
+    + author(c.author) + ', '
+    + prettyDate(c.created_at)
+    + '</h4><p>'+ stripScripts(c.html)
+    + '</p>'
+    + '</li>';
   };
 });

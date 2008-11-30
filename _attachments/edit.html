@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Daytime Running Lights</title>
+    <link rel="stylesheet" href="screen.css" type="text/css">
+  </head>
+  <body>
+    <div id="header">
+      <h2><a href="index.html">Daytime Running Lights</a></h2>
+    </div>
+    <!-- form to create a post -->
+    <form id="new-post" action="new.html" method="post">
+      <h1>Create a new post</h1>
+      <fieldset id="author">
+        <p><label>Author</label>
+        <input type="author.name" name="name" value=""></p>
+        <p><label>Author URL</label>
+        <input type="author.url" name="author.url" value=""></p>
+      </fieldset>
+      <fieldset>
+        <p><label>Title</label>
+          <input type="text" size="50" name="title" value=""></p>
+      <p><label for="body">Body</label>
+      <textarea name="body" rows="28" cols="80"></textarea></p>
+      <p><input type="button" value="Preview"/>
+        <input type="submit" value="Save &rarr;"/></p></fieldset>
+    </form>
+  </body>
+  <script src="/_utils/script/json2.js"></script>
+  <script src="/_utils/script/jquery.js?1.2.6"></script>
+  <script src="/_utils/script/jquery.couch.js?0.8.0"></script>
+  <script src="jquery.couchapp.js"></script>
+  <script src="blog.js"></script>
+  <script src="showdown.js"></script>
+  <script src="textile.js"></script>
+  <script type="text/javascript" charset="utf-8">
+    $.couchapp(function(app) {
+      app.docForm("#new-post", {
+        id : document.location.hash.replace('#',''),
+        fields : ["title", "body"],
+        onLoad : function(doc) {
+          $('h1').text('Editing #'+doc._id);
+          if (doc.markdown) {
+            $('label[for=body]').append(' <em>with Markdown</em>');
+            doc.body = doc.markdown;
+          } else if (doc.textile) {
+            $('label[for=body]').append(' <em>with Textile</em>');            
+            doc.body = doc.textile;
+          } else {
+            doc.body = doc.html;
+            $('label[for=body]').append(' <em>in HTML</em>');            
+          }
+        },
+        beforeSave : function(doc) {
+          if (doc.markdown) {
+            var converter = new Showdown.converter();
+            doc.markdown = doc.body;
+            doc.html = converter.makeHtml(doc.markdown);
+          } else if (doc.textile) {
+            doc.textile = doc.body;
+            doc.html = superTextile(doc.textile);
+          } else {
+            doc.html = doc.body;
+          }
+          delete doc.body;
+        },
+        success : function(resp) {
+          console.log("success");
+          console.log(resp);
+        }
+      })
+      
+      // $("#new-post").submit(function(e) {
+      //   e.preventDefault();
+      //   var form = $(this);
+      //   var post = {};
+      //   fields.forEach(function(field) {
+      //     var val = form.find("[name="+field+"]").val()
+      //     if (val) post[field] = val;
+      //   });
+      //   post.created_at = new Date;
+      //   app.db.saveDoc(post, {success : function() {
+      //     $("#new-post").html('<h2>Success!</h2>');          
+      //   }});
+      //   return false;
+      // });
+      
+      
+    });
+  </script>
+</html>
