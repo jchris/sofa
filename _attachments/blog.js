@@ -1,5 +1,5 @@
 B = new (function() {
-  var converter = new Showdown.converter();
+  // var converter = new Showdown.converter();
 
   function prettyDate(time){
   	var date = new Date(time),
@@ -25,7 +25,11 @@ B = new (function() {
     return s && s.replace(/<script(.|\n)*?>/g, '');
   };
   
-  function safe(s) {
+  function safe(s,cap) {
+    if (cap && cap < s.length) {
+      s = s.substring(0,cap);
+      s += '...';
+    }
     return s && s.replace(/<(.|\n)*?>/g, '');
   };
   
@@ -38,7 +42,9 @@ B = new (function() {
   
   function formatBody(post) {
     if (post.format && post.format == 'markdown') {
-      return converter.makeHtml(post.body);      
+      // convert on save, store html version
+      return "converter.makeHtml(post.body)";  
+          
     } else {
       return stripScripts(post.body);
     }
@@ -50,14 +56,22 @@ B = new (function() {
     +'</span>';
   };
   
-  this.renderPost = function(post) {
+  this.postToEntry = function(post) {
     return '<li><h3><a href="post.html#'+post._id+'">'
     + safe(post.title) 
     + '</a></h3>'
     + dateLink(post.created_at)
     + '<div class="body">'
-    + formatBody(post)
+    + safe(post.body, 350)
     + '</div>'
     + '</li>';
   }
+  
+  this.postToHTML = function(post) {
+    return '<div class="body">'
+    + formatBody(post)
+    + '</div>'
+    + author(post.author)
+    + dateLink(post.created_at);
+  };
 });

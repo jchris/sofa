@@ -5,23 +5,30 @@
     <link rel="stylesheet" href="screen.css" type="text/css">
   </head>
   <body>
-    <h1>CouchDB Demo Blog</h1>
-    <p><a href="index.html">Back to index</a></p>
-    <div id="post"></div>
-    <ul id="comments"></ul>
-    <h3>Comment on this post</h3>
-    <!-- form to create a comment -->
-    <form id="new-comment" action="post.html" method="post">
-      <p><label>Name</label>
-      <input type="text" name="name" value=""></p>
-      <p><label>Comment</label>
-      <textarea name="comment" rows="8" cols="40"></textarea></p>
-      <p><input type="submit" value="Continue &rarr;"></p>
-    </form>
+    <div id="header">
+      <h2><a href="index.html">Daytime Running Lights</a></h2>
+    </div>
+    <div id="content">
+      <h1></h1>
+      <div id="post"></div>
+      <div id="comments">
+      <ul></ul>
+      <h3>Comment on this post</h3>
+      <!-- form to create a comment -->
+      <form id="new-comment" action="post.html" method="post">
+        <p><label>Name</label>
+        <input type="text" name="name" value=""></p>
+        <p><label>Comment</label>
+        <textarea name="comment" rows="8" cols="40"></textarea></p>
+        <p><input type="submit" value="Continue &rarr;"></p>
+      </form>
+      </div>
+    </div>    
   </body>
   <script src="/_utils/script/json2.js"></script>
   <script src="/_utils/script/jquery.js?1.2.6"></script>
   <script src="/_utils/script/jquery.couch.js?0.8.0"></script>
+  <script src="blog.js"></script>
   <script type="text/javascript" charset="utf-8">
     $(function() {
       var dbname = document.location.href.split('/')[3];
@@ -31,18 +38,20 @@
       var docid = document.location.hash.replace('#','');
       DB.openDoc(docid, {success: function(doc) {
         $('h1').text(doc.title);
-        $('#post').html('<p>'+doc.body+'</p><p>by <em>'+doc.author+'</em><span> at '+doc.date+'</span></p>');
+        $('#post').html(B.postToHTML(doc));
       }});
       
       DB.view(design+"/comments",{descending: true, 
         endkey: [docid],
         startkey: [docid, {}],
         success: function(json) {
-        $("#comments").html(json.rows.map(function(row) {
-          var comment = row.value;
-          return '<li><h4>'+comment.name+' at '+comment.date+'</h4><p>'+comment.comment+'</p><p>By: '+comment.author+'</p></li>';
-        }).join(''));
-      }});
+          var ul = $("#comments ul");
+          for (var i=0; i < json.rows.length; i++) {
+            var c = json.rows[i].value;
+            ul.append('<li><h4>'+c.name+' at '+c.date+'</h4><p>'+c.comment+'</p><p>By: '+c.author+'</p></li>');
+          }
+        }
+      });
       
       $("#new-comment").submit(function(e) {
         e.preventDefault();

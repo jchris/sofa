@@ -7,10 +7,10 @@
   </head>
   <body>
     <div id="header">
-      <h1>Daytime Running Lights</h1>
+      <h2>Daytime Running Lights</h2>
     </div>
-    
     <div id="content">
+      <h1>Recently...</h1>
       <ul id="posts"></ul>      
     </div>
 
@@ -18,7 +18,6 @@
   <script src="/_utils/script/json2.js"></script>
   <script src="/_utils/script/jquery.js?1.2.6"></script>
   <script src="/_utils/script/jquery.couch.js?0.8.0"></script>
-  <script src="showdown.js"></script>
   <script src="blog.js"></script>
   <script type="text/javascript" charset="utf-8">
     $(function() {
@@ -27,11 +26,11 @@
       var DB = $.couch.db(dbname);
       DB.view(design+"/recent-posts",{
         descending: true, 
-        count:3, 
+        count:7, 
         include_docs : true,
         success: function(json) {
           $.each(json.rows,function() {
-            var li = B.renderPost(this.doc);
+            var li = B.postToEntry(this.doc);
             $("#posts").append(li);
           });
       }});
