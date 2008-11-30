@@ -27,13 +27,14 @@
       DB.view(design+"/recent-posts",{
         descending: true, 
         count:7, 
-        include_docs : true,
         success: function(json) {
           $.each(json.rows,function() {
-            var li = B.postToEntry(this.doc);
+            var li = B.postToEntry(this.value, this.id);
             $("#posts").append(li);
+            $("#posts").fadeIn(200);
           });
       }});
     });
+    DB.view
   </script>
 </html>

@@ -56,13 +56,13 @@ B = new (function() {
     +'</span>';
   };
   
-  this.postToEntry = function(post) {
-    return '<li><h3><a href="post.html#'+post._id+'">'
+  this.postToEntry = function(post, id) {
+    return '<li><h3><a href="post.html#'+id+'">'
     + safe(post.title) 
     + '</a></h3>'
     + dateLink(post.created_at)
     + '<div class="body">'
-    + safe(post.body, 350)
+    + post.summary
     + '</div>'
     + '</li>';
   }

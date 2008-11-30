@@ -10,7 +10,7 @@ a {
 }
 
 h1 {
-  padding:0;
+  padding:6px;
   margin:0;
   line-height:1.2em;
 }
@@ -78,7 +78,7 @@ p.post {
   margin:10px;
 }
 
-#post, #comments {
+#post, #posts, #comments {
   display:none;
 }
 
