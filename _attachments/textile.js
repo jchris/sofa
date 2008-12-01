@@ -30,7 +30,7 @@ function superTextile(s) {
     // links
     re = new RegExp('"\\b(.+?)\\(\\b(.+?)\\b\\)":([^\\s]+)','g');
     r = r.replace(re,'<a href="$3" title="$2">$1</a>');
-    re = new RegExp('"\\b(.+?)\\b":([^\\s]+)','g');
+    re = new RegExp('"(.+?)":([^\\s]+)','g');
     r = r.replace(re,'<a href="$2">$1</a>');
 
     // images
