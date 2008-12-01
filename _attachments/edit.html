@@ -22,9 +22,14 @@
           <input type="text" size="50" name="title" value=""></p>
       <p><label for="body">Body</label>
       <textarea name="body" rows="28" cols="80"></textarea></p>
-      <p><input type="button" value="Preview"/>
-        <input type="submit" value="Save &rarr;"/></p></fieldset>
+      <p><input id="preview" type="button" value="Preview"/>
+        <input type="submit" value="Save &rarr;"/> <span id="saved" style="display:none;">Saved</span></p>
+        
+      </fieldset>
     </form>
+    <div id="content">
+      <div id="show-preview"></div>
+    </div>
   </body>
   <script src="/_utils/script/json2.js"></script>
   <script src="/_utils/script/jquery.js?1.2.6"></script>
@@ -66,9 +71,23 @@
           delete doc.body;
         },
         success : function(resp) {
-          console.log("success");
-          console.log(resp);
+          $("#saved").text("Saved _rev: "+resp.rev).fadeIn(500).fadeOut(3000);
         }
+      });
+      
+      $("#preview").click(function() {
+        var format = $('label[for=body]').text();
+        var html, body = $('[name=body]').val();
+        if (format.match(/markdown/i)) {
+          var converter = new Showdown.converter();
+          html = converter.makeHtml(body);
+        } else if (format.match(/textile/i)) {
+          html = superTextile(body);
+        } else {
+          html = body;
+        }
+        $('#show-preview').html(html);
+        
       });
       
     });
