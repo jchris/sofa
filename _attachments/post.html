@@ -42,6 +42,7 @@
       app.design.view("comments", {
         startkey: [docid],
         endkey: [docid, {}],
+        reduce : false,
         success: function(json) {
           var ul = $("#comments ul");
           for (var i=0; i < json.rows.length; i++) {

@@ -8,5 +8,4 @@ function(doc) {
       created_at : doc.created_at
     });    
   }
-
 };

@@ -15,8 +15,8 @@ B = new (function() {
   			diff < 7200 && "1 hour ago" ||
   			diff < 86400 && Math.floor( diff / 3600 ) + " hours ago") ||
   		day_diff == 1 && "yesterday" ||
-  		day_diff < 7 && day_diff + " days ago" ||
-  		day_diff < 31 && Math.ceil( day_diff / 7 ) + " weeks ago" ||
+  		day_diff < 21 && day_diff + " days ago" ||
+  		day_diff < 45 && Math.ceil( day_diff / 7 ) + " weeks ago" ||
   		day_diff < 730 && Math.ceil( day_diff / 31 ) + " months ago" ||
   		Math.ceil( day_diff / 365 ) + " years ago";
   };
@@ -59,11 +59,10 @@ B = new (function() {
   }
   
   this.postToHTML = function(post) {
-    return '<div class="body">'
+    return niceDate(post.created_at)
+    + '<div class="body">'
     + stripScripts(post.html)
-    + '</div>'
-    + author(post.author)
-    + niceDate(post.created_at);
+    + '</div>';
   };
   
   this.commentListing = function(c) {
