@@ -125,3 +125,7 @@ fieldset#author {
   float:left;
   width:20%;
 }
+
+textarea {
+  padding:2px;
+}

@@ -35,28 +35,59 @@
           var localFormDoc = {};
           opts = opts || {};
           opts.fields = opts.fields || [];
-          $(formSelector).submit(function(e) {
-            e.preventDefault();
-            var form = $(this);
+          
+          // turn the form into deep json
+          // field names like 'author-email' get turned into json like
+          // {"author":{"email":"quentin@example.com"}}
+          function formToDeepJSON(form, fields, doc) {
+            var form = $(form);
             opts.fields.forEach(function(field) {
               var val = form.find("[name="+field+"]").val()
-              if (val) localFormDoc[field] = val;
+              if (!val) return;
+              var parts = field.split('-');
+              var frontObj = doc, frontName = parts.shift();
+              while (parts.length > 0) {
+                frontObj[frontName] = frontObj[frontName] || {}
+                frontObj = frontObj[frontName];
+                frontName = parts.shift();
+              }
+              frontObj[frontName] = val;
             });
+          };
+          
+          // Apply the behavior
+          $(formSelector).submit(function(e) {
+            e.preventDefault();
+            // formToDeepJSON acts on localFormDoc by reference
+            formToDeepJSON(this, opts.fields, localFormDoc);
             if (opts.beforeSave) opts.beforeSave(localFormDoc);
-            console.log("save");
-            console.log(localFormDoc);
+            console.log(localFormDoc)
+            db.saveDoc(localFormDoc, {
+              success : function(resp) {
+                if (opts.success) opts.success(resp);
+              }
+            })
+            
             return false;
           });
+
+          // popular form from an existing doc
           if (opts.id) {
             db.openDoc(opts.id, {
               success: function(doc) {
                 if (opts.onLoad) opts.onLoad(doc);
                 localFormDoc = doc;
                 var form = $(formSelector);
-                for (field in doc) { // todo $.each
-                  form.find("[name="+field+"]").val(doc[field]);
-                  // add hidden fields for any others?
-                }
+                // fills in forms
+                opts.fields.forEach(function(field) {
+                  var parts = field.split('-');
+                  var run = true, frontObj = doc, frontName = parts.shift();
+                  while (parts.length > 0) {
+                    frontObj = frontObj[frontName];
+                    frontName = parts.shift();
+                  }
+                  form.find("[name="+field+"]").val(frontObj[frontName]);
+                });
             }});
           }
         }

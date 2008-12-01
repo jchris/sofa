@@ -13,9 +13,9 @@
       <h1>Create a new post</h1>
       <fieldset id="author">
         <p><label>Author</label>
-        <input type="author.name" name="name" value=""></p>
-        <p><label>Author URL</label>
-        <input type="author.url" name="author.url" value=""></p>
+        <input type="text" name="author-name" value=""></p>
+        <p><label>Author Email</label>
+        <input type="text" name="author-email" value=""></p>
       </fieldset>
       <fieldset>
         <p><label>Title</label>
@@ -35,11 +35,12 @@
   <script src="textile.js"></script>
   <script type="text/javascript" charset="utf-8">
     $.couchapp(function(app) {
+      
       app.docForm("#new-post", {
         id : document.location.hash.replace('#',''),
-        fields : ["title", "body"],
+        fields : ["title", "body", "author-name", "author-email"],
         onLoad : function(doc) {
-          $('h1').text('Editing #'+doc._id);
+          $('h1').html('Editing #<a href="post.html#'+doc._id+'">'+doc._id+'</a>');
           if (doc.markdown) {
             $('label[for=body]').append(' <em>with Markdown</em>');
             doc.body = doc.markdown;
@@ -68,23 +69,7 @@
           console.log("success");
           console.log(resp);
         }
-      })
-      
-      // $("#new-post").submit(function(e) {
-      //   e.preventDefault();
-      //   var form = $(this);
-      //   var post = {};
-      //   fields.forEach(function(field) {
-      //     var val = form.find("[name="+field+"]").val()
-      //     if (val) post[field] = val;
-      //   });
-      //   post.created_at = new Date;
-      //   app.db.saveDoc(post, {success : function() {
-      //     $("#new-post").html('<h2>Success!</h2>');          
-      //   }});
-      //   return false;
-      // });
-      
+      });
       
     });
   </script>
