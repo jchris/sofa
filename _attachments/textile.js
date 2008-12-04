@@ -16,7 +16,7 @@ function superTextile(s) {
              ['@', 'code']];
     for (var i=0;i<qtags.length;i++) {
         ttag = qtags[i][0]; htag = qtags[i][1];
-        re = new RegExp(ttag+'\\b(.+?)\\b'+ttag,'g');
+        re = new RegExp(ttag+'(.+?)'+ttag,'g');
         r = r.replace(re,'<'+htag+'>'+'$1'+'</'+htag+'>');
     }
     // underscores count as part of a word, so do them separately
