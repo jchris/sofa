@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Account Settings</title>
+    <link rel="stylesheet" href="screen.css" type="text/css">
+      <link rel="alternate" type="application/atom+xml" title="Atom Feed" href="/blogdb/_external/action/couchdb-example-blog/atom-posts" />
+  </head>
+  <body>
+    <div id="header">
+      <h2>Daytime Running Lights</h2>
+    </div>
+    <div id="content">
+      <h1>You are not logged in</h1>
+      <form id="login">
+        <h3>Login</h3>
+        <p><label>Login</label>
+        <input type="text" name="login" value=""></p>
+        <p><label>Password</label>
+        <input type="password" name="password" value=""></p>
+        <p><input type="submit" value="Login &rarr;"></p>
+      </form>
+      
+      <form id="signup">
+        <h3>or Signup?</h3>
+        <p><label>Pick your Login</label>
+        <input type="text" name="login" value=""></p>
+        <p><label>Choose a Password</label>
+        <input type="password" name="password" value=""></p>
+        <p><label>Repeat Password</label>
+        <input type="password" name="password-verify" value=""></p>
+        <p><input type="submit" value="Signup &rarr;"></p>
+      </form>
+ 
+    </div>
+
+  </body>
+  <script src="/_utils/script/json2.js"></script>
+  <script src="/_utils/script/jquery.js"></script>
+  <script src="/_utils/script/jquery.couch.js"></script>
+  <script src="jquery.couchapp.js"></script>
+  <script src="blog.js"></script>
+  <script type="text/javascript" charset="utf-8">
+    $.couchapp(function(app) {
+      app.design.view("recent-posts",{
+        descending: true, 
+        count:7, 
+        success: function(json) {
+          $.each(json.rows,function() {
+            var li = B.postToEntry(this.value, this.id);
+            $("#posts").append(li);
+            $("#posts").fadeIn(200);
+          });
+      }});      
+    });
+  </script>
+</html>
