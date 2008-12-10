@@ -8,16 +8,10 @@
     <div id="header">
       <h2><a href="index.html">Daytime Running Lights</a></h2>
     </div>
+    <div id="content">
     <!-- form to create a post -->
     <form id="new-post" action="new.html" method="post">
       <h1>Create a new post</h1>
-      <fieldset id="author">
-        <p><label>Author</label>
-        <input type="text" name="author-name" value=""></p>
-        <p><label>Author Email</label>
-        <input type="text" name="author-email" value=""></p>
-      </fieldset>
-      <fieldset>
         <p><label>Title</label>
           <input type="text" size="50" name="title" value=""></p>
       <p><label for="body">Body</label>
@@ -25,9 +19,7 @@
       <p><input id="preview" type="button" value="Preview"/>
         <input type="submit" value="Save &rarr;"/> <span id="saved" style="display:none;">Saved</span></p>
         
-      </fieldset>
     </form>
-    <div id="content">
       <div id="show-preview"></div>
     </div>
   </body>
@@ -43,58 +35,51 @@
     $.couchapp(function(app) {
       var login = $.cookies.get("login");
       if (login) {
+        
         $("#header").prepend('<span id="login">'+login+'</span>');
+        
+        app.docForm("#new-post", {
+          id : document.location.hash.replace('#',''),
+          fields : ["title", "body"],
+          onLoad : function(doc) {
+            $('h1').html('Editing #<a href="post.html#'+doc._id+'">'+doc._id+'</a>');
+            $('label[for=body]').append(' <em>with '+(doc.format||'html')+'</em>');
+          },
+          beforeSave : function(doc) {
+            var format = doc.format;
+            if (format == 'markdown') {
+              var converter = new Showdown.converter();
+              doc.html = converter.makeHtml(doc.body);
+            } else if (format == 'textile') {
+              doc.html = superTextile(doc.body);
+            } else {
+              doc.html = doc.body;
+            }
+          },
+          success : function(resp) {
+            $("#saved").text("Saved _rev: "+resp.rev).fadeIn(500).fadeOut(3000);
+          }
+        });        
+        
+        $("#preview").click(function() {
+          var format = $('label[for=body]').text();
+          var html, body = $('[name=body]').val();
+          if (format.match(/markdown/i)) {
+            var converter = new Showdown.converter();
+            html = converter.makeHtml(body);
+          } else if (format.match(/textile/i)) {
+            html = superTextile(body);
+          } else {
+            html = body;
+          }
+          $('#show-preview').html(html);
+        });
+        
       } else {
         // make it clear you have to log in to edit
+        $('#new-post').remove();
+        $('#content').html('<p>You must be logged in to edit posts.</p>')
       }
-      app.docForm("#new-post", {
-        id : document.location.hash.replace('#',''),
-        fields : ["title", "body", "author-name", "author-email"],
-        onLoad : function(doc) {
-          $('h1').html('Editing #<a href="post.html#'+doc._id+'">'+doc._id+'</a>');
-          if (doc.markdown) {
-            $('label[for=body]').append(' <em>with Markdown</em>');
-            doc.body = doc.markdown;
-          } else if (doc.textile) {
-            $('label[for=body]').append(' <em>with Textile</em>');            
-            doc.body = doc.textile;
-          } else {
-            doc.body = doc.html;
-            $('label[for=body]').append(' <em>in HTML</em>');            
-          }
-        },
-        beforeSave : function(doc) {
-          if (doc.markdown) {
-            var converter = new Showdown.converter();
-            doc.markdown = doc.body;
-            doc.html = converter.makeHtml(doc.markdown);
-          } else if (doc.textile) {
-            doc.textile = doc.body;
-            doc.html = superTextile(doc.textile);
-          } else {
-            doc.html = doc.body;
-          }
-          delete doc.body;
-        },
-        success : function(resp) {
-          $("#saved").text("Saved _rev: "+resp.rev).fadeIn(500).fadeOut(3000);
-        }
-      });
-      
-      $("#preview").click(function() {
-        var format = $('label[for=body]').text();
-        var html, body = $('[name=body]').val();
-        if (format.match(/markdown/i)) {
-          var converter = new Showdown.converter();
-          html = converter.makeHtml(body);
-        } else if (format.match(/textile/i)) {
-          html = superTextile(body);
-        } else {
-          html = body;
-        }
-        $('#show-preview').html(html);
-      });
-      
     });
   </script>
 </html>
