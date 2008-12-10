@@ -31,13 +31,12 @@
   <script src="showdown.js"></script>
   <script src="textile.js"></script>
   <script type="text/javascript" charset="utf-8">
-    $.couchapp(function(app) {
-      var login = $.cookies.get("login");
-      if (login) {
-        
+    $.CouchApp(function(app) {
+      app.userOrRedirect('account.html', function(login) {
+        // w00t, we're logged in (according to the cookie)
         $("#header").prepend('<span id="login">'+login+'</span>');
-        
-        app.docForm("#new-post", {
+        // setup CouchApp document/form system, adding app-specific callbacks
+        app.docForm("form#new-post", {
           id : document.location.hash.replace('#',''),
           fields : ["title", "body"],
           template : {
@@ -72,7 +71,6 @@
             $('h1').html('Editing #<a href="post.html#'+resp.id+'">'+resp.id+'</a>');
           }
         });        
-        
         $("#preview").click(function() {
           var format = $('label[for=body]').text();
           var html, body = $('[name=body]').val();
@@ -86,12 +84,7 @@
           }
           $('#show-preview').html(html);
         });
-        
-      } else {
-        // make it clear you have to log in to edit
-        $('#new-post').remove();
-        $('#content').html('<p>You must be logged in to edit posts.</p>')
-      }
+      });
     });
   </script>
 </html>

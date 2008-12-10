@@ -31,7 +31,7 @@
   <script src="jquery.couchapp.js"></script>
   <script src="blog.js"></script>
   <script type="text/javascript" charset="utf-8">
-  $.couchapp(function(app) {
+  $.CouchApp(function(app) {
       var docid = document.location.hash.replace('#','');
       app.db.openDoc(docid, {success: function(doc) {
         $('h1').text(doc.title);
@@ -57,7 +57,7 @@
         e.preventDefault();
         var form = $(this);
         var comment = {};
-        var fields = ["name", "comment", "author"];
+        var fields = ["name", "comment"];
         fields.forEach(function(field) {
           comment[field] = form.find("[name="+field+"]").val();          
         });

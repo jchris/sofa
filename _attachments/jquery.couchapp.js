@@ -11,7 +11,7 @@
 // the License.
 
 // Usage:
-// $.couchapp
+// $.CouchApp
 
 // Monkeypatching Date. 
 
@@ -36,15 +36,39 @@
       db.view(name+'/'+view, opts);
     };
   };
+
+  var login;
   
-  function init(callback) {
+  function init(app) {
     $(function() {
       var dbname = document.location.href.split('/')[3];
       var dname = unescape(document.location.href).split('/')[5];
       var db = $.couch.db(dbname);
       var design = new Design(db, dname);
       
-      callback({
+      app({
+        attemptLogin : function(win, fail) {
+          // depends on nasty hack in blog validation function
+          db.saveDoc({"author":"_self"}, { error: function(s, e, r) {
+            var namep = r.split(':');
+            if (namep[0] == '_self') {
+              login = namep.pop();
+              $.cookies.set("login", login, '/'+dbpath)
+              win && win(login);
+            } else {
+              $.cookies.remove("login", '/'+dbpath)
+              fail && fail(s, e, r);
+            }
+          }});        
+        },
+        userOrRedirect : function(location, loggedIn) {
+          login = login || $.cookies.get("login");
+          if (login) {
+            loggedIn(login)
+          } else {
+            // callback
+          }
+        },
         db : db,
         design : design,
         docForm : function(formSelector, opts) {
@@ -118,54 +142,54 @@
     });
   };
   
-  $.couchapp = $.couchapp || init;
+  $.CouchApp = $.CouchApp || init;
   
-  $.fn.extend($.couchapp,{
+  $.fn.extend($.CouchApp,{
     foo : function() {
       return "bar";
     }
   });
 })(jQuery);
 
-function patchTest(fun) {
-  var source = fun.toString();
-  var output = "";
-  var i = 0;
-  var testMarker = "T("
-  while (i < source.length) {
-    var testStart = source.indexOf(testMarker, i);
-    if (testStart == -1) {
-      output = output + source.substring(i, source.length);
-      break;
-    }
-    var testEnd = source.indexOf(");", testStart);
-    var testCode = source.substring(testStart + testMarker.length, testEnd);
-    output += source.substring(i, testStart) + "T(" + testCode + "," + JSON.stringify(testCode);
-    i = testEnd;
-  }
-  try {
-    return eval("(" + output + ")");
-  } catch (e) {
-    return null;
-  }
-}
-
-// assert
-function T(arg1, arg2) {
-  if (!arg1) {
-    console.log("Assertion failed: "+(arg2 != null ? arg2 : arg1).toString());
-  }
-}
-
-// tests
-
-patchTest(function() {
-  T($.couchapp.foo() == 'bar');
-  $.couchapp(function(app) {
-    // T(false, "PASS: the callback should be executed");
-    T(app.db);
-    T(app.design);
-    T(app.design.view);
-  });
-})();
+// function patchTest(fun) {
+//   var source = fun.toString();
+//   var output = "";
+//   var i = 0;
+//   var testMarker = "T("
+//   while (i < source.length) {
+//     var testStart = source.indexOf(testMarker, i);
+//     if (testStart == -1) {
+//       output = output + source.substring(i, source.length);
+//       break;
+//     }
+//     var testEnd = source.indexOf(");", testStart);
+//     var testCode = source.substring(testStart + testMarker.length, testEnd);
+//     output += source.substring(i, testStart) + "T(" + testCode + "," + JSON.stringify(testCode);
+//     i = testEnd;
+//   }
+//   try {
+//     return eval("(" + output + ")");
+//   } catch (e) {
+//     return null;
+//   }
+// }
+// 
+// // assert
+// function T(arg1, arg2) {
+//   if (!arg1) {
+//     console.log("Assertion failed: "+(arg2 != null ? arg2 : arg1).toString());
+//   }
+// }
+// 
+// // tests
+// 
+// patchTest(function() {
+//   T($.CouchApp.foo() == 'bar');
+//   $.CouchApp(function(app) {
+//     // T(false, "PASS: the callback should be executed");
+//     T(app.db);
+//     T(app.design);
+//     T(app.design.view);
+//   });
+// })();
 

@@ -67,7 +67,7 @@ B = new (function() {
   
   this.commentListing = function(c) {
     return '<li><h4>'
-    + author(c.author) + ', '
+    + author(c.commenter) + ', '
     + prettyDate(c.created_at)
     + '</h4><p>'+ stripScripts(c.html)
     + '</p>'

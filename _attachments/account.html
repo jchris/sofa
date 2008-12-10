@@ -43,32 +43,15 @@
   <script src="blog.js"></script>
   <script type="text/javascript" charset="utf-8">
   var dbpath = document.location.href.split('/')[3]
-    B.login = function(app, win, fail) {
-      var login;
-      // depends on nasty hack in blog validation function
-      app.db.saveDoc({"author":"_self"}, { error: function(s, e, r) {
-        var namep = r.split(':');
-        if (namep[0] == '_self') {
-          login = namep.pop();
-          $.cookies.set("login", login, '/'+dbpath)
-          win && win(login);
-        } else {
-          $.cookies.remove("login", '/'+dbpath)
-          fail && fail(s, e, r);
-        }
-      }});        
-    };
-  
-    $.couchapp(function(app) {
+    $.CouchApp(function(app) {
       $('#content').append('<p>Attempting login.</p>');
-      B.login(app, function(login) {
+      app.attemptLogin(function(login) {
         $('#content').append('<p>Success.</p>');
         $('h1').text('Welcome '+login);
         $('#content').append('<p>Now that you\'re logged in, you can <a href="edit.html">write blog posts.</a></p>');
       }, function() {
         $('h1').text('Incorrect login');
         $('#content').append('<p>Fail.</p>');
-        
       });
     });
   </script>
