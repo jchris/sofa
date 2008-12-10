@@ -18,7 +18,6 @@
       <textarea name="body" rows="28" cols="80"></textarea></p>
       <p><input id="preview" type="button" value="Preview"/>
         <input type="submit" value="Save &rarr;"/> <span id="saved" style="display:none;">Saved</span></p>
-        
     </form>
       <div id="show-preview"></div>
     </div>
@@ -41,8 +40,13 @@
         app.docForm("#new-post", {
           id : document.location.hash.replace('#',''),
           fields : ["title", "body"],
+          template : {
+            type : "post",
+            format : "markdown",
+            author : login
+          },
           onLoad : function(doc) {
-            $('h1').html('Editing #<a href="post.html#'+doc._id+'">'+doc._id+'</a>');
+            if (doc._id) $('h1').html('Editing #<a href="post.html#'+doc._id+'">'+doc._id+'</a>');
             $('label[for=body]').append(' <em>with '+(doc.format||'html')+'</em>');
           },
           beforeSave : function(doc) {
@@ -55,9 +59,17 @@
             } else {
               doc.html = doc.body;
             }
+            if (!doc.created_at) {
+              doc.created_at = new Date();
+            }
+            if (!doc.slug) {
+              doc.slug = doc.title.replace(/\W/g,'-').replace(/\-*$/,'').replace(/^\-*/,'').replace(/\-{2,}/,'-'); // cute, I know
+              doc._id = doc.slug;
+            }
           },
           success : function(resp) {
             $("#saved").text("Saved _rev: "+resp.rev).fadeIn(500).fadeOut(3000);
+            $('h1').html('Editing #<a href="post.html#'+resp.id+'">'+resp.id+'</a>');
           }
         });        
         

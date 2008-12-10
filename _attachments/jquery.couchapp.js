@@ -13,7 +13,23 @@
 // Usage:
 // $.couchapp
 
+// Monkeypatching Date. 
+
+
 (function($) {
+
+  function f(n) {    // Format integers to have at least two digits.
+      return n < 10 ? '0' + n : n;
+  }
+
+  Date.prototype.toJSON = function() {
+      return this.getUTCFullYear()   + '/' +
+           f(this.getUTCMonth() + 1) + '/' +
+           f(this.getUTCDate())      + ' ' +
+           f(this.getUTCHours())     + ':' +
+           f(this.getUTCMinutes())   + ':' +
+           f(this.getUTCSeconds())   + ' +0000';
+  };
   
   function Design(db, name) {
     this.view = function(view, opts) {
@@ -61,7 +77,6 @@
             // formToDeepJSON acts on localFormDoc by reference
             formToDeepJSON(this, opts.fields, localFormDoc);
             if (opts.beforeSave) opts.beforeSave(localFormDoc);
-            console.log(localFormDoc)
             db.saveDoc(localFormDoc, {
               success : function(resp) {
                 if (opts.success) opts.success(resp);
@@ -72,23 +87,31 @@
           });
 
           // populate form from an existing doc
+          function docToForm(doc) {
+            var form = $(formSelector);
+            // fills in forms
+            opts.fields.forEach(function(field) {
+              var parts = field.split('-');
+              var run = true, frontObj = doc, frontName = parts.shift();
+              while (parts.length > 0) {
+                frontObj = frontObj[frontName];
+                frontName = parts.shift();
+              }
+              form.find("[name="+field+"]").val(frontObj[frontName]);
+            });            
+          };
+          
           if (opts.id) {
             db.openDoc(opts.id, {
               success: function(doc) {
                 if (opts.onLoad) opts.onLoad(doc);
                 localFormDoc = doc;
-                var form = $(formSelector);
-                // fills in forms
-                opts.fields.forEach(function(field) {
-                  var parts = field.split('-');
-                  var run = true, frontObj = doc, frontName = parts.shift();
-                  while (parts.length > 0) {
-                    frontObj = frontObj[frontName];
-                    frontName = parts.shift();
-                  }
-                  form.find("[name="+field+"]").val(frontObj[frontName]);
-                });
+                docToForm(doc);
             }});
+          } else if (opts.template) {
+            if (opts.onLoad) opts.onLoad(opts.template);
+            localFormDoc = opts.template;
+            docToForm(localFormDoc);
           }
         }
       });
