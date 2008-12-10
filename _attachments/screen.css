@@ -36,8 +36,10 @@ h4 {
 }
 
 #header {
-  background:#8d8;
+  background:#9a9;
   padding:8px;
+  text-shadow: 0 0 4px #000;
+  color:#fff;
 }
 
 #content {

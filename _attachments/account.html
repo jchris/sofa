@@ -7,7 +7,7 @@
   </head>
   <body>
     <div id="header">
-      <h2>Daytime Running Lights</h2>
+      <h2>Wide Running</h2>
     </div>
     <div id="content">
       <h1>You are not logged in</h1>
@@ -41,16 +41,7 @@
   <script src="blog.js"></script>
   <script type="text/javascript" charset="utf-8">
     $.couchapp(function(app) {
-      app.design.view("recent-posts",{
-        descending: true, 
-        count:7, 
-        success: function(json) {
-          $.each(json.rows,function() {
-            var li = B.postToEntry(this.value, this.id);
-            $("#posts").append(li);
-            $("#posts").fadeIn(200);
-          });
-      }});      
+      console.log("boot")
     });
   </script>
 </html>
