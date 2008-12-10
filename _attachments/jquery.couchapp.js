@@ -71,7 +71,7 @@
             return false;
           });
 
-          // popular form from an existing doc
+          // populate form from an existing doc
           if (opts.id) {
             db.openDoc(opts.id, {
               success: function(doc) {

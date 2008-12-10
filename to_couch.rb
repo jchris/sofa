@@ -1,7 +1,7 @@
 require 'rubygems'
 require 'couchrest'
 
-db = CouchRest.database! 'example-blog-import'
+db = CouchRest.database! 'http://jchris:animal@127.0.0.1:5984/couchblog'
 
 # you'll need to replace Post and Comment with whatever classes hold your data.
 
@@ -16,16 +16,14 @@ posts = Post.find :all
 posts.each do |p|
   puts p.title
   post = {
+    'type' => 'post',
     '_id' => p.permalink,
     :title => p.title,
     :textile => p.body,
     :html => p.description,
     :slug => p.permalink,
     :legacy_id => p.id,
-    :author => {
-      :email => p.user.email,
-      :name => p.user.login
-    },
+    :author => p.user.login,
     :updated_at => p.updated_at,
     :created_at => p.created_at
   }
@@ -43,8 +41,13 @@ comments = Comment.find :all
 comments.each do |c|
   puts c.name
   post_couch_id = idmap[c.post_id]
+  unless c.email
+    puts "enter email for #{c.inspect}"
+    c.email = gets.chomp
+  end
   comment = {
-    :author => {
+    'type' => 'comment',
+    :commenter => {
       :name => c.name,
       :email => c.email,
       :url => c.link
@@ -55,5 +58,5 @@ comments.each do |c|
     :updated_at => c.updated_at,
     :created_at => c.created_at
   }
-  db.save(comment)
+  db.save(comment) rescue puts "no save"
 end

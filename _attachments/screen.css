@@ -22,8 +22,12 @@ h2 {
   font-size:112%;
 }
 
-h2 a {
-  color:#000;
+#header a {
+  color:#fff;
+}
+
+#header #login {
+  float:right;
 }
 
 h3 {

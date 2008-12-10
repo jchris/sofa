@@ -7,11 +7,13 @@
   </head>
   <body>
     <div id="header">
-      <h2>Wide Running</h2>
+      <h2><a href="index.html">Daytime Running Lights</a></h2>
     </div>
     <div id="content">
-      <h1>You are not logged in</h1>
-      <form id="login">
+      <h1>Login via the popup or hit cancel.</h1>
+      <p>Edit CouchDB's configuration to create admin users. You may be able to accomplish this via the HTTP API or <a href="http://wiki.apache.org/couchdb/Setting_up_an_Admin_account">of course by editing local.ini</a>.</p>
+      <p>This blog will eventually move to application users (stored in the DB) but using admin users for now gives me a platform to experiment with validation models.</p>
+      <!-- <form id="login">
         <h3>Login</h3>
         <p><label>Login</label>
         <input type="text" name="login" value=""></p>
@@ -29,19 +31,45 @@
         <p><label>Repeat Password</label>
         <input type="password" name="password-verify" value=""></p>
         <p><input type="submit" value="Signup &rarr;"></p>
-      </form>
- 
+      </form> -->
     </div>
 
   </body>
   <script src="/_utils/script/json2.js"></script>
   <script src="/_utils/script/jquery.js"></script>
+  <script src="/_utils/script/jquery.cookies.js"></script>
   <script src="/_utils/script/jquery.couch.js"></script>
   <script src="jquery.couchapp.js"></script>
   <script src="blog.js"></script>
   <script type="text/javascript" charset="utf-8">
+  var dbpath = document.location.href.split('/')[3]
+    B.login = function(app, win, fail) {
+      var login;
+      // depends on nasty hack in blog validation function
+      app.db.saveDoc({"author":"_self"}, { error: function(s, e, r) {
+        var namep = r.split(':');
+        if (namep[0] == '_self') {
+          login = namep.pop();
+          $.cookies.set("login", login, '/'+dbpath)
+          win && win(login);
+        } else {
+          $.cookies.remove("login", '/'+dbpath)
+          fail && fail(s, e, r);
+        }
+      }});        
+    };
+  
     $.couchapp(function(app) {
-      console.log("boot")
+      $('#content').append('<p>Attempting login.</p>');
+      B.login(app, function(login) {
+        $('#content').append('<p>Success.</p>');
+        $('h1').text('Welcome '+login);
+        $('#content').append('<p>Now that you\'re logged in, you can <a href="edit.html">write blog posts.</a></p>');
+      }, function() {
+        $('h1').text('Incorrect login');
+        $('#content').append('<p>Fail.</p>');
+        
+      });
     });
   </script>
 </html>
