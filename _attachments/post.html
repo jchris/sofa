@@ -18,6 +18,8 @@
       <form id="new-comment" action="post.html" method="post">
         <p><label>Name</label>
         <input type="text" name="name" value=""></p>
+        <p><label>Email</label>
+        <input type="text" name="email" value=""></p>
         <p><label>Comment</label>
         <textarea name="comment" rows="8" cols="40"></textarea></p>
         <p><input type="submit" value="Continue &rarr;"></p>
@@ -52,7 +54,7 @@
           $('#comments').fadeIn(2000);      
         }
       });
-      
+            
       $("#new-comment").submit(function(e) {
         e.preventDefault();
         var form = $(this);

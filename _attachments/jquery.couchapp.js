@@ -137,6 +137,15 @@
             localFormDoc = opts.template;
             docToForm(localFormDoc);
           }
+          var instance = {
+            deleteDoc : function(opts) {
+              opts = opts || {};
+              if (confirm("Really delete this post?")) {                
+                db.removeDoc(localFormDoc, opts);
+              }
+            }
+          }
+          return instance;
         }
       });
     });
@@ -144,11 +153,11 @@
   
   $.CouchApp = $.CouchApp || init;
   
-  $.fn.extend($.CouchApp,{
-    foo : function() {
-      return "bar";
-    }
-  });
+  // $.fn.extend($.CouchApp,{
+  //   foo : function() {
+  //     return "bar";
+  //   }
+  // });
 })(jQuery);
 
 // function patchTest(fun) {
