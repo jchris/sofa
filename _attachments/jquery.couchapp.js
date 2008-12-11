@@ -56,7 +56,7 @@
               $.cookies.set("login", login, '/'+dbname)
               win && win(login);
             } else {
-              $.cookies.remove("login", '/'+dbname)
+              $.cookies.set("login", "", '/'+dbname)
               fail && fail(s, e, r);
             }
           }});        
