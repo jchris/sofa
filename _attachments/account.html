@@ -42,10 +42,11 @@
   <script src="jquery.couchapp.js"></script>
   <script src="blog.js"></script>
   <script type="text/javascript" charset="utf-8">
-  var dbpath = document.location.href.split('/')[3]
     $.CouchApp(function(app) {
+      var redirectUrl = document.location.hash.replace('#','');
       $('#content').append('<p>Attempting login.</p>');
       app.attemptLogin(function(login) {
+        if (redirectUrl) document.location = redirectUrl;
         $('#content').append('<p>Success.</p>');
         $('h1').text('Welcome '+login);
         $('#content').append('<p>Now that you\'re logged in, you can <a href="edit.html">write blog posts.</a></p>');

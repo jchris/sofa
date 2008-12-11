@@ -61,15 +61,12 @@
             }
           }});        
         },
-        userOrRedirect : function(location, loggedIn) {
+        loggedInNow : function(loggedIn, loggedOut) {
           login = login || $.cookies.get("login");
           if (login) {
-            loggedIn(login)
+            loggedIn && loggedIn(login);
           } else {
-            // callback
-            $('body').append('<a href="'+location+'">redirect</a>');
-            var absurl = $('body a:last')[0].href;
-            document.location = absurl;
+            loggedOut && loggedOut();
           }
         },
         db : db,

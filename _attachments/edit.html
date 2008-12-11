@@ -35,7 +35,7 @@
   <script src="textile.js"></script>
   <script type="text/javascript" charset="utf-8">
     $.CouchApp(function(app) {
-      app.userOrRedirect('account.html', function(login) {
+      app.loggedInNow(function(login) {
         // w00t, we're logged in (according to the cookie)
         $("#header").prepend('<span id="login">'+login+'</span>');
         // setup CouchApp document/form system, adding app-specific callbacks
@@ -87,6 +87,11 @@
           var html = B.formatBody(doc.body, doc.format);
           $('#show-preview').html(html);
         });
+      }, function() {
+        // callback
+        $('body').append('<a href="account.html#'+document.location+'">redirect</a>');
+        var absurl = $('body a:last')[0].href;
+        document.location = absurl;
       });
     });
   </script>
