@@ -118,6 +118,10 @@ ul {
   list-style: none;
 }
 
+.body ul {
+  list-style: disc;
+}
+
 form {
   padding:10px;
 /*  background:#ddd;*/

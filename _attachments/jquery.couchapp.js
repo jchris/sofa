@@ -143,6 +143,9 @@
               if (confirm("Really delete this post?")) {                
                 db.removeDoc(localFormDoc, opts);
               }
+            },
+            localDoc : function() {
+              return localFormDoc;
             }
           }
           return instance;
