@@ -41,18 +41,6 @@
         // setup CouchApp document/form system, adding app-specific callbacks
         // rename docForm?
         
-        function applyFormatToDoc(doc) {
-          var format = doc.format;
-          if (format == 'markdown') {
-            var converter = new Showdown.converter();
-            doc.html = converter.makeHtml(doc.body);
-          } else if (format == 'textile') {
-            doc.html = superTextile(doc.body);
-          } else {
-            doc.html = doc.body;
-          }
-        }
-        
         // thin controller - move to B?
         var postForm = app.docForm("form#new-post", {
           id : document.location.hash.replace('#',''),
@@ -79,7 +67,7 @@
             $('label[for=body]').append(' <em>with '+(doc.format||'html')+'</em>');
           },
           beforeSave : function(doc) {
-            applyFormatToDoc(doc);
+            doc.html = B.formatBody(doc.body, doc.format);
             if (!doc.created_at) {
               doc.created_at = new Date();
             }
@@ -96,8 +84,8 @@
 
         $("#preview").click(function() {
           var doc = postForm.localDoc();
-          applyFormatToDoc(doc);
-          $('#show-preview').html(doc.html);
+          var html = B.formatBody(doc.body, doc.format);
+          $('#show-preview').html(html);
         });
       });
     });

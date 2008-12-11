@@ -1,4 +1,4 @@
 function(doc) {
-  if (doc.created_at && doc.html && doc.post_id) 
+  if (doc.type == "comment") 
     emit([doc.post_id, doc.created_at], doc);
 };

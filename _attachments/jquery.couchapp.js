@@ -53,10 +53,10 @@
             var namep = r.split(':');
             if (namep[0] == '_self') {
               login = namep.pop();
-              $.cookies.set("login", login, '/'+dbpath)
+              $.cookies.set("login", login, '/'+dbname)
               win && win(login);
             } else {
-              $.cookies.remove("login", '/'+dbpath)
+              $.cookies.remove("login", '/'+dbname)
               fail && fail(s, e, r);
             }
           }});        
@@ -67,6 +67,9 @@
             loggedIn(login)
           } else {
             // callback
+            $('body').append('<a href="'+location+'">redirect</a>');
+            var absurl = $('body a:last')[0].href;
+            document.location = absurl;
           }
         },
         db : db,
@@ -103,7 +106,7 @@
             if (opts.beforeSave) opts.beforeSave(localFormDoc);
             db.saveDoc(localFormDoc, {
               success : function(resp) {
-                if (opts.success) opts.success(resp);
+                if (opts.success) opts.success(resp, localFormDoc);
               }
             })
             
@@ -117,11 +120,12 @@
             opts.fields.forEach(function(field) {
               var parts = field.split('-');
               var run = true, frontObj = doc, frontName = parts.shift();
-              while (parts.length > 0) {
+              while (frontObj && parts.length > 0) {                
                 frontObj = frontObj[frontName];
                 frontName = parts.shift();
               }
-              form.find("[name="+field+"]").val(frontObj[frontName]);
+              if (frontObj && frontObj[frontName])
+                form.find("[name="+field+"]").val(frontObj[frontName]);
             });            
           };
           
@@ -145,6 +149,7 @@
               }
             },
             localDoc : function() {
+              formToDeepJSON(formSelector, opts.fields, localFormDoc);
               return localFormDoc;
             }
           }
