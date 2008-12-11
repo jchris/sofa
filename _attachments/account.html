@@ -46,7 +46,7 @@
       var redirectUrl = document.location.hash.replace('#','');
       $('#content').append('<p>Attempting login.</p>');
       app.attemptLogin(function(login) {
-        if (redirectUrl) document.location = redirectUrl;
+        if (redirectUrl) document.location = redirectUrl.replace('_design/','_design%2F');
         $('#content').append('<p>Success.</p>');
         $('h1').text('Welcome '+login);
         $('#content').append('<p>Now that you\'re logged in, you can <a href="edit.html">write blog posts.</a></p>');
