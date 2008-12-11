@@ -35,7 +35,7 @@ B = new (function() {
   
   function author(author) {
     if (!author) return '';
-    if (!author.url) return '<span class="author">by ' + safe(author.name) + '</span>';      
+    if (!author.url) return '<span class="author">by ' + safe(author.name) + '</span>';
     return '<span class="author">by <a href="'+author.url+'">' 
       + safe(author.name) + '</a></span>';      
   };  
@@ -69,7 +69,9 @@ B = new (function() {
     return '<li><h4>'
     + author(c.commenter) + ', '
     + prettyDate(c.created_at)
-    + '</h4><p>'+ stripScripts(c.html)
+    + '</h4>'
+    + '<img class="gravatar" src="http://www.gravatar.com/avatar/'+c.commenter.gravatar+'.jpg?s=40&d=identicon"/>'
+    +'<p>'+ stripScripts(c.html)
     + '</p>'
     + '</li>';
   };
