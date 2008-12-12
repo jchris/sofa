@@ -46,8 +46,7 @@ function (newDoc, oldDoc, userCtx) {
     // post required fields
     require(author, "Posts must have an author.")
     require(newDoc.body, "Posts must have a body field")
-    require(newDoc.body, "Posts must have a body field")
-    require(newDoc.html, "Posts must have html field.");
+    require(newDoc.html, "Posts must have an html field.");
     require(newDoc.format, "Posts require a format field.");
     require(newDoc.title, "Posts must have a title.");
     require(newDoc.slug, "Posts must have a slug.");
