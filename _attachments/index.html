@@ -9,9 +9,12 @@
     <div id="header">
       <h2><a href="index.html">Daytime Running Lights</a></h2>
     </div>
+
+    <div id="tags">
+    </div>
     <div id="content">
       <h1>Recently...</h1>
-      <ul id="posts"></ul>      
+      <ul id="posts"></ul>
     </div>
 
   </body>
@@ -32,6 +35,25 @@
             $("#posts").fadeIn(200);
           });
       }});
+      
+      app.design.view("tags",{
+        descending: true, 
+        group: true,
+        success: function(json) {
+          var total = 0;
+          for(var idx in json.rows) {
+            total += json.rows[idx].value;
+          }
+          
+          var tags = [];
+          for(var idx in json.rows) {
+            // make cloud
+            var tag_class = Math.floor(json.rows[idx].value * 4 / total) * 4;
+            tags.push("<span class=\"tag_" + tag_class + "\">" + json.rows[idx].key + "</span>");
+          }
+          $("#tags").append(tags.join(", "));
+        }
+      });
     });
   </script>
 </html>

@@ -17,7 +17,9 @@
       <p><label for="body">Body</label>
       <textarea name="body" rows="28" cols="80"></textarea></p>
       <p>
-        
+        <label for="tags">Tags</label><input type="text" name="tags" value="" id="tags">
+      </p>
+      <p>
         <input id="preview" type="button" value="Preview"/>
         <input type="submit" value="Save &rarr;"/> <span id="saved" style="display:none;">Saved</span>
         </p>
@@ -45,7 +47,7 @@
         // thin controller - move to B?
         var postForm = app.docForm("form#new-post", {
           id : document.location.hash.replace('#',''),
-          fields : ["title", "body"],
+          fields : ["title", "body", "tags"],
           template : {
             type : "post",
             format : "markdown",
@@ -75,6 +77,12 @@
             if (!doc.slug) {
               doc.slug = doc.title.replace(/\W/g,'-').replace(/\-*$/,'').replace(/^\-*/,'').replace(/\-{2,}/,'-'); // cute, I know
               doc._id = doc.slug;
+            }
+            if(doc.tags) {
+              doc.tags = doc.tags.split(",");
+              for(var idx in doc.tags) {
+                doc.tags[idx] = $.trim(doc.tags[idx]);
+              }
             }
           },
           success : function(resp) {
