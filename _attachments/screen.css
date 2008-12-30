@@ -48,9 +48,34 @@ h4 {
 
 #content {
   width:700px;
-  margin:0 auto;
   padding:10px;
   background:#f9f9f9;
+/*  float:left;*/
+  margin-top:0;
+  margin-left:240px;
+}
+
+#tags {
+    float:left;
+    width:220px;
+    margin:2ex 1em;
+    color:#999;
+}
+
+.tag_1 {
+    font-size:80%;
+}
+
+.tag_2 {
+    font-size:900%;
+}
+
+.tag_3 {
+    font-size:110%;
+}
+
+.tag_4 {
+    font-size:120%;
 }
 
 label {
