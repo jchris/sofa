@@ -84,7 +84,7 @@ p.post {
   margin:10px;
 }
 
-#post, #posts, #comments {
+#posts, #comments {
   display:none;
 }
 

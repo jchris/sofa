@@ -1,10 +1,12 @@
 
+log = console && console.log || alert;
+
 function setupDB(design) {
   var testPath = document.location.toString().split('?')[1];
   var pathParts = testPath.split('/');
-  
+  log(pathParts)
   var appDB = new CouchDB(pathParts[1]);
-  var thisDesign = appDB.open(unescape(pathParts[2]), {attachments:true});
+  var thisDesign = appDB.open('_design/'+pathParts[3], {attachments:true});
   delete thisDesign._rev;
   
   var db = new CouchDB(pathParts[1]+"-test");
@@ -51,5 +53,11 @@ var tests = {
     } catch(e) {
       T(e.error == "forbidden")
     }
-  }  
+  },
+  "form E4X CDATA" : function(debug) {
+    var db = setupDB();
+    if (debug) debugger;
+    T(true);
+    
+  } 
 }
