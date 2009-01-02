@@ -90,7 +90,6 @@
       
       $("#preview").click(function() {
         var doc = commentForm.localDoc();
-        console.log(doc)
         var html = B.formatBody(doc.comment, doc.format);
         $('#comment-preview').html(html);
       });
