@@ -1,4 +1,4 @@
-B = new (function() {
+function Blog(app) {
   // var converter = new Showdown.converter();
 
   function prettyDate(time){
@@ -48,7 +48,7 @@ B = new (function() {
   };
   
   this.postToEntry = function(post, id) {
-    return '<li><h3><a href="post.html#'+id+'">'
+    return '<li><h3><a href="'+app.formPath('post',id)+'">'
     + safe(post.title) 
     + '</a></h3>'
     + niceDate(post.created_at)
@@ -86,4 +86,4 @@ B = new (function() {
       return body;
     }
   }
-});
+};

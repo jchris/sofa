@@ -1,7 +1,6 @@
 function(doc) {
-  // include-lib
+  // !require lib.helpers.md5
   if (doc.type == "comment") {
-    eval(lib.helpers.md5);
     doc.commenter.gravatar = hex_md5(doc.commenter.email);
     emit([doc.post_id, doc.created_at], doc);
   }  
