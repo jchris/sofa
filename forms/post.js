@@ -1,7 +1,8 @@
-// !include lib.templates
-// !require lib.helpers.template
 
 function(doc, req) {  
+  // !include lib.templates
+  // !require lib.helpers.template
+
   
   return respondWith(req, {
     html : function() {
@@ -11,7 +12,8 @@ function(doc, req) {
         title : doc.title,
         post : postHtml,
         date : doc.created_at,
-        author : doc.author
+        author : doc.author,
+        attachments : ['',req.path[0], '_design', req.path[2]].join('/')
       });
       log(doc._id);
       return { body: html };
