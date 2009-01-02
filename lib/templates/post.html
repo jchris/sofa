@@ -6,7 +6,7 @@
   </head>
   <body>
     <div id="header">
-      <h2><a href="index.html">Daytime Running Lights</a></h2>
+      <h2><a href="<%= attachments %>/index.html">Daytime Running Lights</a></h2>
     </div>
     <div id="content">
       <h1><%= title %></h1>
@@ -40,28 +40,12 @@
   <script src="/_utils/script/json2.js"></script>
   <script src="/_utils/script/jquery.js?1.2.6"></script>
   <script src="/_utils/script/jquery.couch.js?0.8.0"></script>
-  <script src="jquery.couchapp.js"></script>
-  <script src="blog.js"></script>
+  <script src="<%= attachments %>/jquery.couchapp.js"></script>
+  <script src="<%= attachments %>/blog.js"></script>
   <script type="text/javascript" charset="utf-8">
   $.CouchApp(function(app) {
-      var docid = document.location.hash.replace('#','');
-      app.db.openDoc(docid, {success: function(doc) {
-        $('h1').text(doc.title);
-        $('#post').html(B.postToHTML(doc));
-        $('#post').fadeIn(800);
-        
-        app.design.view("tags", {
-          reduce: false,
-          success: function(json) {
-            var tags = [];
-            for(var idx in json.rows) {
-              tags.push(json.rows[idx].key);
-            }
-            $("#tags").append(tags.join(","));
-          }
-        })
-        
-      }});
+      var docid = document.location.pathname.split('/').pop();
+      var B = new Blog(app);
       
       function displayComments() {
         app.design.view("comments", {
@@ -112,5 +96,5 @@
       });
     });
   </script>
-  <script src="showdown.js"></script>
+  <script src="<%= attachments %>/showdown.js"></script>
 </html>
