@@ -1,19 +1,19 @@
-function(doc, req) {  
-  //include-lib
-  
-  respondWith(req, {
-    html : function() {
-      var pageScripts = template('post.js',{id : docid});
+// !include lib.templates
+// !require lib.helpers.template
 
+function(doc, req) {  
+  
+  return respondWith(req, {
+    html : function() {
       var postHtml = doc.html.replace(/<script(.|\n)*?>/g, '');
 
-      var html = runTemplate('post.html', {
+      var html = template(lib.templates.post, {
         title : doc.title,
         post : postHtml,
-        author : doc.author,
-        scripts : pageScripts
+        date : doc.created_at,
+        author : doc.author
       });
-
+      log(doc._id);
       return { body: html };
     },
     xml : function() {
@@ -22,6 +22,7 @@ function(doc, req) {
           post : postHtml,
           scripts : pageScripts
       })};
-    }
+    },
+    fallback : 'html'
   })
 }
