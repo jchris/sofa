@@ -47,6 +47,10 @@
       var docid = document.location.pathname.split('/').pop();
       var B = new Blog(app);
       
+      $('.date').each(function() {
+        $(this).text(app.prettyDate(this.innerHTML));
+      });
+      
       function displayComments() {
         app.design.view("comments", {
           startkey: [docid],
