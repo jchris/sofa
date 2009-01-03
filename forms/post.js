@@ -2,7 +2,6 @@ function(doc, req) {
   // !include lib.templates
   // !require lib.helpers.template
 
-  
   return respondWith(req, {
     html : function() {
       var postHtml = doc.html.replace(/<script(.|\n)*?>/g, '');
