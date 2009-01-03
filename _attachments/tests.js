@@ -53,11 +53,5 @@ var tests = {
     } catch(e) {
       T(e.error == "forbidden")
     }
-  },
-  "form E4X CDATA" : function(debug) {
-    var db = setupDB();
-    if (debug) debugger;
-    T(true);
-    
-  } 
+  }
 }

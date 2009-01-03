@@ -1,4 +1,3 @@
-
 function(doc, req) {  
   // !include lib.templates
   // !require lib.helpers.template
