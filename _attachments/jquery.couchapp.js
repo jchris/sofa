@@ -46,6 +46,109 @@
       var db = $.couch.db(dbname);
       var design = new Design(db, dname);
       
+      // docForm applies CouchDB behavior to HTML forms.
+      function docForm(formSelector, opts) {
+        var localFormDoc = {};
+        opts = opts || {};
+        opts.fields = opts.fields || [];
+        
+        // turn the form into deep json
+        // field names like 'author-email' get turned into json like
+        // {"author":{"email":"quentin@example.com"}}
+        function formToDeepJSON(form, fields, doc) {
+          var form = $(form);
+          opts.fields.forEach(function(field) {
+            var val = form.find("[name="+field+"]").val()
+            if (!val) return;
+            var parts = field.split('-');
+            var frontObj = doc, frontName = parts.shift();
+            while (parts.length > 0) {
+              frontObj[frontName] = frontObj[frontName] || {}
+              frontObj = frontObj[frontName];
+              frontName = parts.shift();
+            }
+            frontObj[frontName] = val;
+          });
+        };
+        
+        // Apply the behavior
+        $(formSelector).submit(function(e) {
+          e.preventDefault();
+          // formToDeepJSON acts on localFormDoc by reference
+          formToDeepJSON(this, opts.fields, localFormDoc);
+          if (opts.beforeSave) opts.beforeSave(localFormDoc);
+          db.saveDoc(localFormDoc, {
+            success : function(resp) {
+              if (opts.success) opts.success(resp, localFormDoc);
+            }
+          })
+          
+          return false;
+        });
+
+        // populate form from an existing doc
+        function docToForm(doc) {
+          var form = $(formSelector);
+          // fills in forms
+          opts.fields.forEach(function(field) {
+            var parts = field.split('-');
+            var run = true, frontObj = doc, frontName = parts.shift();
+            while (frontObj && parts.length > 0) {                
+              frontObj = frontObj[frontName];
+              frontName = parts.shift();
+            }
+            if (frontObj && frontObj[frontName])
+              form.find("[name="+field+"]").val(frontObj[frontName]);
+          });            
+        };
+        
+        if (opts.id) {
+          db.openDoc(opts.id, {
+            success: function(doc) {
+              if (opts.onLoad) opts.onLoad(doc);
+              localFormDoc = doc;
+              docToForm(doc);
+          }});
+        } else if (opts.template) {
+          if (opts.onLoad) opts.onLoad(opts.template);
+          localFormDoc = opts.template;
+          docToForm(localFormDoc);
+        }
+        var instance = {
+          deleteDoc : function(opts) {
+            opts = opts || {};
+            if (confirm("Really delete this post?")) {                
+              db.removeDoc(localFormDoc, opts);
+            }
+          },
+          localDoc : function() {
+            formToDeepJSON(formSelector, opts.fields, localFormDoc);
+            return localFormDoc;
+          }
+        }
+        return instance;
+      }
+      
+      function prettyDate(time){
+      	var date = new Date(time),
+      		diff = (((new Date()).getTime() - date.getTime()) / 1000),
+      		day_diff = Math.floor(diff / 86400);
+
+        // if ( isNaN(day_diff) || day_diff < 0 || day_diff >= 31 ) return;
+
+      	return day_diff < 1 && (
+      			diff < 60 && "just now" ||
+      			diff < 120 && "1 minute ago" ||
+      			diff < 3600 && Math.floor( diff / 60 ) + " minutes ago" ||
+      			diff < 7200 && "1 hour ago" ||
+      			diff < 86400 && Math.floor( diff / 3600 ) + " hours ago") ||
+      		day_diff == 1 && "yesterday" ||
+      		day_diff < 21 && day_diff + " days ago" ||
+      		day_diff < 45 && Math.ceil( day_diff / 7 ) + " weeks ago" ||
+      		day_diff < 730 && Math.ceil( day_diff / 31 ) + " months ago" ||
+      		Math.ceil( day_diff / 365 ) + " years ago";
+      };
+      
       app({
         formPath : function(form, docid) {
           return '/'+[dbname, '_form', dname, form, docid].join('/')
@@ -74,87 +177,8 @@
         },
         db : db,
         design : design,
-        docForm : function(formSelector, opts) {
-          var localFormDoc = {};
-          opts = opts || {};
-          opts.fields = opts.fields || [];
-          
-          // turn the form into deep json
-          // field names like 'author-email' get turned into json like
-          // {"author":{"email":"quentin@example.com"}}
-          function formToDeepJSON(form, fields, doc) {
-            var form = $(form);
-            opts.fields.forEach(function(field) {
-              var val = form.find("[name="+field+"]").val()
-              if (!val) return;
-              var parts = field.split('-');
-              var frontObj = doc, frontName = parts.shift();
-              while (parts.length > 0) {
-                frontObj[frontName] = frontObj[frontName] || {}
-                frontObj = frontObj[frontName];
-                frontName = parts.shift();
-              }
-              frontObj[frontName] = val;
-            });
-          };
-          
-          // Apply the behavior
-          $(formSelector).submit(function(e) {
-            e.preventDefault();
-            // formToDeepJSON acts on localFormDoc by reference
-            formToDeepJSON(this, opts.fields, localFormDoc);
-            if (opts.beforeSave) opts.beforeSave(localFormDoc);
-            db.saveDoc(localFormDoc, {
-              success : function(resp) {
-                if (opts.success) opts.success(resp, localFormDoc);
-              }
-            })
-            
-            return false;
-          });
-
-          // populate form from an existing doc
-          function docToForm(doc) {
-            var form = $(formSelector);
-            // fills in forms
-            opts.fields.forEach(function(field) {
-              var parts = field.split('-');
-              var run = true, frontObj = doc, frontName = parts.shift();
-              while (frontObj && parts.length > 0) {                
-                frontObj = frontObj[frontName];
-                frontName = parts.shift();
-              }
-              if (frontObj && frontObj[frontName])
-                form.find("[name="+field+"]").val(frontObj[frontName]);
-            });            
-          };
-          
-          if (opts.id) {
-            db.openDoc(opts.id, {
-              success: function(doc) {
-                if (opts.onLoad) opts.onLoad(doc);
-                localFormDoc = doc;
-                docToForm(doc);
-            }});
-          } else if (opts.template) {
-            if (opts.onLoad) opts.onLoad(opts.template);
-            localFormDoc = opts.template;
-            docToForm(localFormDoc);
-          }
-          var instance = {
-            deleteDoc : function(opts) {
-              opts = opts || {};
-              if (confirm("Really delete this post?")) {                
-                db.removeDoc(localFormDoc, opts);
-              }
-            },
-            localDoc : function() {
-              formToDeepJSON(formSelector, opts.fields, localFormDoc);
-              return localFormDoc;
-            }
-          }
-          return instance;
-        }
+        docForm : docForm,
+        prettyDate : prettyDate
       });
     });
   };

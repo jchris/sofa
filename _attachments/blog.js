@@ -1,25 +1,5 @@
 function Blog(app) {
   // var converter = new Showdown.converter();
-
-  function prettyDate(time){
-  	var date = new Date(time),
-  		diff = (((new Date()).getTime() - date.getTime()) / 1000),
-  		day_diff = Math.floor(diff / 86400);
-
-    // if ( isNaN(day_diff) || day_diff < 0 || day_diff >= 31 ) return;
-
-  	return day_diff < 1 && (
-  			diff < 60 && "just now" ||
-  			diff < 120 && "1 minute ago" ||
-  			diff < 3600 && Math.floor( diff / 60 ) + " minutes ago" ||
-  			diff < 7200 && "1 hour ago" ||
-  			diff < 86400 && Math.floor( diff / 3600 ) + " hours ago") ||
-  		day_diff == 1 && "yesterday" ||
-  		day_diff < 21 && day_diff + " days ago" ||
-  		day_diff < 45 && Math.ceil( day_diff / 7 ) + " weeks ago" ||
-  		day_diff < 730 && Math.ceil( day_diff / 31 ) + " months ago" ||
-  		Math.ceil( day_diff / 365 ) + " years ago";
-  };
   
   function stripScripts(s) {
     return s && s.replace(/<script(.|\n)*?>/g, '');
@@ -43,7 +23,7 @@ function Blog(app) {
   
   function niceDate(date) {
     return '<span class="date">'
-    + prettyDate(date)
+    + app.prettyDate(date)
     +'</span>';
   };
   
@@ -68,7 +48,7 @@ function Blog(app) {
   this.commentListing = function(c) {
     return '<li><h4>'
     + author(c.commenter) + ', '
-    + prettyDate(c.created_at)
+    + app.prettyDate(c.created_at)
     + '</h4>'
     + '<img class="gravatar" src="http://www.gravatar.com/avatar/'+c.commenter.gravatar+'.jpg?s=40&d=identicon"/>'
     +'<p>'+ stripScripts(c.html)

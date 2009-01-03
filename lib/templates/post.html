@@ -63,6 +63,10 @@
         
       }});
       
+      $('.date').each(function() {
+        $(this).text(app.prettyDate(this.innerHTML));
+      });
+      
       function displayComments() {
         app.design.view("comments", {
           startkey: [docid],
