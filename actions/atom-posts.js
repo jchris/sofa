@@ -11,7 +11,7 @@ function(req, db) {
     <id>{blog.url}</id>
   </feed>
 
-  var view = db.view('couchdb-example-blog/recent',{count:10,descending:true});
+  var view = db.view('couchdb-example-blog/recent',{limit:10,descending:true});
     
   for (r in view.rows) {
     var row = view.rows[r];

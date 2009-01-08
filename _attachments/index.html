@@ -25,7 +25,7 @@
       var B = new Blog(app);
       app.design.view("recent-posts",{
         descending: true, 
-        count:7, 
+        limit:7, 
         success: function(json) {
           $.each(json.rows,function() {
             var li = B.postToEntry(this.value, this.id);
