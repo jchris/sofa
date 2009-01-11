@@ -1,8 +1,12 @@
 # Sofa: Standalone CouchDB Blog
 
-SofasShowcases the practicality of pure CouchDB applications. It should provide an easy way for people to put thier thoughts online, anywhere there's a Couch. It's just HTML, JavaScript and the magic of CouchDB.
+Sofa showcases the [potential of pure CouchDB applications](http://jchris.mfdz.com/code/2008/10/standalone_applications_with_co). It should provide an easy way for people to put thier thoughts online, anywhere there's a running Couch. It's just HTML, JavaScript and the magic of CouchDB.
 
-Currently supports admin-only posting
+Currently supports admin-only posting and anonymous comments.
+
+## Current News
+
+Things are moving crazy fast around here right now as I bring this stuff up to ship-shape for the [CouchDB book](http://books.couchdb.org). I'll be renaming methods and stuff (if I find the time), any API feedback will be appreciated.
 
 ## Install CouchDB
 
@@ -36,6 +40,7 @@ You'll want to edit the HTML and CSS to personalize your site. Don't worry, the 
 Anytime you make edits to the on-disk version of Sofa, and want to see them in your browser, just run `couchapp push . myblogdb` again.
 
 
-# TODO
-links in the atom feed are correct
-fulltext search?
+## TODO
+
+ * links in the atom feed are correct
+ * fulltext search?
