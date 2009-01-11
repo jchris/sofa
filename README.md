@@ -36,15 +36,15 @@ CouchApp is a set of utilities for developing standalone CouchDB applications Yo
 
     git clone git://github.com/jchris/sofa.git
     cd sofa
-    couchapp push . blog-db 
+    couchapp push . blogdb 
   
 You'll want to edit the HTML and CSS to personalize your site. Don't worry, the markup is pretty basic, so it's easy to rework. Adding new features is just a few lines of JavaScript away.
 
-Anytime you make edits to the on-disk version of Sofa, and want to see them in your browser, just run `couchapp push . myblogdb` again.
+Anytime you make edits to the on-disk version of Sofa, and want to see them in your browser, just run `couchapp push . blogdb` again.
 
 # Relax
 
-[Visit your new blog.](http://127.0.0.1:5984/blog-db/_design/sofa/index.html)
+[Visit your new blog.](http://127.0.0.1:5984/blogdb/_design/sofa/index.html)
 
 ### Todo
 
