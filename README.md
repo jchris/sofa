@@ -29,7 +29,7 @@ CouchApp is a set of utilities for developing standalone CouchDB applications Yo
     cd sofa
     couchapp push . blog-db 
   
-See your new blog at: `http://localhost:5984/blog-db/_design/sofa/index.html`
+See your new blog at: [http://127.0.0.1:5984/blog-db/_design/sofa/index.html](http://127.0.0.1:5984/blog-db/_design/sofa/index.html)
 
 You'll want to edit the HTML and CSS to personalize your site. Don't worry, the markup is pretty basic, so it's easy to rework. Adding new features is just a few lines of JavaScript away.
 
