@@ -20,7 +20,7 @@ You'll also need CouchDB's svn trunk, which is currently a moving target, with r
 Once you have that installed and the tests passing, you can install CouchApp
 and the blog software. 
 
-## Setup Admin Access
+### Setup Admin Access
 
 If you are going to put your blog in public, you'll want to follow the [instructions on the CouchDB wiki about how to set up an Admin account](http://wiki.apache.org/couchdb/Setting_up_an_Admin_account).
 
@@ -40,15 +40,18 @@ CouchApp is a set of utilities for developing standalone CouchDB applications Yo
   
 You'll want to edit the HTML and CSS to personalize your site. Don't worry, the markup is pretty basic, so it's easy to rework. Adding new features is just a few lines of JavaScript away.
 
-## Relax
+# Relax
 
-See your new blog at: [http://127.0.0.1:5984/blog-db/_design/sofa/index.html](http://127.0.0.1:5984/blog-db/_design/sofa/index.html)
+### See your new blog at: [http://127.0.0.1:5984/blog-db/_design/sofa/index.html](http://127.0.0.1:5984/blog-db/_design/sofa/index.html)
 
 Anytime you make edits to the on-disk version of Sofa, and want to see them in your browser, just run `couchapp push . myblogdb` again.
 
 
-## TODO
+### Todoables
 
  * make links in the atom feed correct
  * fulltext search?
  * non-hack login method
+ * show-powered edit page
+ * move md5 to client
+ 
