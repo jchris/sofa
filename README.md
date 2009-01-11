@@ -8,6 +8,8 @@ Currently supports admin-only posting and anonymous comments.
 
 Things are moving crazy fast around here right now as I bring this stuff up to ship-shape for the [CouchDB book](http://books.couchdb.org). I'll be renaming methods and stuff (if I find the time), any API feedback will be appreciated.
 
+Also, some of the installation instructions below are "optimistic". Currently I've no RubyGems available, but the CouchApp repo does build a working gem. This will all be slick and easy "when the book is done."
+
 ## Install CouchDB
 
 You'll also need CouchDB's svn trunk, which is currently a moving target, with regard to the new features, especially the `_show` API, that Sofa relies on.
@@ -15,8 +17,12 @@ You'll also need CouchDB's svn trunk, which is currently a moving target, with r
     svn checkout http://svn.apache.org/repos/asf/couchdb/trunk
     cd trunk && cat README
 
-Once you have that installed and the tests passing, you can install couchrest
-and the blog software.
+Once you have that installed and the tests passing, you can install CouchApp
+and the blog software. 
+
+## Setup Admin Access
+
+If you are going to put your blog in public, you'll want to follow the [instructions on the CouchDB wiki about how to set up an Admin account](http://wiki.apache.org/couchdb/Setting_up_an_Admin_account).
 
 ## Install CouchApp
 
@@ -26,21 +32,23 @@ Installing the Ruby Gem should be pretty quick if you're already setup with Ruby
 
 CouchApp is a set of utilities for developing standalone CouchDB applications You can [learn more about the CouchApp project here](http://github.com/jchris/couchapp/tree/master).
 
-
 ## Install Sofa
 
     git clone git://github.com/jchris/sofa.git
     cd sofa
     couchapp push . blog-db 
   
-See your new blog at: [http://127.0.0.1:5984/blog-db/_design/sofa/index.html](http://127.0.0.1:5984/blog-db/_design/sofa/index.html)
-
 You'll want to edit the HTML and CSS to personalize your site. Don't worry, the markup is pretty basic, so it's easy to rework. Adding new features is just a few lines of JavaScript away.
+
+## Relax
+
+See your new blog at: [http://127.0.0.1:5984/blog-db/_design/sofa/index.html](http://127.0.0.1:5984/blog-db/_design/sofa/index.html)
 
 Anytime you make edits to the on-disk version of Sofa, and want to see them in your browser, just run `couchapp push . myblogdb` again.
 
 
 ## TODO
 
- * links in the atom feed are correct
+ * make links in the atom feed correct
  * fulltext search?
+ * non-hack login method
