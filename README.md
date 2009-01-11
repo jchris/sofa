@@ -44,7 +44,7 @@ Anytime you make edits to the on-disk version of Sofa, and want to see them in y
 
 # Relax
 
-See your new blog at: [http://127.0.0.1:5984/blog-db/_design/sofa/index.html](http://127.0.0.1:5984/blog-db/_design/sofa/index.html)
+[Visit your new blog.](http://127.0.0.1:5984/blog-db/_design/sofa/index.html)
 
 ### Todo
 
