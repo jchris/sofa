@@ -28,7 +28,7 @@ function Blog(app) {
   };
   
   this.postToEntry = function(post, id) {
-    return '<li><h3><a href="'+app.formPath('post',id)+'">'
+    return '<li><h3><a href="'+app.showPath('post',id)+'">'
     + safe(post.title) 
     + '</a></h3>'
     + niceDate(post.created_at)

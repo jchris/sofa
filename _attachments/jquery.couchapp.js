@@ -150,8 +150,8 @@
       };
       
       app({
-        formPath : function(form, docid) {
-          return '/'+[dbname, '_form', dname, form, docid].join('/')
+        showPath : function(form, docid) {
+          return '/'+[dbname, '_show', dname, form, docid].join('/')
         },
         attemptLogin : function(win, fail) {
           // depends on nasty hack in blog validation function
