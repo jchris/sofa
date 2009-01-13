@@ -43,7 +43,7 @@
         $("#header").prepend('<span id="login">'+login+'</span>');
         // setup CouchApp document/form system, adding app-specific callbacks
         // rename docForm?
-        
+        var B = new Blog(app);
         // thin controller - move to B?
         var postForm = app.docForm("form#new-post", {
           id : document.location.hash.replace('#',''),
