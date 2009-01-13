@@ -9,7 +9,7 @@
     <div id="header">
       <h2><a href="index.html">Daytime Running Lights</a></h2>
     </div>
-    <div id="tags"></div>
+    <div id="tags-front"></div>
     <div id="content">
       <h1>Recently...</h1>
       <ul id="posts"></ul>
@@ -49,7 +49,7 @@
             var percent = Math.ceil(Math.pow((json.rows[idx].value / total), 0.25) * 200);
             tags.push('<span style="font-size:'+percent+'%;">' + json.rows[idx].key + '</span>');
           }
-          $("#tags").append(tags.join(", "));
+          $("#tags-front").append(tags.join(", "));
         }
       });
     });
