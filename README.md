@@ -26,7 +26,7 @@ If you are going to put your blog in public, you'll want to follow the [instruct
 
 ## Install CouchApp
 
-Installing the Ruby Gem should be pretty quick if you're already setup with Ruby and RubyGems. If you don't already have a Ruby development environment (OSX comes with Ruby, on Debian system, look for `ruby-dev`) there's work on a Python version of the CouchApp script. 
+Installing the Ruby Gem should be pretty quick if you're already setup with Ruby and RubyGems. If you don't already have a Ruby development environment (OSX comes with Ruby, on Debian-like systems, look for `ruby-dev`) there's work on a Python version of the CouchApp script. 
 
     sudo gem install couchapp
 
