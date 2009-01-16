@@ -42,9 +42,12 @@ You'll want to edit the HTML and CSS to personalize your site. Don't worry, the 
 
 Anytime you make edits to the on-disk version of Sofa, and want to see them in your browser, just run `couchapp push . blogdb` again.
 
+You can customize the blog title and other stuff in the `blog.json` file.
+
 # Relax
 
 [Visit your new blog.](http://127.0.0.1:5984/blogdb/_design/sofa/index.html)
+
 
 ### Todo
 
