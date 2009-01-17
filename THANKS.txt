@@ -1,0 +1,11 @@
+CouchApp THANKS
+=====================
+
+A number of people have contributed to CouchApp by reporting problems,
+suggesting improvements, submitting changes or asking hard question
+
+Some of these people are:
+
+* Andy Wenk <andy.wenk@googlemail.com>
+
+For a list of authors see the `AUTHORS` file.
