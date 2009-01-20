@@ -1,74 +1,58 @@
-== Standalone CouchDB Blog
+# Sofa: Standalone CouchDB Blog
 
-Showcases the practicality of pure CouchDB applications.
+Sofa showcases the [potential of pure CouchDB applications](http://jchris.mfdz.com/code/2008/10/standalone_applications_with_co). It should provide an easy way for people to put thier thoughts online, anywhere there's a running Couch. It's just HTML, JavaScript and the magic of CouchDB.
 
-It's just HTML + JavaScript plus a little bit of action servers and the magic of
-CouchDB.
+Currently supports admin-only posting and anonymous comments.
 
-When CouchDB's security model comes online there will be no reason not to deploy
-this in public.
+## Current News
 
-There are more dependencies than we'd expect to get it running. I will cut down
-on these. However, if you want to try it now (including the Atom feeds), you'll
-need to build from this version of CouchDB: http://github.com/jchris/couchdb/tree/action2
+Things are moving crazy fast around here right now as I bring this stuff up to ship-shape for the [CouchDB book](http://books.couchdb.org). I'll be renaming methods and stuff (if I find the time), any API feedback will be appreciated.
 
-Here's how:
+Also, some of the installation instructions below are "optimistic". Currently I've no RubyGems available, but the CouchApp repo does build a working gem. This will all be slick and easy "when the book is done."
 
-git clone git://github.com/jchris/couchdb.git
-cd couchdb
-git checkout origin/action2
-git checkout -b action2
-cd trunk
-./bootstrap
-./configure
-make && sudo make install
+## Install CouchDB
 
-Once you have that installed and the tests passing, you can install couchrest
-and the blog software.
+You'll also need CouchDB's svn trunk, which is currently a moving target, with regard to the new features, especially the `_show` API, that Sofa relies on.
 
-# install the latest couchrest (all we really need is `couchapp`)
-# sudo gem install jchris-couchrest -s http://gems.github.com
-# NOTE gem build has fallen behind, use this procedure instead
+    svn checkout http://svn.apache.org/repos/asf/couchdb/trunk
+    cd trunk && cat README
 
-git clone git://github.com/jchris/couchrest.git
-cd couchrest
-rake gemspec
-gem build couchrest.gemspec
+Once you have that installed and the tests passing, you can install CouchApp
+and the blog software. 
 
-# if you have problems with the gem build, try running
-sudo gem update --system
-# and then gem build again
+### Setup Admin Access
 
+If you are going to put your blog in public, you'll want to follow the [instructions on the CouchDB wiki about how to set up an Admin account](http://wiki.apache.org/couchdb/Setting_up_an_Admin_account).
 
-# gonna need deps (maybe I should make a standalone `couchapp`...)
-sudo gem install extlib
-sudo gem install rest-client
-sudo gem install json
-sudo gem install rspec
+## Install CouchApp
 
-# sudo due to executables...
-sudo gem install couchrest-*.gem
+Installing the Ruby Gem should be pretty quick if you're already setup with Ruby and RubyGems. If you don't already have a Ruby development environment (OSX comes with Ruby, on Debian-like systems, look for `ruby-dev`) there's work on a Python version of the CouchApp script. 
 
-# install the blog
-# ================
+    sudo gem install couchapp
 
-git clone git://github.com/jchris/couchdb-example-blog.git
+CouchApp is a set of utilities for developing standalone CouchDB applications You can [learn more about the CouchApp project here](http://github.com/jchris/couchapp/tree/master).
 
-# edit doc.json to setup your blog's information.
+## Install Sofa
 
-cd couchdb-example-blog/
+    git clone git://github.com/jchris/sofa.git
+    cd sofa
+    couchapp push . blogdb 
+  
+You'll want to edit the HTML and CSS to personalize your site. Don't worry, the markup is pretty basic, so it's easy to rework. Adding new features is just a few lines of JavaScript away.
 
-# use couchapp (provided by couchrest) to push the thing.
-couchapp push . blogdb
+Anytime you make edits to the on-disk version of Sofa, and want to see them in your browser, just run `couchapp push . blogdb` again.
 
-# visit the index page
-http://localhost:5984/blogdb/_design%2Fcouchdb-example-blog/index.html
+You can customize the blog title and other stuff in the `blog.json` file.
+
+# Relax
+
+[Visit your new blog.](http://127.0.0.1:5984/blogdb/_design/sofa/index.html)
 
 
-# TODO
-make nice simple css (jan)
-work out conventions with paths and dbnames to make it more foolproof.
-proper json date format with relative date display (about 2 hours ago)
-links in the atom feed are correct
-bring in davisp's markdown patches
-fulltext search?
+### Todo
+
+ * fulltext search?
+ * non-hack login method
+ * atom feed
+ * show-powered edit page
+ 
