@@ -41,6 +41,7 @@
   <script src="blog.js"></script>
   <script type="text/javascript" charset="utf-8">
   $.CouchApp(function(app) {
+      var B = new Blog(app);
       var docid = document.location.hash.replace('#','');
       app.db.openDoc(docid, {success: function(doc) {
         $('h1').text(doc.title);
