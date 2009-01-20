@@ -41,10 +41,10 @@
       app.loggedInNow(function(login) {
         // w00t, we're logged in (according to the cookie)
         $("#header").prepend('<span id="login">'+login+'</span>');
-        // setup CouchApp document/form system, adding app-specific callbacks
         // rename docForm?
-        
-        // thin controller - move to B?
+        var B = new Blog(app);
+
+        // setup CouchApp document/form system, adding app-specific callbacks
         var postForm = app.docForm("form#new-post", {
           id : document.location.hash.replace('#',''),
           fields : ["title", "body", "tags"],
@@ -54,6 +54,7 @@
             author : login
           },
           onLoad : function(doc) {
+            // thin controller - move to B?
             if (doc._id) {
               $('h1').html('Editing #<a href="post.html#'+doc._id+'">'+doc._id+'</a>'); 
               $('#preview').before('<input type="button" id="delete" value="Delete Post"/> ');
