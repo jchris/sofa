@@ -45,6 +45,7 @@
         // rename docForm?
         var B = new Blog(app);
         // thin controller - move to B?
+
         var postForm = app.docForm("form#new-post", {
           id : document.location.hash.replace('#',''),
           fields : ["title", "body", "tags"],
@@ -55,6 +56,7 @@
           },
           onLoad : function(doc) {
             if (doc._id) {
+              B.editing(doc._id);
               $('h1').html('Editing #<a href="post.html#'+doc._id+'">'+doc._id+'</a>'); 
               $('#preview').before('<input type="button" id="delete" value="Delete Post"/> ');
               $("#delete").click(function() {
@@ -87,7 +89,7 @@
           },
           success : function(resp) {
             $("#saved").text("Saved _rev: "+resp.rev).fadeIn(500).fadeOut(3000);
-            $('h1').html('Editing #<a href="post.html#'+resp.id+'">'+resp.id+'</a>');
+            B.editing(resp.id);
           }
         });  
 

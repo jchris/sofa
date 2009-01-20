@@ -66,4 +66,8 @@ function Blog(app) {
       return body;
     }
   }
+  
+  this.editing = function(docid) {
+    $('h1').html('Editing <a href="'+app.showPath('post',docid)+'">'+docid+'</a>');
+  };
 };
