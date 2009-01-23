@@ -1,6 +1,8 @@
 function(doc, req) {  
   // !json lib.templates
   // !code lib.helpers.template
+  log(doc._id);
+  log(lib.templates);
 
   return respondWith(req, {
     html : function() {
@@ -13,7 +15,6 @@ function(doc, req) {
         author : doc.author,
         attachments : ['',req.path[0], '_design', req.path[2]].join('/')
       });
-      log(doc._id);
       return { body: html };
     },
     xml : function() {
