@@ -1,12 +1,11 @@
 function(doc, req) {  
   // !json lib.templates
   // !code lib.helpers.template
-  log(doc._id);
-  log(lib.templates);
+
+  var postHtml = doc.html.replace(/<script(.|\n)*?>/g, '');
 
   return respondWith(req, {
     html : function() {
-      var postHtml = doc.html.replace(/<script(.|\n)*?>/g, '');
 
       var html = template(lib.templates.post, {
         title : doc.title,
@@ -20,8 +19,7 @@ function(doc, req) {
     xml : function() {
       return {
         body: template('post.e4x', {
-          post : postHtml,
-          scripts : pageScripts
+          post : postHtml
       })};
     },
     fallback : 'html'
