@@ -2,11 +2,11 @@
 <html>
   <head>
     <title>Sofa</title>
-    <link rel="stylesheet" href="<%= attachments %>/screen.css" type="text/css">
+    <link rel="stylesheet" href="<%= assets %>/screen.css" type="text/css">
   </head>
   <body>
     <div id="header">
-      <h2><a href="<%= attachments %>/index.html">Sofa</a></h2>
+      <h2><a href="<%= assets %>/index.html">Sofa</a></h2>
     </div>
     <div id="content">
       <h1><%= title %></h1>
@@ -40,8 +40,8 @@
   <script src="/_utils/script/json2.js"></script>
   <script src="/_utils/script/jquery.js?1.2.6"></script>
   <script src="/_utils/script/jquery.couch.js?0.8.0"></script>
-  <script src="<%= attachments %>/jquery.couchapp.js"></script>
-  <script src="<%= attachments %>/blog.js"></script>
+  <script src="<%= assets %>/jquery.couchapp.js"></script>
+  <script src="<%= assets %>/blog.js"></script>
   <script type="text/javascript" charset="utf-8">
   $.CouchApp(function(app) {
       var docid = document.location.pathname.split('/').pop();
@@ -99,5 +99,5 @@
       });
     });
   </script>
-  <script src="<%= attachments %>/showdown.js"></script>
+  <script src="<%= assets %>/showdown.js"></script>
 </html>

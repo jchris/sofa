@@ -1,5 +1,5 @@
 function(doc, req) {  
-  // !json lib.templates
+  // !json lib.templates.post
   // !code lib.helpers.template
   
   // we only show html
@@ -8,6 +8,6 @@ function(doc, req) {
     post : doc.html,
     date : doc.created_at,
     author : doc.author,
-    attachments : ['',req.path[0], '_design', req.path[2]].join('/')
+    assets : ['',req.path[0], '_design', req.path[2]].join('/')
   });
 }
