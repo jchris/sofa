@@ -1,13 +1,14 @@
 function(head, row, req) {
   // !json lib.templates.index
   // !json blog
+  // !code lib.helpers.couchapp
   // !code lib.helpers.template
-  respondWith(req, {
+  return respondWith(req, {
     html : function() {
       if (head) {
         return template(lib.templates.index.head, {
           title : blog.title,
-          assets : ['',req.path[0], '_design', req.path[2]].join('/')
+          assets : assetPath()
         });
       } else if (row) {
         var post = row.value;
@@ -15,8 +16,8 @@ function(head, row, req) {
           title : post.title,
           summary : post.summary,
           date : post.created_at,
-          path : ['',req.path[0], '_show', req.path[2], 'post', row.id].join('/'),
-          assets : ['',req.path[0], '_design', req.path[2]].join('/')
+          link : showPath('post', row.id),
+          assets : assetPath()
         });
       } else {
         return '</ul></html>';
