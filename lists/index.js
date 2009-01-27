@@ -8,6 +8,7 @@ function(head, row, req) {
       if (head) {
         return template(lib.templates.index.head, {
           title : blog.title,
+          newPostPath : showPath("edit"),
           assets : assetPath()
         });
       } else if (row) {

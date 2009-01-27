@@ -12,6 +12,7 @@ function(doc, req) {
     date : doc.created_at,
     author : doc.author,
     assets : assetPath(),
+    editPostPath : showPath('edit', doc._id),
     index : listPath('index/recent-posts')
   });
 }
