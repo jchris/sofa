@@ -13,6 +13,6 @@ function(doc, req) {
     author : doc.author,
     assets : assetPath(),
     editPostPath : showPath('edit', doc._id),
-    index : listPath('index/recent-posts')
+    index : listPath('index/recent-posts',{descending:true})
   });
 }

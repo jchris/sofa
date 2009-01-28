@@ -9,6 +9,7 @@ function(head, row, req) {
         return template(lib.templates.index.head, {
           title : blog.title,
           newPostPath : showPath("edit"),
+          index : listPath('index/recent-posts',{descending:true}),
           assets : assetPath()
         });
       } else if (row) {
