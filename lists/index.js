@@ -22,7 +22,9 @@ function(head, row, req) {
           assets : assetPath()
         });
       } else {
-        return '</ul></html>';
+        return template(lib.templates.index.tail, {
+          assets : assetPath()
+        });
       }
     },
     xml : function() {
