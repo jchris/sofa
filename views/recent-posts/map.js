@@ -5,6 +5,7 @@ function(doc) {
     emit(doc.created_at, {
       summary : summary,
       title : doc.title,
+      author : doc.author,
       created_at : doc.created_at
     });    
   }
