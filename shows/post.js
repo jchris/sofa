@@ -3,6 +3,7 @@ function(doc, req) {
   // !json blog
   // !code lib.helpers.template
   // !code lib.helpers.couchapp
+  // log(req.headers.Accept);
 
   // we only show html
   return template(lib.templates.post, {
@@ -13,6 +14,6 @@ function(doc, req) {
     author : doc.author,
     assets : assetPath(),
     editPostPath : showPath('edit', doc._id),
-    index : listPath('index/recent-posts',{descending:true})
+    index : listPath('index/recent-posts',{descending:true, limit:8})
   });
 }

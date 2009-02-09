@@ -1,7 +1,7 @@
 require 'rubygems'
 require 'couchrest'
 
-db = CouchRest.database! 'http://jchris:animal@127.0.0.1:5984/couchblog'
+db = CouchRest.database! "http://jchris:g9e3ir45@jchrisa.net/drl"
 
 # you'll need to replace Post and Comment with whatever classes hold your data.
 
@@ -53,7 +53,7 @@ comments.each do |c|
       :email => c.email,
       :url => c.link
     },
-    :body => c.body,
+    :comment => c.body,
     :format => 'textile',
     :html => c.description,
     :post_id => post_couch_id,

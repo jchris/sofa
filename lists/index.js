@@ -3,13 +3,14 @@ function(head, row, req) {
   // !json blog
   // !code lib.helpers.couchapp
   // !code lib.helpers.template
+  // log(req.headers.Accept);
   return respondWith(req, {
     html : function() {
       if (head) {
         return template(lib.templates.index.head, {
           title : blog.title,
           newPostPath : showPath("edit"),
-          index : listPath('index/recent-posts',{descending:true}),
+          index : listPath('index/recent-posts',{descending:true, limit:8}),
           assets : assetPath()
         });
       } else if (row) {
@@ -27,7 +28,7 @@ function(head, row, req) {
         });
       }
     },
-    xml : function() {
+    atom : function() {
       if (head) {
         return {body:'<feed xmlns="http://www.w3.org/2005/Atom">'
           +'<title>Test XML Feed</title>'};
