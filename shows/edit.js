@@ -11,6 +11,6 @@ function(doc, req) {
     docid : toJSON((doc && doc._id) || null), 
     blog : blog,
     assets : assetPath(),
-    index : listPath('index','recent-posts',{descending:true})
+    index : listPath('index','recent-posts',{descending:true,limit:8})
   });
 }
