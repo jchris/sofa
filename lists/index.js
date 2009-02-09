@@ -4,8 +4,8 @@ function(head, row, req) {
   // !code lib.helpers.couchapp
   // !code lib.helpers.template
   // log(req.headers.Accept);
-  var indexPath = listPath('index/recent-posts',{descending:true, limit:8});
-  var feedPath = listPath('index/recent-posts',{descending:true, limit:8, format:"atom"});
+  var indexPath = listPath('index','recent-posts',{descending:true, limit:8});
+  var feedPath = listPath('index','recent-posts',{descending:true, limit:8, format:"atom"});
   return respondWith(req, {
     html : function() {
       if (head) {
