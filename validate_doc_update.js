@@ -53,18 +53,6 @@ function (newDoc, oldDoc, userCtx) {
     require(newDoc.slug == newDoc._id, "Post slugs must be used as the _id.")
     require(newDoc.created_at, "Posts must have a created_at date.");
 
-  } else if (type == 'comment') {
-    // comment required fields
-    require(newDoc.created_at, "Comments must have a created_at date.");
-    require(newDoc.post_id, "Comments require a post_id.");
-    require(newDoc.commenter && newDoc.commenter.name 
-      && newDoc.commenter.email, "Comments must include name and email.");
-    require(newDoc.html, "Comments require an html body.");
-    require(newDoc.comment, "Comments require a comment field.");
-    require(newDoc.format, "Comments require a format field.");
-    if (newDoc.commenter && newDoc.commenter.url) {
-      require(newDoc.commenter.url.match(/^https?:\/\/[^.]*\..*/), "Commenter URL is not valid.");      
-    }
   }
   return true;
 }
