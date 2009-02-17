@@ -181,53 +181,5 @@
   };
   
   $.CouchApp = $.CouchApp || init;
-  
-  // $.fn.extend($.CouchApp,{
-  //   foo : function() {
-  //     return "bar";
-  //   }
-  // });
 })(jQuery);
-
-// function patchTest(fun) {
-//   var source = fun.toString();
-//   var output = "";
-//   var i = 0;
-//   var testMarker = "T("
-//   while (i < source.length) {
-//     var testStart = source.indexOf(testMarker, i);
-//     if (testStart == -1) {
-//       output = output + source.substring(i, source.length);
-//       break;
-//     }
-//     var testEnd = source.indexOf(");", testStart);
-//     var testCode = source.substring(testStart + testMarker.length, testEnd);
-//     output += source.substring(i, testStart) + "T(" + testCode + "," + JSON.stringify(testCode);
-//     i = testEnd;
-//   }
-//   try {
-//     return eval("(" + output + ")");
-//   } catch (e) {
-//     return null;
-//   }
-// }
-// 
-// // assert
-// function T(arg1, arg2) {
-//   if (!arg1) {
-//     console.log("Assertion failed: "+(arg2 != null ? arg2 : arg1).toString());
-//   }
-// }
-// 
-// // tests
-// 
-// patchTest(function() {
-//   T($.CouchApp.foo() == 'bar');
-//   $.CouchApp(function(app) {
-//     // T(false, "PASS: the callback should be executed");
-//     T(app.db);
-//     T(app.design);
-//     T(app.design.view);
-//   });
-// })();
 
