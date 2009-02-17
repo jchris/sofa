@@ -150,9 +150,6 @@
       };
       
       app({
-        formPath : function(form, docid) {
-          return '/'+[dbname, '_form', dname, form, docid].join('/')
-        },
         attemptLogin : function(win, fail) {
           // depends on nasty hack in blog validation function
           db.saveDoc({"author":"_self"}, { error: function(s, e, r) {
