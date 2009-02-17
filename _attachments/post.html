@@ -6,6 +6,7 @@
   </head>
   <body>
     <div id="header">
+      <a id="edit" href="edit.html">%</a>
       <h2><a href="index.html">Sofa</a></h2>
     </div>
     <div id="content">
@@ -42,6 +43,9 @@
   $.CouchApp(function(app) {
       var B = new Blog(app);
       var docid = document.location.hash.replace('#','');
+      
+      $('a#edit')[0].href = "edit.html#"+docid;
+      
       app.db.openDoc(docid, {success: function(doc) {
         $('h1').text(doc.title);
         $('#post').html(B.postToHTML(doc));
