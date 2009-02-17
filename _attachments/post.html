@@ -11,7 +11,6 @@
     <div id="content">
       <h1></h1>
       <div id="post"></div>
-      <div id="tags"></div>
       <div id="comments">
       <ul></ul>
       <!-- form to create a comment -->
@@ -47,18 +46,6 @@
         $('h1').text(doc.title);
         $('#post').html(B.postToHTML(doc));
         $('#post').fadeIn(800);
-        
-        app.design.view("tags", {
-          reduce: false,
-          success: function(json) {
-            var tags = [];
-            for(var idx in json.rows) {
-              tags.push(json.rows[idx].key);
-            }
-            $("#tags").append(tags.join(","));
-          }
-        })
-        
       }});
       
       function displayComments() {
