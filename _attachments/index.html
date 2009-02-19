@@ -3,7 +3,6 @@
   <head>
     <title>Sofa</title>
     <link rel="stylesheet" href="screen.css" type="text/css">
-      <link rel="alternate" type="application/atom+xml" title="Atom Feed" href="/blogdb/_external/action/couchdb-example-blog/atom-posts" />
   </head>
   <body>
     <div id="header">
@@ -23,6 +22,9 @@
   <script type="text/javascript" charset="utf-8">
     $.CouchApp(function(app) {
       var B = new Blog(app);
+      
+      
+      
       app.design.view("recent-posts",{
         descending: true, 
         limit:7, 
