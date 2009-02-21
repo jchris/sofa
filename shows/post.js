@@ -1,12 +1,12 @@
 function(doc, req) {  
-  // !json lib.templates.post
+  // !json templates.post
   // !json blog
-  // !code lib.helpers.template
-  // !code lib.helpers.couchapp
+  // !code helpers.template
+  // !code helpers.couchapp
   // log(req.headers.Accept);
 
   // we only show html
-  return template(lib.templates.post, {
+  return template(templates.post, {
     title : doc.title,
     blogName : blog.title,
     post : doc.html,

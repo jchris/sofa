@@ -1,15 +1,15 @@
 function(head, row, req) {
-  // !json lib.templates.index
+  // !json templates.index
   // !json blog
-  // !code lib.helpers.couchapp
-  // !code lib.helpers.template
+  // !code helpers.couchapp
+  // !code helpers.template
   // log(req.headers.Accept);
   var indexPath = listPath('index','recent-posts',{descending:true, limit:8});
   var feedPath = listPath('index','recent-posts',{descending:true, limit:8, format:"atom"});
   return respondWith(req, {
     html : function() {
       if (head) {
-        return template(lib.templates.index.head, {
+        return template(templates.index.head, {
           title : blog.title,
           newPostPath : showPath("edit"),
           index : indexPath,
@@ -17,7 +17,7 @@ function(head, row, req) {
         });
       } else if (row) {
         var post = row.value;
-        return template(lib.templates.index.row, {
+        return template(templates.index.row, {
           title : post.title,
           summary : post.summary,
           date : post.created_at,
@@ -25,7 +25,7 @@ function(head, row, req) {
           assets : assetPath()
         });
       } else {
-        return template(lib.templates.index.tail, {
+        return template(templates.index.tail, {
           assets : assetPath()
         });
       }
