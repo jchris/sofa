@@ -8,8 +8,6 @@ Currently supports admin-only posting and anonymous comments.
 
 Things are moving crazy fast around here right now as I bring this stuff up to ship-shape for the [CouchDB book](http://books.couchdb.org). I'll be renaming methods and stuff (if I find the time), any API feedback will be appreciated.
 
-Also, some of the installation instructions below are "optimistic". Currently I've no RubyGems available, but the CouchApp repo does build a working gem. This will all be slick and easy "when the book is done."
-
 ## Install CouchDB
 
 You'll also need CouchDB's svn trunk, which is currently a moving target, with regard to the new features, especially the `_show` API, that Sofa relies on.
@@ -24,11 +22,13 @@ and the blog software.
 
 If you are going to put your blog in public, you'll want to follow the [instructions on the CouchDB wiki about how to set up an Admin account](http://wiki.apache.org/couchdb/Setting_up_an_Admin_account).
 
+Note that admin accounts are still new, and that they may have strange impacts on the ability to replicate design docs or databases that contain validation functions.
+
 ## Install CouchApp
 
-Installing the Ruby Gem should be pretty quick if you're already setup with Ruby and RubyGems. If you don't already have a Ruby development environment (OSX comes with Ruby, on Debian-like systems, look for `ruby-dev`) there's work on a Python version of the CouchApp script. 
+CouchApp makes it easy to edit application that are hosted in CouchDB, by keeping a correspondence between a set of files, and a CouchDB design document.
 
-    sudo gem install couchapp
+    sudo easy_install couchapp
 
 CouchApp is a set of utilities for developing standalone CouchDB applications You can [learn more about the CouchApp project here](http://github.com/jchris/couchapp/tree/master).
 
@@ -36,11 +36,13 @@ CouchApp is a set of utilities for developing standalone CouchDB applications Yo
 
     git clone git://github.com/jchris/sofa.git
     cd sofa
-    couchapp push . blogdb 
+    couchapp push http://127.0.0.1:5984/blogdb 
   
 You'll want to edit the HTML and CSS to personalize your site. Don't worry, the markup is pretty basic, so it's easy to rework. Adding new features is just a few lines of JavaScript away.
 
-Anytime you make edits to the on-disk version of Sofa, and want to see them in your browser, just run `couchapp push . blogdb` again.
+Anytime you make edits to the on-disk version of Sofa, and want to see them in your browser, just run `couchapp push http://127.0.0.1:5984/blogdb` again. You probably want to setup your `.couchapprc` file. You should read the CouchApp readme to learn about that.
+
+You can customize the blog title and other stuff in the `blog.json` file.
 
 You can customize the blog title and other stuff in the `blog.json` file.
 
@@ -54,5 +56,4 @@ You can customize the blog title and other stuff in the `blog.json` file.
  * fulltext search?
  * non-hack login method
  * atom feed
- * show-powered edit page
  

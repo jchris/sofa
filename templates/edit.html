@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Daytime Running Lights</title>
-    <link rel="stylesheet" href="screen.css" type="text/css">
+    <title><%= blog.title %></title>
+    <link rel="stylesheet" href="<%= assets %>/screen.css" type="text/css">
   </head>
   <body>
     <div id="header">
-      <h2><a href="index.html">Daytime Running Lights</a></h2>
+      <h2><a href="<%= index %>"><%= blog.title %></a></h2>
     </div>
     <div id="content">
     <!-- form to create a post -->
@@ -24,6 +24,7 @@
         <input type="submit" value="Save &rarr;"/> <span id="saved" style="display:none;">Saved</span>
         </p>
     </form>
+    <a href="http://warpedvisions.org/projects/markdown-cheat-sheet/">Markdown help</a>
       <div id="show-preview"></div>
     </div>
   </body>
@@ -31,11 +32,11 @@
   <script src="/_utils/script/jquery.js?1.2.6"></script>
   <script src="/_utils/script/jquery.couch.js?0.8.0"></script>
   <script src="/_utils/script/jquery.cookies.js"></script>
-  <script src="jquery.scrollTo.js"></script>
-  <script src="jquery.couchapp.js"></script>
-  <script src="blog.js"></script>
-  <script src="showdown.js"></script>
-  <script src="textile.js"></script>
+  <script src="<%= assets %>/jquery.scrollTo.js"></script>
+  <script src="<%= assets %>/jquery.couchapp.js"></script>
+  <script src="<%= assets %>/blog.js"></script>
+  <script src="<%= assets %>/showdown.js"></script>
+  <script src="<%= assets %>/textile.js"></script>
   <script type="text/javascript" charset="utf-8">
     $.CouchApp(function(app) {
       app.loggedInNow(function(login) {
@@ -45,8 +46,9 @@
         // rename docForm?
         var B = new Blog(app);
         // thin controller - move to B?
+
         var postForm = app.docForm("form#new-post", {
-          id : document.location.hash.replace('#',''),
+          id : <%= docid %>,
           fields : ["title", "body", "tags"],
           template : {
             type : "post",
@@ -55,7 +57,8 @@
           },
           onLoad : function(doc) {
             if (doc._id) {
-              $('h1').html('Editing #<a href="post.html#'+doc._id+'">'+doc._id+'</a>'); 
+              B.editing(doc._id);
+              $('h1').html('Editing <a href="'+app.showPath('post',doc._id)+'">'+doc._id+'</a>');
               $('#preview').before('<input type="button" id="delete" value="Delete Post"/> ');
               $("#delete").click(function() {
                 postForm.deleteDoc({
@@ -87,7 +90,7 @@
           },
           success : function(resp) {
             $("#saved").text("Saved _rev: "+resp.rev).fadeIn(500).fadeOut(3000);
-            $('h1').html('Editing #<a href="post.html#'+resp.id+'">'+resp.id+'</a>');
+            B.editing(resp.id);
           }
         });  
 
@@ -100,7 +103,7 @@
         });
       }, function() {
         // callback
-        $('body').append('<a href="account.html#'+document.location+'">redirect</a>');
+        $('body').append('<a href="<%= assets %>/account.html#'+document.location+'">redirect</a>');
         var absurl = $('body a:last')[0].href;
         document.location = absurl;
       });
