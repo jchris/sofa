@@ -30,9 +30,11 @@ h2 {
   float:right;
 }
 
-h3 {
+#posts h3 {
   margin-bottom:0;
   margin-top:4px;
+  padding-top:14px;
+  border-top:20px dotted #bbb;
 }
 
 h4 {
@@ -131,6 +133,7 @@ img.gravatar {
 
 ul {
   margin:0;
+  padding:0 20px;
   list-style: none;
 }
 
