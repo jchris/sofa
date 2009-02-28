@@ -12,13 +12,14 @@ function(head, row, req, info) {
     return listPath('index','recent-posts',q);
   }
 
-  var indexPath = listPath('index','recent-posts',{descending:true, limit:3});
+  var indexPath = listPath('index','recent-posts',{descending:true, limit:5});
   var feedPath = listPath('index','recent-posts',{descending:true, limit:5, format:"atom"});
   return respondWith(req, {
     html : function() {
       if (head) {
         return template(templates.index.head, {
           title : blog.title,
+          feedPath : feedPath,
           newPostPath : showPath("edit"),
           index : indexPath,
           assets : assetPath()
@@ -27,7 +28,7 @@ function(head, row, req, info) {
         var post = row.value;
         return template(templates.index.row, {
           title : post.title,
-          html : post.html,
+          summary : post.summary,
           date : post.created_at,
           link : showPath('post', row.id),
           assets : assetPath()

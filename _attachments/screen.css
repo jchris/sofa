@@ -132,6 +132,7 @@ img.gravatar {
 ul {
   margin:0;
   list-style: none;
+  padding:0 20px;
 }
 
 .body ul {
