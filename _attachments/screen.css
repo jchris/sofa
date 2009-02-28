@@ -138,6 +138,13 @@ ul {
   list-style: disc;
 }
 
+.paginate {
+  text-align:center;
+  display:block;
+  width:100%;
+  font-size:80%;
+}
+
 form {
   padding:10px;
 /*  background:#ddd;*/

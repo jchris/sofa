@@ -32,7 +32,6 @@ function makePath(array) {
   if (typeof array[array.length - 1] != "string") {
     // it's a params hash
     options = array.pop();
-    log({options:options});
   }
   path = array.map(function(item) {return encodeURIComponent(item)}).join('/');
   if (options) {

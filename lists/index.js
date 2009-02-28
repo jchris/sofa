@@ -1,9 +1,17 @@
-function(head, row, req) {
+function(head, row, req, info) {
   // !json templates.index
   // !json blog
   // !code helpers.couchapp
   // !code helpers.template
-  // log(req.headers.Accept);
+
+  function olderPath(info) {
+    if (!info) return null;
+    var q = req.query;
+    q.startkey = info.prev_key;
+    q.skip=1;
+    return listPath('index','recent-posts',q);
+  }
+
   var indexPath = listPath('index','recent-posts',{descending:true, limit:8});
   var feedPath = listPath('index','recent-posts',{descending:true, limit:8, format:"atom"});
   return respondWith(req, {
@@ -19,14 +27,15 @@ function(head, row, req) {
         var post = row.value;
         return template(templates.index.row, {
           title : post.title,
-          summary : post.summary,
+          html : post.html,
           date : post.created_at,
           link : showPath('post', row.id),
           assets : assetPath()
         });
       } else {
         return template(templates.index.tail, {
-          assets : assetPath()
+          assets : assetPath(),
+          older : olderPath(info)
         });
       }
     },
@@ -45,7 +54,7 @@ function(head, row, req) {
         var entry = <entry/>;
         entry.id = makeAbsolute(req, '/'+encodeURIComponent(req.info.db_name)+'/'+encodeURIComponent(row.id));
         entry.title = row.value.title;
-        entry.content = row.value.summary;
+        entry.content = row.value.html;
         entry.content.@type = 'html';
         entry.updated = new Date(row.value.created_at).rfc3339();
         entry.author = <author><name>{row.value.author}</name></author>;
