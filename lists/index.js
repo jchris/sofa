@@ -12,8 +12,8 @@ function(head, row, req, info) {
     return listPath('index','recent-posts',q);
   }
 
-  var indexPath = listPath('index','recent-posts',{descending:true, limit:8});
-  var feedPath = listPath('index','recent-posts',{descending:true, limit:8, format:"atom"});
+  var indexPath = listPath('index','recent-posts',{descending:true, limit:3});
+  var feedPath = listPath('index','recent-posts',{descending:true, limit:5, format:"atom"});
   return respondWith(req, {
     html : function() {
       if (head) {
