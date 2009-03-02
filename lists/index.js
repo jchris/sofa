@@ -1,16 +1,7 @@
 function(head, row, req, info) {
   // !json templates.index
   // !json blog
-  // !code helpers.couchapp
-  // !code helpers.template
-
-  function olderPath(info) {
-    if (!info) return null;
-    var q = req.query;
-    q.startkey = info.prev_key;
-    q.skip=1;
-    return listPath('index','recent-posts',q);
-  }
+  // !code vendor.couchapp.*
 
   var indexPath = listPath('index','recent-posts',{descending:true, limit:5});
   var feedPath = listPath('index','recent-posts',{descending:true, limit:5, format:"atom"});

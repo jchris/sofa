@@ -1,5 +1,3 @@
-// this stuff should be properly namespaced etc
-
 // from couch.js
 function encodeOptions(options) {
   var buf = []
@@ -56,19 +54,14 @@ function listPath() {
   return makePath(concatArgs(parts, arguments));
 };
 
+function olderPath(info) {
+  if (!info) return null;
+  var q = req.query;
+  q.startkey = info.prev_key;
+  q.skip=1;
+  return listPath('index','recent-posts',q);
+}
+
 function makeAbsolute(req, path) {
   return 'http://' + req.headers.Host + path;
 }
-
-function f(n) {    // Format integers to have at least two digits.
-    return n < 10 ? '0' + n : n;
-}
-
-Date.prototype.rfc3339 = function() {
-    return this.getUTCFullYear()   + '-' +
-         f(this.getUTCMonth() + 1) + '-' +
-         f(this.getUTCDate())      + 'T' +
-         f(this.getUTCHours())     + ':' +
-         f(this.getUTCMinutes())   + ':' +
-         f(this.getUTCSeconds())   + 'Z';
-};
