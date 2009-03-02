@@ -1,9 +1,8 @@
 function(doc, req) {  
   // !json templates.post
   // !json blog
-  // !code helpers.template
-  // !code helpers.couchapp
-  // log(req.headers.Accept);
+  // !code vendor/couchapp/template.js
+  // !code vendor/couchapp/path.js
 
   // we only show html
   return template(templates.post, {

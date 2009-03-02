@@ -1,7 +1,8 @@
 function(head, row, req, info) {
   // !json templates.index
   // !json blog
-  // !code vendor.couchapp.*
+  // !code vendor/couchapp/path.js
+  // !code vendor/couchapp/template.js
 
   var indexPath = listPath('index','recent-posts',{descending:true, limit:5});
   var feedPath = listPath('index','recent-posts',{descending:true, limit:5, format:"atom"});
