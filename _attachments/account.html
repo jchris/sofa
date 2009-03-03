@@ -7,7 +7,7 @@
   </head>
   <body>
     <div id="header">
-      <h2><a href="index.html">Daytime Running Lights</a></h2>
+      <h2><a href="_list/index">Daytime Running Lights</a></h2>
     </div>
     <div id="content">
       <h1>Login via the popup or hit cancel.</h1>
@@ -49,7 +49,7 @@
         if (redirectUrl) document.location = unescape(redirectUrl).replace('_design/','_design%2F');
         $('#content').append('<p>Success.</p>');
         $('h1').text('Welcome '+login);
-        $('#content').append('<p>Now that you\'re logged in, you can <a href="edit.html">write blog posts.</a></p>');
+        $('#content').append('<p>Now that you\'re logged in, you can <a href="_show/edit">write blog posts.</a></p>');
       }, function() {
         $('h1').text('Incorrect login');
         $('#content').append('<p>Fail.</p>');
