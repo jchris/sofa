@@ -119,7 +119,7 @@
         var instance = {
           deleteDoc : function(opts) {
             opts = opts || {};
-            if (confirm("Really delete this post?")) {                
+            if (confirm("Really delete this document?")) {                
               db.removeDoc(localFormDoc, opts);
             }
           },
