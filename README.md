@@ -18,12 +18,6 @@ You'll also need CouchDB's svn trunk, which is currently a moving target, with r
 Once you have that installed and the tests passing, you can install CouchApp
 and the blog software. 
 
-### Setup Admin Access
-
-If you are going to put your blog in public, you'll want to follow the [instructions on the CouchDB wiki about how to set up an Admin account](http://wiki.apache.org/couchdb/Setting_up_an_Admin_account).
-
-Note that admin accounts are still new, and that they may have strange impacts on the ability to replicate design docs or databases that contain validation functions.
-
 ## Install CouchApp
 
 CouchApp makes it easy to edit application that are hosted in CouchDB, by keeping a correspondence between a set of files, and a CouchDB design document.
@@ -32,11 +26,18 @@ CouchApp makes it easy to edit application that are hosted in CouchDB, by keepin
 
 CouchApp is a set of utilities for developing standalone CouchDB applications You can [learn more about the CouchApp project here](http://github.com/jchris/couchapp/tree/master).
 
+
+### Setup Admin Access
+
+If you are going to put your blog in public, you'll want to follow the [instructions on the CouchDB wiki about how to set up an Admin account](http://wiki.apache.org/couchdb/Setting_up_an_Admin_account).
+
+Note that admin accounts are still new, and that they may have strange impacts on the ability to replicate design docs or databases that contain validation functions.
+
 ## Install Sofa
 
     git clone git://github.com/jchris/sofa.git
     cd sofa
-    couchapp push http://127.0.0.1:5984/blogdb 
+    couchapp push http://user:pass@127.0.0.1:5984/blogdb 
   
 You'll want to edit the HTML and CSS to personalize your site. Don't worry, the markup is pretty basic, so it's easy to rework. Adding new features is just a few lines of JavaScript away.
 
