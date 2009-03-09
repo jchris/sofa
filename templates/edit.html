@@ -58,7 +58,7 @@
           onLoad : function(doc) {
             if (doc._id) {
               B.editing(doc._id);
-              $('h1').html('Editing <a href="'+app.showPath('post',doc._id)+'">'+doc._id+'</a>');
+              $('h1').html('Editing <a href="../post/'+doc._id+'">'+doc._id+'</a>');
               $('#preview').before('<input type="button" id="delete" value="Delete Post"/> ');
               $("#delete").click(function() {
                 postForm.deleteDoc({

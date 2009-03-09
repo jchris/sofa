@@ -7,7 +7,6 @@ function(doc, req) {
   // we only show html
   return template(templates.edit, {
     doc : doc,
-    // couch trunk newer than r738295 required for toJSON()
     docid : toJSON((doc && doc._id) || null), 
     blog : blog,
     assets : assetPath(),

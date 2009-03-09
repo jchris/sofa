@@ -1,4 +1,3 @@
 {
-  "index" : ["_list","index/recent-posts?descending=true&limit=5"],
-  "icon" : "sofa.png"
+  "index" : "_list/index/recent-posts?descending=true&limit=5"
 }
