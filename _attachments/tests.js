@@ -26,7 +26,7 @@ function getUserName(blogDb) {
   }
 };
 
-var tests = {
+var couchTests = {
   save_only_own_doc : function(debug) {
     var db = setupDB();
     if (debug) debugger;
