@@ -156,6 +156,11 @@
           // I wish this was shared with path.js...
           return '/'+[dbname, '_design', dname, '_show', funcname, docid].join('/')
         },
+        slugifyString : function(string) {
+          return string.replace(/\W/g,'-').
+            replace(/\-*$/,'').replace(/^\-*/,'').
+            replace(/\-{2,}/,'-');
+        },
         attemptLogin : function(win, fail) {
           // depends on nasty hack in blog validation function
           db.saveDoc({"author":"_self"}, { error: function(s, e, r) {
