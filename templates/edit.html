@@ -33,7 +33,7 @@
   <script src="/_utils/script/jquery.couch.js?0.8.0"></script>
   <script src="/_utils/script/jquery.cookies.js"></script>
   <script src="<%= assets %>/jquery.scrollTo.js"></script>
-  <script src="../../vendor/couchapp/jquery.couchapp.js"></script>
+  <script src="<%= assets %>/vendor/couchapp/jquery.couchapp.js"></script>
   <script src="<%= assets %>/blog.js"></script>
   <script src="<%= assets %>/showdown.js"></script>
   <script src="<%= assets %>/textile.js"></script>
@@ -78,10 +78,9 @@
               doc.created_at = new Date();
             }
             if (!doc.slug) {
-              doc.slug = doc.title.replace(/\W/g,'-').replace(/\-*$/,'').replace(/^\-*/,'').replace(/\-{2,}/,'-'); // cute, I know
+              doc.slug = app.slugifyString(doc.title);
               doc._id = doc.slug;
             }
-            console.log(doc.slug);
             if(doc.tags) {
               doc.tags = doc.tags.split(",");
               for(var idx in doc.tags) {
