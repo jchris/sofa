@@ -24,7 +24,7 @@ CouchApp makes it easy to edit application that are hosted in CouchDB, by keepin
 
     sudo easy_install couchapp
 
-CouchApp is a set of utilities for developing standalone CouchDB applications You can [learn more about the CouchApp project here](http://github.com/jchris/couchapp/tree/master).
+CouchApp is a set of utilities for developing standalone CouchDB applications You can [learn more about the CouchApp project here](http://github.com/jchris/couchapp/tree/master). Also, [`easy_install` has an unpleasant bug on OSX](http://mail.python.org/pipermail/pythonmac-sig/2008-October/020567.html), so you might end up having to work from git source.
 
 
 ### Setup Admin Access
@@ -37,22 +37,23 @@ Note that admin accounts are still new, and that they may have strange impacts o
 
     git clone git://github.com/jchris/sofa.git
     cd sofa
-    couchapp push http://user:pass@127.0.0.1:5984/blogdb 
+    couchapp push . http://user:pass@127.0.0.1:5984/blogdb 
   
 You'll want to edit the HTML and CSS to personalize your site. Don't worry, the markup is pretty basic, so it's easy to rework. Adding new features is just a few lines of JavaScript away.
 
-Anytime you make edits to the on-disk version of Sofa, and want to see them in your browser, just run `couchapp push http://127.0.0.1:5984/blogdb` again. You probably want to setup your `.couchapprc` file. You should read the CouchApp readme to learn about that.
+Anytime you make edits to the on-disk version of Sofa, and want to see them in your browser, just run `couchapp push . http://127.0.0.1:5984/blogdb` again. **You probably want to setup your `.couchapprc` file.** You should read the CouchApp readme to learn about that.
 
 You can customize the blog title and other stuff in the `blog.json` file.
 
 # Relax
 
-[Visit your new blog.](http://127.0.0.1:5984/blogdb/_design/sofa/index.html)
+[Visit your new blog.](http://127.0.0.1:5984/blogdb/_design/sofa/_list/index/recent-posts?descending=true&limit=5)
 
 
 ### Todo
 
- * fulltext search?
- * non-hack login method
- * atom feed
+ * comments feed
+ * tag browsing index
+ * non-hack login method (waiting on CouchDB)
+
  
