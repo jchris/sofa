@@ -1,5 +1,5 @@
-function(ks, vs, co) {
-  if (co) {
+function(ks, vs, rereduce) {
+  if (rereduce) {
     return sum(vs);
   } else {
     return vs.length;

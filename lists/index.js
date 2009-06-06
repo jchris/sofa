@@ -1,3 +1,7 @@
+function atom() {
+  
+};
+
 function(head, row, req, info) {
   // !json templates.index
   // !json blog

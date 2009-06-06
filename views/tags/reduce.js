@@ -1,3 +1,3 @@
-function(key, values) {
+function(keys, values) {
     return sum(values);
 }
