@@ -24,7 +24,7 @@
         }
         var tags = [];
         for(var idx in json.rows) {
-          var percent = Math.ceil(Math.pow((json.rows[idx].value / total), 0.25) * 100);
+          var percent = Math.ceil(Math.pow((json.rows[idx].value / total), 0.25) * 200);
           tags.push('<span style="font-size:'+percent+'%;">' + json.rows[idx].key + '</span>');
         }
         $("#tags-front").append(tags.join(", "));

@@ -1,5 +1,5 @@
 body {
-  font: 1.2em "Minion Pro", Georgia, serif;
+  font: 1.2em "Hoefler Text", Georgia, serif;
   line-height:1.2em;
   margin:0;
   padding:0;
@@ -7,7 +7,6 @@ body {
 
 a {
   text-decoration:none;
-  color:#06266F;
 }
 
 h1 {
@@ -24,6 +23,7 @@ h2 {
 }
 
 #header a {
+  color:#fff;
 }
 
 #header #login, #header #edit {
@@ -40,9 +40,10 @@ h4 {
 }
 
 #header {
-  background:#FFB273;
+  background:#9a9;
   padding:8px;
-  color:#333;
+  text-shadow: 0 0 4px #000;
+  color:#fff;
 }
 
 #content {
@@ -54,22 +55,12 @@ h4 {
   margin-left:240px;
 }
 
-#left {
-    float:left;
-}
 #tags-front {
+    float:left;
     width:220px;
     margin:2ex 1em;
     color:#999;
 }
-
-#hello {
-    width:220px;
-    margin:2ex 1em;
-    color:#999;
-}
-
-
 
 label {
   display:block;
