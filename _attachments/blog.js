@@ -56,10 +56,14 @@ function Blog(app) {
     + '</li>';
   };
   
+  this.makeTwitterLinks = function(text) {
+    return text.replace(/ @([^ .,]+)/g, ' <a href="http://twitter.com/$1">@$1</a>');
+  };
+  
   this.formatBody = function(body, format) {
     if (format == 'markdown') {
       var converter = new Showdown.converter();
-      return converter.makeHtml(body);
+      return this.makeTwitterLinks(converter.makeHtml(body));
     } else if (format == 'textile') {
       return superTextile(body);
     } else {
