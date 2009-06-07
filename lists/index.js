@@ -2,7 +2,7 @@ function atom() {
   
 };
 
-function(head, row, req, info) {
+function(head, req) {
   // !json templates.index
   // !json blog
   // !code vendor/couchapp/path.js
@@ -13,42 +13,32 @@ function(head, row, req, info) {
   var feedPath = listPath('index','recent-posts',{descending:true, limit:5, format:"atom"});
   return respondWith(req, {
     html : function() {
-      if (head) {
-        return template(templates.index.head, {
-          title : blog.title,
-          feedPath : feedPath,
-          newPostPath : showPath("edit"),
-          index : indexPath,
-          assets : assetPath()
-        });
-      } else if (row) {
+      send(template(templates.index.head, {
+        title : blog.title,
+        feedPath : feedPath,
+        newPostPath : showPath("edit"),
+        index : indexPath,
+        assets : assetPath()
+      }));
+      var row, key;
+      while (row = getRow()) {
         var post = row.value;
-        return template(templates.index.row, {
+        key = row.key;
+        send(template(templates.index.row, {
           title : post.title,
           summary : post.summary,
           date : post.created_at,
           link : showPath('post', row.id),
           assets : assetPath()
-        });
-      } else {
-        return template(templates.index.tail, {
-          assets : assetPath(),
-          older : olderPath(info)
-        });
+        }));        
       }
+      return template(templates.index.tail, {
+        assets : assetPath(),
+        older : olderPath(key)
+      });
     },
     atom : function() {
-      // with first row in head you can do updated.
-      if (head) {
-        var f = <feed xmlns="http://www.w3.org/2005/Atom"/>;
-        f.title = blog.title;
-        f.id = makeAbsolute(req, indexPath);
-        f.link.@href = makeAbsolute(req, feedPath);
-        f.link.@rel = "self";
-        f.generator = 'Sofa on CouchDB';
-        f.updated = new Date().rfc3339();
-        return {body:f.toXMLString().replace(/\<\/feed\>/,'')};
-      } else if (row) {
+      function makeEntry(row) {
         var entry = <entry/>;
         entry.id = makeAbsolute(req, '/'+encodeURIComponent(req.info.db_name)+'/'+encodeURIComponent(row.id));
         entry.title = row.value.title;
@@ -58,10 +48,23 @@ function(head, row, req, info) {
         entry.author = <author><name>{row.value.author}</name></author>;
         entry.link.@href = makeAbsolute(req, showPath('post', row.id));
         entry.link.@rel = "alternate";
-        return {body:entry};
-      } else {
-        return {body : "</feed>"};
+        return entry;
+      };
+      var f = <feed xmlns="http://www.w3.org/2005/Atom"/>;
+      f.title = blog.title;
+      f.id = makeAbsolute(req, indexPath);
+      f.link.@href = makeAbsolute(req, feedPath);
+      f.link.@rel = "self";
+      f.generator = 'Sofa on CouchDB';
+      var row = getRow();
+      var date = row ? new Date(row.value.created_at) : new Date();
+      f.updated = date.rfc3339();
+      send(f.toXMLString().replace(/\<\/feed\>/,''));
+      row && send(makeEntry(row));
+      while (row = getRow()) {
+        send(makeEntry(row));
       }
+      return "</feed>";
     }
   })
 };
