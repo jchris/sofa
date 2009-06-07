@@ -2,6 +2,7 @@
 <html>
   <head>
     <title><%= title %></title>
+		<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
     <link rel="stylesheet" href="../../screen.css" type="text/css"/>
     <link rel="alternate" type="application/atom+xml" 
       title="Atom Feed" href="<%= feedPath %>"/>
@@ -11,7 +12,10 @@
       <a id="edit" href="../../_show/edit">Create new post</a>
       <h2><a href="<%= index %>"><%= title %></a></h2>
     </div>
-    <div id="tags-front"></div>
+    <div id="left">
+      <div id="hello">Hi, this is <a href="http://jan.prima.de/">Jan’s</a> Tumble blog.</div>
+      <div id="tags-front"></div>
+    </div>
     <div id="content">
       <h1>Recently...</h1>
       <ul id="posts">
