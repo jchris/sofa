@@ -102,7 +102,7 @@
           $('body').scrollTo('#show-preview', {duration: 500});
         });
       }, function() {
-        // callback
+        // callback for when not logged in
         $('body').append('<a href="<%= assets %>/account.html#'+document.location+'">redirect</a>');
         var absurl = $('body a:last')[0].href;
         document.location = absurl;

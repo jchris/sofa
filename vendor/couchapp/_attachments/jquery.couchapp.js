@@ -161,19 +161,21 @@
             replace(/\-*$/,'').replace(/^\-*/,'').
             replace(/\-{2,}/,'-');
         },
-        attemptLogin: function(win, fail) {
+        attemptLogin : function(win, fail) {
           var self = this;
           $.ajax({
             url: "/_whoami?force_login=true",
             dataType: "json",
             success:function(data) {
               login = data.name;
+              $.cookies.set("login", login, '/'+dbname);
               win && win(login);
             },
             error: function() {
+              $.cookies.set("login", "", '/'+dbname);
               fail && fail();
             }
-          });       
+          });      
         },
         loggedInNow : function(loggedIn, loggedOut) {
           login = login || $.cookies.get("login");
