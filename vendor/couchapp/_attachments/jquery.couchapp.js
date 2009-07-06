@@ -161,19 +161,19 @@
             replace(/\-*$/,'').replace(/^\-*/,'').
             replace(/\-{2,}/,'-');
         },
-        attemptLogin : function(win, fail) {
-          // depends on nasty hack in blog validation function
-          db.saveDoc({"author":"_self"}, { error: function(s, e, r) {
-            var namep = r.split(':');
-            if (namep[0] == '_self') {
-              login = namep.pop();
-              $.cookies.set("login", login, '/'+dbname)
+        attemptLogin: function(win, fail) {
+          var self = this;
+          $.ajax({
+            url: "/_whoami?force_login=true",
+            dataType: "json",
+            success:function(data) {
+              login = data.name;
               win && win(login);
-            } else {
-              $.cookies.set("login", "", '/'+dbname)
-              fail && fail(s, e, r);
+            },
+            error: function() {
+              fail && fail();
             }
-          }});        
+          });       
         },
         loggedInNow : function(loggedIn, loggedOut) {
           login = login || $.cookies.get("login");
