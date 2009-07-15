@@ -188,7 +188,13 @@
         db : db,
         design : design,
         docForm : docForm,
-        prettyDate : prettyDate
+        prettyDate : prettyDate,
+        go : function(url) {
+          // callback for when not logged in
+          $('body').append('<a href="'+url+'">go</a>');
+          var absurl = $('body a:last')[0].href;
+          document.location = absurl;
+        }
       });
     });
   };
