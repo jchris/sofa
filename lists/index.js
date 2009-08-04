@@ -12,7 +12,9 @@ function(head, req) {
   var indexPath = listPath('index','recent-posts',{descending:true, limit:5});
   var feedPath = listPath('index','recent-posts',{descending:true, limit:5, format:"atom"});
   return respondWith(req, {
+    "default" : "html",
     html : function() {
+      // render the html head using a template
       send(template(templates.index.head, {
         title : blog.title,
         feedPath : feedPath,
@@ -20,6 +22,8 @@ function(head, req) {
         index : indexPath,
         assets : assetPath()
       }));
+      
+      // loop over view rows, rendering one at a time
       var row, key;
       while (row = getRow()) {
         var post = row.value;
@@ -32,12 +36,27 @@ function(head, req) {
           assets : assetPath()
         }));        
       }
+      
+      // render the html tail template
       return template(templates.index.tail, {
         assets : assetPath(),
         older : olderPath(key)
       });
     },
     atom : function() {
+
+      // two helper functions, extracted for readability
+      function makeHeader(updated) {
+        var f = <feed xmlns="http://www.w3.org/2005/Atom"/>;
+        f.title = blog.title;
+        f.id = makeAbsolute(req, indexPath);
+        f.link.@href = makeAbsolute(req, feedPath);
+        f.link.@rel = "self";
+        f.generator = "Sofa on CouchDB";
+        f.updated = updated.rfc3339();
+        return f.toXMLString().replace(/\<\/feed\>/,''); 
+      };
+      
       function makeEntry(row) {
         var entry = <entry/>;
         entry.id = makeAbsolute(req, '/'+encodeURIComponent(req.info.db_name)+'/'+encodeURIComponent(row.id));
@@ -50,20 +69,20 @@ function(head, req) {
         entry.link.@rel = "alternate";
         return entry;
       };
-      var f = <feed xmlns="http://www.w3.org/2005/Atom"/>;
-      f.title = blog.title;
-      f.id = makeAbsolute(req, indexPath);
-      f.link.@href = makeAbsolute(req, feedPath);
-      f.link.@rel = "self";
-      f.generator = 'Sofa on CouchDB';
+      
+      // we load the first row to find the most recent change date
       var row = getRow();
-      var date = row ? new Date(row.value.created_at) : new Date();
-      f.updated = date.rfc3339();
-      send(f.toXMLString().replace(/\<\/feed\>/,''));
-      row && send(makeEntry(row));
-      while (row = getRow()) {
+      send(makeHeader(row ? new Date(row.value.created_at) : new Date()));
+
+      // loop over all rows
+      if (row) {
         send(makeEntry(row));
+        while (row = getRow()) {
+          send(makeEntry(row));
+        }
       }
+
+      // close the loop after all rows are rendered
       return "</feed>";
     }
   })
