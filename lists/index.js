@@ -9,9 +9,9 @@ function(head, req) {
   var indexPath = listPath('index','recent-posts',{descending:true, limit:5});
   var feedPath = listPath('index','recent-posts',{descending:true, limit:5, format:"atom"});
 
-  // the provides function to serve the format the client requests
-  // the first matching format is sent, so reordering functions changes 
-  // thier priority.
+  // The provides function serves the format the client requests.
+  // The first matching format is sent, so reordering functions changes 
+  // thier priority. In this case HTML is the preferred format, so it comes first.
   provides("html", function() {
     // render the html head using a template
     send(template(templates.index.head, {
@@ -43,8 +43,9 @@ function(head, req) {
     });
   });
 
+  // if the client requests an atom feed and not html, 
+  // we run this function to generate the feed.
   provides("atom", function() {
-    
     // we load the first row to find the most recent change date
     var row = getRow();
     
@@ -62,6 +63,7 @@ function(head, req) {
     // loop over all rows
     if (row) {
       do {
+        // generate the entry for this row
         var feedEntry = Atom.entry({
           entry_id : makeAbsolute(req, '/'+encodeURIComponent(req.info.db_name)+'/'+encodeURIComponent(row.id)),
           title : row.value.title,
@@ -70,6 +72,7 @@ function(head, req) {
           author : row.value.author,
           alternate : makeAbsolute(req, showPath('post', row.id))
         });
+        // send the entry to client
         send(feedEntry);
       } while (row = getRow());
     }
