@@ -4,11 +4,12 @@ function(head, req) {
   // !code vendor/couchapp/path.js
   // !code vendor/couchapp/date.js
   // !code vendor/couchapp/template.js
+  // !code lib/atom.js
 
   var indexPath = listPath('index','recent-posts',{descending:true, limit:5});
   var feedPath = listPath('index','recent-posts',{descending:true, limit:5, format:"atom"});
 
-  // using the provides function to serve the format the client requests
+  // the provides function to serve the format the client requests
   // the first matching format is sent, so reordering functions changes 
   // thier priority.
   provides("html", function() {
@@ -43,41 +44,34 @@ function(head, req) {
   });
 
   provides("atom", function() {
-    // two helper functions, extracted for readability
-    function makeHeader(updated) {
-      var f = <feed xmlns="http://www.w3.org/2005/Atom"/>;
-      f.title = blog.title;
-      f.id = makeAbsolute(req, indexPath);
-      f.link.@href = makeAbsolute(req, feedPath);
-      f.link.@rel = "self";
-      f.generator = "Sofa on CouchDB";
-      f.updated = updated.rfc3339();
-      return f.toXMLString().replace(/\<\/feed\>/,''); 
-    };
-    
-    function makeEntry(row) {
-      var entry = <entry/>;
-      entry.id = makeAbsolute(req, '/'+encodeURIComponent(req.info.db_name)+'/'+encodeURIComponent(row.id));
-      entry.title = row.value.title;
-      entry.content = row.value.html;
-      entry.content.@type = 'html';
-      entry.updated = new Date(row.value.created_at).rfc3339();
-      entry.author = <author><name>{row.value.author}</name></author>;
-      entry.link.@href = makeAbsolute(req, showPath('post', row.id));
-      entry.link.@rel = "alternate";
-      return entry;
-    };
     
     // we load the first row to find the most recent change date
     var row = getRow();
-    send(makeHeader(row ? new Date(row.value.created_at) : new Date()));
+    
+    // generate the feed header
+    var feedHeader = Atom.header({
+      updated : (row ? new Date(row.value.created_at) : new Date()),
+      title : blog.title,
+      feed_id : makeAbsolute(req, indexPath),
+      feed_link : makeAbsolute(req, feedPath),
+    });
+    
+    // send the header to the client
+    send(feedHeader);
 
     // loop over all rows
     if (row) {
-      send(makeEntry(row));
-      while (row = getRow()) {
-        send(makeEntry(row));
-      }
+      do {
+        var feedEntry = Atom.entry({
+          entry_id : makeAbsolute(req, '/'+encodeURIComponent(req.info.db_name)+'/'+encodeURIComponent(row.id)),
+          title : row.value.title,
+          content : row.value.html,
+          updated : new Date(row.value.created_at).rfc3339(),
+          author : row.value.author,
+          alternate : makeAbsolute(req, showPath('post', row.id))
+        });
+        send(feedEntry);
+      } while (row = getRow());
     }
 
     // close the loop after all rows are rendered
