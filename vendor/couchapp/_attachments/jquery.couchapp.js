@@ -164,12 +164,17 @@
         attemptLogin : function(win, fail) {
           var self = this;
           $.ajax({
-            url: "/_whoami?force_login=true",
+            url: "/_session?basic=true",
             dataType: "json",
             success:function(data) {
               login = data.name;
-              $.cookies.set("login", login, '/'+dbname);
-              win && win(login);
+              if (login) {
+                $.cookies.set("login", login, '/'+dbname);
+                win && win(login); 
+              } else {
+                $.cookies.set("login", "", '/'+dbname);
+                fail && fail();                
+              }
             },
             error: function() {
               $.cookies.set("login", "", '/'+dbname);
