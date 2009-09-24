@@ -14,7 +14,7 @@ function (newDoc, oldDoc, userCtx) {
   }
 
   // authors and admins can always delete
-  if (newDoc._deleted) return true;
+  if (isAdmin(userCtx) && newDoc._deleted) return true;
     
   if (newDoc.type == 'post') {
     require("created_at", "author", "body", "html", "format", "title", "slug");

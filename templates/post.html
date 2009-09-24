@@ -17,24 +17,24 @@
       </div>
       <div id="tags"></div>
       <div id="comments">
-      <ul></ul>
-      <!-- form to create a comment -->
-      <form id="new-comment" action="post.html" method="post">
-        <h3>Comment on this post</h3>
-        <p><label>Name</label>
-        <input type="text" name="commenter-name" value=""></p>
-        <p><label>Url <em>(optional)</em></label>
-        <input type="text" name="commenter-url" value=""></p>
-        <p><label>Email <em>(for <a href="http://gravatar.com">Gravatar</a>)</em></label>
-        <input type="text" name="commenter-email" value=""></p>
-        <p><label>Comment <em>(with <a href="http://warpedvisions.org/projects/markdown-cheat-sheet/">Markdown</a>)</em></label>
-        <textarea name="comment" rows="8" cols="40"></textarea></p>
-        <p>
-          <input type="button" id="preview" value="Preview">
-          <input type="submit" value="Save &rarr;">
-        </p>
-      </form>
-      <div id="comment-preview"></div>
+        <ul></ul>
+        <!-- form to create a comment -->
+        <form id="new-comment" action="post.html" method="post">
+          <h3>Comment on this post</h3>
+          <p><label>Name</label>
+          <input type="text" name="commenter-name" value=""></p>
+          <p><label>Url <em>(optional)</em></label>
+          <input type="text" name="commenter-url" value=""></p>
+          <p><label>Email <em>(for <a href="http://gravatar.com">Gravatar</a>)</em></label>
+          <input type="text" name="commenter-email" value=""></p>
+          <p><label>Comment <em>(with <a href="http://warpedvisions.org/projects/markdown-cheat-sheet/">Markdown</a>)</em></label>
+          <textarea name="comment" rows="8" cols="40"></textarea></p>
+          <p>
+            <input type="button" id="preview" value="Preview">
+            <input type="submit" value="Save &rarr;">
+          </p>
+        </form>
+        <div id="comment-preview"></div>
       </div>
     </div>    
   </body>
@@ -53,7 +53,7 @@
       });
       
       function displayComments() {
-        app.design.view("comments", {
+        app.view("comments", {
           startkey: [docid],
           endkey: [docid, {}],
           reduce : false,

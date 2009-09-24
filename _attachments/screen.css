@@ -163,3 +163,10 @@ fieldset#author {
 textarea {
   padding:2px;
 }
+
+
+blockquote {
+  padding:8px;
+  background:#444;
+  color:#fff;
+}

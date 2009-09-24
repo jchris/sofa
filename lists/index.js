@@ -31,8 +31,7 @@ function(head, req) {
         title : post.title,
         summary : post.summary,
         date : post.created_at,
-        link : showPath('post', row.id),
-        assets : assetPath()
+        link : showPath('post', row.id)
       }));        
     }
     
@@ -68,7 +67,7 @@ function(head, req) {
           entry_id : makeAbsolute(req, '/'+encodeURIComponent(req.info.db_name)+'/'+encodeURIComponent(row.id)),
           title : row.value.title,
           content : row.value.html,
-          updated : new Date(row.value.created_at).rfc3339(),
+          updated : new Date(row.value.created_at),
           author : row.value.author,
           alternate : makeAbsolute(req, showPath('post', row.id))
         });
