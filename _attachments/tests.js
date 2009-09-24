@@ -17,13 +17,8 @@ function setupDB(design) {
   return db;  
 }
 
-// depends on our hackish view
 function getUserName(blogDb) {
-  try {
-    blogDb.save({"author":"_self"})
-  } catch(r) {
-    return r.reason.split(':').pop();
-  }
+  JSON.parse(CouchDB.request("GET", "/_session").responseText).name
 };
 
 var couchTests = {
