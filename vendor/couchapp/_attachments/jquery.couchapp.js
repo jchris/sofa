@@ -156,6 +156,12 @@
           // I wish this was shared with path.js...
           return '/'+[dbname, '_design', dname, '_show', funcname, docid].join('/')
         },
+        listPath : function(funcname, viewname) {
+          return '/'+[dbname, '_design', dname, '_list', funcname, viewname].join('/')
+        },
+        futonDocPath : function(docid) {
+          return "/_utils/document.html?"+dbname+"/"+docid;
+        },
         slugifyString : function(string) {
           return string.replace(/\W/g,'-').
             replace(/\-*$/,'').replace(/^\-*/,'').
@@ -164,7 +170,7 @@
         attemptLogin : function(win, fail) {
           var self = this;
           $.ajax({
-            url: "/_session?basic=true",
+            url: "/_session",
             dataType: "json",
             success:function(data) {
               login = data.name;
