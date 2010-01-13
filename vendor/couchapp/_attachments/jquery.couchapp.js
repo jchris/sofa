@@ -170,7 +170,7 @@
         attemptLogin : function(win, fail) {
           var self = this;
           $.ajax({
-            url: "/_session",
+            url: "/_session?basic=true",
             dataType: "json",
             success:function(data) {
               login = data.name;
