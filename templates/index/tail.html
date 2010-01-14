@@ -8,12 +8,14 @@
 <script src="../../vendor/couchapp/jquery.couchapp.js"></script>
 <script type="text/javascript" charset="utf-8">
   $.CouchApp(function(app) {
-      
     // this could be a real jQuery plugin. probably is. #lazycode
-    $('.date').each(function() {
-      $(this).text(app.prettyDate(this.innerHTML));
+    app.page.prettyDates();
+    
+    // check login
+    app.loggedIn(function(userCtx) {
+      // draw link to create new post
     });
-      
+
     app.design.view("tags",{
       descending: true, 
       group: true,

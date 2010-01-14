@@ -5,6 +5,17 @@ body {
   padding:0;
 }
 
+.hide {
+/*    display:none;*/
+}
+
+#userCtx {
+    float:right;
+    background:#888;
+    margin:4px;
+    padding:4px;
+}
+
 a {
   text-decoration:none;
 }
@@ -22,7 +33,7 @@ h2 {
   font-size:112%;
 }
 
-#header a {
+#header h2 a {
   color:#fff;
 }
 

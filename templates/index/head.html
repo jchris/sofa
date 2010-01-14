@@ -8,7 +8,27 @@
   </head>
   <body>
     <div id="header">
-      <a id="edit" href="../../_show/edit">Create new post</a>
+      <div id="userCtx" class="hide">
+        <span class="loggedout">
+          <a href="#" class="signup">Signup</a> or <a href="#" class="login">Login</a>
+        </span>
+        <span class="loggedin">
+          Welcome <a class="username">?</a>! 
+          <br/>
+          <a href="#" class="logout">Logout</a>
+        </span>
+        <span class="loggedinadmin">
+          Welcome <a class="username">?</a>! 
+          <br/>
+          <a href="#" class="createadmin">Setup more admins</a> or
+          <a href="#" class="logout">Logout</a> 
+        </span>
+        <span class="adminparty">
+          Welcome to Admin Party! 
+          <br/>
+          Everyone is admin. <a href="/_utils/" target="_new">Fix this</a>
+        </span>
+      </div>
       <h2><a href="<%= index %>"><%= title %></a></h2>
     </div>
     <div id="tags-front"></div>

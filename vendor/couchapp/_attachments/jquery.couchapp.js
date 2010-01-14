@@ -41,7 +41,7 @@
 
   var login;
   
-  function init(app) {
+  function init(appFun) {
     $(function() {
       var dbname = document.location.href.split('/')[3];
       var dname = unescape(document.location.href).split('/')[5];
@@ -130,13 +130,12 @@
         }
         return instance;
       }
-      
+
+      // this should be in it's own library
       function prettyDate(time){
       	var date = new Date(time),
       		diff = (((new Date()).getTime() - date.getTime()) / 1000),
       		day_diff = Math.floor(diff / 86400);
-
-        // if ( isNaN(day_diff) || day_diff < 0 || day_diff >= 31 ) return;
 
       	return day_diff < 1 && (
       			diff < 60 && "just now" ||
@@ -150,8 +149,7 @@
       		day_diff < 730 && Math.ceil( day_diff / 31 ) + " months ago" ||
       		Math.ceil( day_diff / 365 ) + " years ago";
       };
-      
-      app({
+      var app = {
         showPath : function(funcname, docid) {
           // I wish this was shared with path.js...
           return '/'+[dbname, '_design', dname, '_show', funcname, docid].join('/')
@@ -201,6 +199,13 @@
         view : design.view,
         docForm : docForm,
         prettyDate : prettyDate,
+        page : {
+          prettyDates : function() {
+            $('.date').each(function() {
+              $(this).text(prettyDate(this.innerHTML));
+            });
+          }
+        }
         go : function(url) {
           // callback for when not logged in
           $('body').append('<a href="'+url+'">go</a>');
@@ -208,7 +213,8 @@
           document.location = absurl;
         }
       });
-    });
+    };
+    appFun(app);
   };
 
   $.CouchApp = $.CouchApp || init;
