@@ -37,7 +37,7 @@
     this.view = function(view, opts) {
       db.view(name+'/'+view, opts);
     };
-  };
+  }
 
   var login;
   
@@ -58,32 +58,36 @@
         // field names like 'author-email' get turned into json like
         // {"author":{"email":"quentin@example.com"}}
         function formToDeepJSON(form, fields, doc) {
-          var form = $(form);
+          form = $(form);
           opts.fields.forEach(function(field) {
-            var val = form.find("[name="+field+"]").val()
-            if (!val) return;
+            var val = form.find("[name="+field+"]").val();
+            if (!val) {
+              return;
+              }
             var parts = field.split('-');
             var frontObj = doc, frontName = parts.shift();
             while (parts.length > 0) {
-              frontObj[frontName] = frontObj[frontName] || {}
+              frontObj[frontName] = frontObj[frontName] || {};
               frontObj = frontObj[frontName];
               frontName = parts.shift();
             }
             frontObj[frontName] = val;
           });
-        };
+        }
         
         // Apply the behavior
         $(formSelector).submit(function(e) {
           e.preventDefault();
           // formToDeepJSON acts on localFormDoc by reference
           formToDeepJSON(this, opts.fields, localFormDoc);
-          if (opts.beforeSave) opts.beforeSave(localFormDoc);
+          if (opts.beforeSave) {opts.beforeSave(localFormDoc);}
           db.saveDoc(localFormDoc, {
             success : function(resp) {
-              if (opts.success) opts.success(resp, localFormDoc);
+              if (opts.success) {
+                opts.success(resp, localFormDoc);
+              }
             }
-          })
+          });
           
           return false;
         });
@@ -99,20 +103,20 @@
               frontObj = frontObj[frontName];
               frontName = parts.shift();
             }
-            if (frontObj && frontObj[frontName])
-              form.find("[name="+field+"]").val(frontObj[frontName]);
+            if (frontObj && frontObj[frontName]){
+              form.find("[name="+field+"]").val(frontObj[frontName]);}
           });            
-        };
+        }
         
         if (opts.id) {
           db.openDoc(opts.id, {
             success: function(doc) {
-              if (opts.onLoad) opts.onLoad(doc);
+              if (opts.onLoad) {opts.onLoad(doc);}
               localFormDoc = doc;
               docToForm(doc);
           }});
         } else if (opts.template) {
-          if (opts.onLoad) opts.onLoad(opts.template);
+          if (opts.onLoad) {opts.onLoad(opts.template);}
           localFormDoc = opts.template;
           docToForm(localFormDoc);
         }
@@ -127,12 +131,12 @@
             formToDeepJSON(formSelector, opts.fields, localFormDoc);
             return localFormDoc;
           }
-        }
+        };
         return instance;
       }
 
       // this should be in it's own library
-      function prettyDate(time){
+      function prettyDate(time) {
       	var date = new Date(time),
       		diff = (((new Date()).getTime() - date.getTime()) / 1000),
       		day_diff = Math.floor(diff / 86400);
@@ -148,14 +152,140 @@
       		day_diff < 45 && Math.ceil( day_diff / 7 ) + " weeks ago" ||
       		day_diff < 730 && Math.ceil( day_diff / 31 ) + " months ago" ||
       		Math.ceil( day_diff / 365 ) + " years ago";
-      };
-      var app = {
+      }
+      
+      // via futon.js
+      function Session() {
+
+        function doLogin(username, password, callback) {
+          $.couch.login({
+            username : username,
+            password : password,
+            success : function() {
+              $.futon.session.sidebar();
+              callback();
+            },
+            error : function(code, error, reason) {
+              $.futon.session.sidebar();
+              callback({username : "Error logging in: "+reason});
+            }
+          });
+        }
+
+        function doSignup(username, password, callback, runLogin) {
+          $.couch.signup({
+            username : username
+          }, password, {
+            success : function() {
+              if (runLogin) {
+                doLogin(username, password, callback);            
+              } else {
+                callback();
+              }
+            },
+            error : function(status, error, reason) {
+              $.futon.session.sidebar();
+              if (error == "conflict") {
+                callback({username : "Name '"+username+"' is taken"});
+              } else {
+                callback({username : "Signup error:  "+reason});
+              }
+            }
+          });
+        }
+
+        function validateUsernameAndPassword(data, callback) {
+          if (!data.username || data.username.length === 0) {
+            callback({username: "Please enter a username."});
+            return false;
+          }
+          if (!data.password || data.password.length === 0) {
+            callback({password: "Please enter a password."});
+            return false;
+          }
+          return true;
+        }
+
+        function createAdmin() {
+          $.showDialog("dialog/_create_admin.html", {
+            submit: function(data, callback) {
+              if (!validateUsernameAndPassword(data, callback)) {return;}
+              $.couch.config({
+                success : function() {
+                  callback();
+                  doLogin(data.username, data.password, callback);            
+                  doSignup(data.username, null, callback, false);
+                }
+              }, "admins", data.username, data.password);
+            }
+          });
+          return false;
+        }
+
+        function login() {
+          $.showDialog("dialog/_login.html", {
+            submit: function(data, callback) {
+              if (!validateUsernameAndPassword(data, callback)) {return;}
+              doLogin(data.username, data.password, callback);
+            }
+          });
+          return false;
+        }
+
+        function logout() {
+          $.couch.logout({
+            success : function(resp) {
+              $.futon.session.sidebar();
+            }
+          });
+        }
+
+        function signup() {
+          $.showDialog("dialog/_signup.html", {
+            submit: function(data, callback) {
+              if (!validateUsernameAndPassword(data, callback)) {return;}
+              doSignup(data.username, data.password, callback, true);
+            }
+          });
+          return false;
+        }
+
+        this.setupSidebar = function() {
+          $("#userCtx .login").click(login);
+          $("#userCtx .logout").click(logout);
+          $("#userCtx .signup").click(signup);
+          $("#userCtx .createadmin").click(createAdmin);
+        };
+
+        this.sidebar = function() {
+          // get users db info?
+          $("#userCtx span").hide();
+          $.couch.session({
+            success : function(userCtx) {
+              if (userCtx.name) {
+                $("#userCtx .username").text(userCtx.name).attr({href : "/_utils/document.html?"+encodeURIComponent(userCtx.info.user_db)+"/org.couchdb.user%3A"+userCtx.name});
+                if (userCtx.roles.indexOf("_admin") != -1) {
+                  $("#userCtx .loggedinadmin").show();
+                } else {
+                  $("#userCtx .loggedin").show();
+                }
+              } else if (userCtx.roles.indexOf("_admin") != -1) {
+                $("#userCtx .adminparty").show();
+              } else {
+                $("#userCtx .loggedout").show();
+              }
+            }
+          });
+        };
+      }
+      
+      var exports = {
         showPath : function(funcname, docid) {
           // I wish this was shared with path.js...
-          return '/'+[dbname, '_design', dname, '_show', funcname, docid].join('/')
+          return '/'+[dbname, '_design', dname, '_show', funcname, docid].join('/');
         },
         listPath : function(funcname, viewname) {
-          return '/'+[dbname, '_design', dname, '_list', funcname, viewname].join('/')
+          return '/'+[dbname, '_design', dname, '_list', funcname, viewname].join('/');
         },
         futonDocPath : function(docid) {
           return "/_utils/document.html?"+dbname+"/"+docid;
@@ -170,28 +300,29 @@
           $.ajax({
             url: "/_session",
             dataType: "json",
+            // we can remove the local cookie stuff
             success:function(data) {
               login = data.name;
               if (login) {
                 $.cookies.set("login", login, '/'+dbname);
-                win && win(login); 
+                if (win) { win(login); }
               } else {
                 $.cookies.set("login", "", '/'+dbname);
-                fail && fail();                
+                if (fail) { fail(); }
               }
             },
             error: function() {
               $.cookies.set("login", "", '/'+dbname);
-              fail && fail();
+              if (fail) { fail(); }
             }
           });      
         },
         loggedInNow : function(loggedIn, loggedOut) {
           login = login || $.cookies.get("login");
           if (login) {
-            loggedIn && loggedIn(login);
+            if (loggedIn) {loggedIn(login);}
           } else {
-            loggedOut && loggedOut();
+            if (loggedOut) {loggedOut();}
           }
         },
         db : db,
@@ -205,18 +336,17 @@
               $(this).text(prettyDate(this.innerHTML));
             });
           }
-        }
+        },
         go : function(url) {
           // callback for when not logged in
           $('body').append('<a href="'+url+'">go</a>');
           var absurl = $('body a:last')[0].href;
           document.location = absurl;
         }
-      });
-    };
-    appFun(app);
+      };
+      appFun(exports);
+    });
   };
-
   $.CouchApp = $.CouchApp || init;
 
 })(jQuery);

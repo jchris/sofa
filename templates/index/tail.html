@@ -8,12 +8,44 @@
 <script src="../../vendor/couchapp/jquery.couchapp.js"></script>
 <script type="text/javascript" charset="utf-8">
   $.CouchApp(function(app) {
+
+    // set css classes for login form
+    $("#userCtx a.login").click(function() {
+      $("#userCtx .loggedout").addClass("login");
+      $("#userCtx .loggedout").removeClass("signup");
+      console.log("c login");
+    });
+    $("#userCtx a.signup").click(function() {
+      console.log("c signup");
+      $("#userCtx .loggedout").addClass("signup");
+      $("#userCtx .loggedout").removeClass("login");
+    });
+
+
+    $("#userCtx #signup").submit(function(login) {
+      console.log("submit signup");
+      return false;
+    })
+
     // this could be a real jQuery plugin. probably is. #lazycode
-    app.page.prettyDates();
-    
-    // check login
-    app.loggedIn(function(userCtx) {
-      // draw link to create new post
+    app.page.prettyDates();  
+    $.couch.session({
+    success : function(userCtx) {
+      var body = $("body");  
+        if (userCtx.name) {
+          $("#userCtx .username").text(userCtx.name).attr({href : "/_utils/document.html?"+encodeURIComponent(userCtx.info.user_db)+"/org.couchdb.user%3A"+userCtx.name});
+          if (userCtx.roles.indexOf("_admin") != -1) {
+            body.addClass("admin");
+            body.addClass("loggedin");
+          } else {
+            body.addClass("loggedin");
+          }
+        } else if (userCtx.roles.indexOf("_admin") != -1) {
+          body.addClass("adminparty");
+        } else {
+          body.addClass("loggedout");
+        };
+      }
     });
 
     app.design.view("tags",{
