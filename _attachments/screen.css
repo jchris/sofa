@@ -15,6 +15,7 @@ body {
 
 .loggedout.login form#login,
 .loggedout.signup form#signup,
+.adminparty #userCtx div.adminparty, 
 .loggedin #userCtx div.loggedin, 
 .loggedout #userCtx div.loggedout {
   display:block;

@@ -11,21 +11,24 @@
 
     // set css classes for login form
     $("#userCtx a.login").click(function() {
-      $("#userCtx .loggedout").addClass("login");
-      $("#userCtx .loggedout").removeClass("signup");
+      $("#userCtx .loggedout").addClass("login").removeClass("signup");
       console.log("c login");
     });
     $("#userCtx a.signup").click(function() {
       console.log("c signup");
-      $("#userCtx .loggedout").addClass("signup");
-      $("#userCtx .loggedout").removeClass("login");
+      $("#userCtx .loggedout").addClass("signup").removeClass("login");
     });
 
 
     $("#userCtx #signup").submit(function(login) {
       console.log("submit signup");
       return false;
-    })
+    });
+    
+    $("#userCtx #login").submit(function(login) {
+      console.log("submit login");
+      return false;
+    });
 
     // this could be a real jQuery plugin. probably is. #lazycode
     app.page.prettyDates();  
@@ -33,16 +36,23 @@
     success : function(userCtx) {
       var body = $("body");  
         if (userCtx.name) {
-          $("#userCtx .username").text(userCtx.name).attr({href : "/_utils/document.html?"+encodeURIComponent(userCtx.info.user_db)+"/org.couchdb.user%3A"+userCtx.name});
-          if (userCtx.roles.indexOf("_admin") != -1) {
-            body.addClass("admin");
-            body.addClass("loggedin");
-          } else {
-            body.addClass("loggedin");
-          }
+          // logged in
+          $("#userCtx .username").text(userCtx.name).
+            attr({href : "/_utils/document.html?" 
+            + encodeURIComponent(userCtx.info.user_db) 
+            + "/org.couchdb.user%3A"+userCtx.name});
+          body.removeClass("loggedout");
+          body.removeClass("adminparty");
+          body.addClass("loggedin");
         } else if (userCtx.roles.indexOf("_admin") != -1) {
+          // admin party
+          body.removeClass("loggedin");
+          body.removeClass("loggedout");
           body.addClass("adminparty");
         } else {
+          // logged out
+          body.removeClass("loggedin");
+          body.removeClass("adminparty");
           body.addClass("loggedout");
         };
       }
