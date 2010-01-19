@@ -10,13 +10,39 @@
 // License for the specific language governing permissions and limitations under
 // the License.
 
+// jquery.couchapp.js
+// This file contains the basics of the CouchApp framework.
+// If all you want to do is have easy access to views and docs without
+// having to load more code, use this file.
+
 // Usage: The passed in function is called when the page is ready.
-// CouchApp passes in the app object, which takes care of linking to 
-// the proper database, and provides access to the CouchApp helpers.
+// CouchApp passes an app object to the callback, which takes care of 
+// linking to the proper database, and provides access to the CouchApp 
+// helpers.
+// 
 // $.CouchApp(function(app) {
-//    app.db.view(...)
+//    app.view(...)
 //    ...
 // });
+// 
+// There are other functionality plugins in the base distribution of CouchApp:
+// 
+// login
+// this handles the login / signup process. you can style the form with CSS.
+// 
+// docForm
+// this manages keeping a doc in sync with an HTML form. It's up to you to draw the form for now.
+// 
+// paths
+// this makes linking between pages simple
+// note: paths is included by default
+// 
+// mustache?
+// 
+// and more.
+//
+// TBD how we will handle client-side vs server side code loading.
+
 
 (function($) {
 
@@ -55,233 +81,21 @@
 
   var login;
   
-  function init(appFun) {
+  // init is called by $.CouchApp(myAppFun) which 
+  // calls myAppFun after onload and some setup.
+  $.CouchApp = $.CouchApp || function(appFun) {
     $(function() {
       var dbname = document.location.href.split('/')[3];
       var dname = unescape(document.location.href).split('/')[5];
       var db = $.couch.db(dbname);
       var design = new Design(db, dname);
       
-      function loginForm() {
-        
-      };
-      
-      // docForm applies CouchDB behavior to HTML forms.
-      function docForm(formSelector, opts) {
-        var localFormDoc = {};
-        opts = opts || {};
-        opts.fields = opts.fields || [];
-        
-        // turn the form into deep json
-        // field names like 'author-email' get turned into json like
-        // {"author":{"email":"quentin@example.com"}}
-        function formToDeepJSON(form, fields, doc) {
-          form = $(form);
-          opts.fields.forEach(function(field) {
-            var val = form.find("[name="+field+"]").val();
-            if (!val) {
-              return;
-              }
-            var parts = field.split('-');
-            var frontObj = doc, frontName = parts.shift();
-            while (parts.length > 0) {
-              frontObj[frontName] = frontObj[frontName] || {};
-              frontObj = frontObj[frontName];
-              frontName = parts.shift();
-            }
-            frontObj[frontName] = val;
-          });
-        }
-        
-        // Apply the behavior
-        $(formSelector).submit(function(e) {
-          e.preventDefault();
-          // formToDeepJSON acts on localFormDoc by reference
-          formToDeepJSON(this, opts.fields, localFormDoc);
-          if (opts.beforeSave) {opts.beforeSave(localFormDoc);}
-          db.saveDoc(localFormDoc, {
-            success : function(resp) {
-              if (opts.success) {
-                opts.success(resp, localFormDoc);
-              }
-            }
-          });
-          
-          return false;
-        });
 
-        // populate form from an existing doc
-        function docToForm(doc) {
-          var form = $(formSelector);
-          // fills in forms
-          opts.fields.forEach(function(field) {
-            var parts = field.split('-');
-            var run = true, frontObj = doc, frontName = parts.shift();
-            while (frontObj && parts.length > 0) {                
-              frontObj = frontObj[frontName];
-              frontName = parts.shift();
-            }
-            if (frontObj && frontObj[frontName]){
-              form.find("[name="+field+"]").val(frontObj[frontName]);}
-          });            
-        }
-        
-        if (opts.id) {
-          db.openDoc(opts.id, {
-            success: function(doc) {
-              if (opts.onLoad) {opts.onLoad(doc);}
-              localFormDoc = doc;
-              docToForm(doc);
-          }});
-        } else if (opts.template) {
-          if (opts.onLoad) {opts.onLoad(opts.template);}
-          localFormDoc = opts.template;
-          docToForm(localFormDoc);
-        }
-        var instance = {
-          deleteDoc : function(opts) {
-            opts = opts || {};
-            if (confirm("Really delete this document?")) {                
-              db.removeDoc(localFormDoc, opts);
-            }
-          },
-          localDoc : function() {
-            formToDeepJSON(formSelector, opts.fields, localFormDoc);
-            return localFormDoc;
-          }
-        };
-        return instance;
-      }
-
-      
-      // via futon.js
-      function Session() {
-
-        function doLogin(username, password, callback) {
-          $.couch.login({
-            username : username,
-            password : password,
-            success : function() {
-              $.futon.session.sidebar();
-              callback();
-            },
-            error : function(code, error, reason) {
-              $.futon.session.sidebar();
-              callback({username : "Error logging in: "+reason});
-            }
-          });
-        }
-
-        function doSignup(username, password, callback, runLogin) {
-          $.couch.signup({
-            username : username
-          }, password, {
-            success : function() {
-              if (runLogin) {
-                doLogin(username, password, callback);            
-              } else {
-                callback();
-              }
-            },
-            error : function(status, error, reason) {
-              $.futon.session.sidebar();
-              if (error == "conflict") {
-                callback({username : "Name '"+username+"' is taken"});
-              } else {
-                callback({username : "Signup error:  "+reason});
-              }
-            }
-          });
-        }
-
-        function validateUsernameAndPassword(data, callback) {
-          if (!data.username || data.username.length === 0) {
-            callback({username: "Please enter a username."});
-            return false;
-          }
-          if (!data.password || data.password.length === 0) {
-            callback({password: "Please enter a password."});
-            return false;
-          }
-          return true;
-        }
-
-        function createAdmin() {
-          $.showDialog("dialog/_create_admin.html", {
-            submit: function(data, callback) {
-              if (!validateUsernameAndPassword(data, callback)) {return;}
-              $.couch.config({
-                success : function() {
-                  callback();
-                  doLogin(data.username, data.password, callback);            
-                  doSignup(data.username, null, callback, false);
-                }
-              }, "admins", data.username, data.password);
-            }
-          });
-          return false;
-        }
-
-        function login() {
-          $.showDialog("dialog/_login.html", {
-            submit: function(data, callback) {
-              if (!validateUsernameAndPassword(data, callback)) {return;}
-              doLogin(data.username, data.password, callback);
-            }
-          });
-          return false;
-        }
-
-        function logout() {
-          $.couch.logout({
-            success : function(resp) {
-              $.futon.session.sidebar();
-            }
-          });
-        }
-
-        function signup() {
-          $.showDialog("dialog/_signup.html", {
-            submit: function(data, callback) {
-              if (!validateUsernameAndPassword(data, callback)) {return;}
-              doSignup(data.username, data.password, callback, true);
-            }
-          });
-          return false;
-        }
-
-        this.setupSidebar = function() {
-          $("#userCtx .login").click(login);
-          $("#userCtx .logout").click(logout);
-          $("#userCtx .signup").click(signup);
-          $("#userCtx .createadmin").click(createAdmin);
-        };
-
-        this.sidebar = function() {
-          // get users db info?
-          $("#userCtx span").hide();
-          $.couch.session({
-            success : function(userCtx) {
-              if (userCtx.name) {
-                $("#userCtx .username").text(userCtx.name).attr({href : "/_utils/document.html?"+encodeURIComponent(userCtx.info.user_db)+"/org.couchdb.user%3A"+userCtx.name});
-                if (userCtx.roles.indexOf("_admin") != -1) {
-                  $("#userCtx .loggedinadmin").show();
-                } else {
-                  $("#userCtx .loggedin").show();
-                }
-              } else if (userCtx.roles.indexOf("_admin") != -1) {
-                $("#userCtx .adminparty").show();
-              } else {
-                $("#userCtx .loggedout").show();
-              }
-            }
-          });
-        };
-      }
       
       // merge these exports with a global object other plugins can tap into
       $.CouchApp.app
-      var exports = {
+      
+      var appExports = $.extend({
         showPath : function(funcname, docid) {
           // I wish this was shared with path.js...
           return '/'+[dbname, '_design', dname, '_show', funcname, docid].join('/');
@@ -336,18 +150,18 @@
         db : db,
         design : design,
         view : design.view,
-        docForm : docForm,
         go : function(url) {
           // callback for when not logged in
           $('body').append('<a href="'+url+'">go</a>');
           var absurl = $('body a:last')[0].href;
           document.location = absurl;
         }
-      };
+      }, $.CouchApp.app);
       
-      appFun(exports);
+       ;
+      
+      appFun(appExports);
     });
   };
-  $.CouchApp = $.CouchApp || init;
-
+  
 })(jQuery);
