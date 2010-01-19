@@ -20,18 +20,32 @@
 
 (function($) {
 
-  function f(n) {    // Format integers to have at least two digits.
+  // extra special sure that we use json2.js style dates.
+
+  function f(n) {
+      // Format integers to have at least two digits.
       return n < 10 ? '0' + n : n;
   }
 
-  Date.prototype.toJSON = function() {
-      return this.getUTCFullYear()   + '/' +
-           f(this.getUTCMonth() + 1) + '/' +
-           f(this.getUTCDate())      + ' ' +
-           f(this.getUTCHours())     + ':' +
-           f(this.getUTCMinutes())   + ':' +
-           f(this.getUTCSeconds())   + ' +0000';
-  };
+  if (typeof Date.prototype.toJSON !== 'function') {
+
+      Date.prototype.toJSON = function (key) {
+
+          return isFinite(this.valueOf()) ?
+                 this.getUTCFullYear()   + '-' +
+               f(this.getUTCMonth() + 1) + '-' +
+               f(this.getUTCDate())      + 'T' +
+               f(this.getUTCHours())     + ':' +
+               f(this.getUTCMinutes())   + ':' +
+               f(this.getUTCSeconds())   + 'Z' : null;
+      };
+
+      String.prototype.toJSON =
+      Number.prototype.toJSON =
+      Boolean.prototype.toJSON = function (key) {
+          return this.valueOf();
+      };
+  }
   
   function Design(db, name) {
     this.view = function(view, opts) {
@@ -47,6 +61,10 @@
       var dname = unescape(document.location.href).split('/')[5];
       var db = $.couch.db(dbname);
       var design = new Design(db, dname);
+      
+      function loginForm() {
+        
+      };
       
       // docForm applies CouchDB behavior to HTML forms.
       function docForm(formSelector, opts) {

@@ -6,9 +6,35 @@
 <script src="/_utils/script/jquery.js"></script>
 <script src="/_utils/script/jquery.couch.js"></script>
 <script src="../../vendor/couchapp/jquery.couchapp.js"></script>
+<script src="../../vendor/couchapp/jquery.prettydate.js"></script>
 <script type="text/javascript" charset="utf-8">
   $.CouchApp(function(app) {
+    // var userForm = app.userForm("#userCtx");
+    
+    $('.date').prettyDate();
+    
+    // app.page.prettyDates();
 
+    // todo browse by tags
+    app.design.view("tags",{
+      descending: true, 
+      group: true,
+      success: function(json) {
+        var total = 0;
+        for(var idx in json.rows) {
+          total += json.rows[idx].value;
+        }
+        var tags = [];
+        for(var idx in json.rows) {
+          var percent = Math.ceil(Math.pow((json.rows[idx].value / total), 0.25) * 200);
+          tags.push('<span style="font-size:'+percent+'%;">' + json.rows[idx].key + '</span>');
+        }
+        $("#tags-front").append(tags.join(", "));
+      }
+    });
+
+// below here todo move to couchapp files
+return;
     // set css classes for login form
     $("#userCtx a.login").click(function() {
       $("#userCtx .loggedout").addClass("login").removeClass("signup");
@@ -20,26 +46,46 @@
     });
 
 
-    $("#userCtx #signup").submit(function(login) {
+    $("#userCtx #signup").submit(function(e) {
+      e.preventDefault();
       console.log("submit signup");
+      var form = $(this);
+      var name = form.find("[name=name]").val();
+      var password = form.find("[name=password]").val();
+      $.couch.signup({
+        name : name
+      }, password, {
+        success : function() {
+          doLogin(name, password, callback);            
+        },
+        error : function(status, error, reason) {
+          if (error == "conflict") {
+            alert("Name '"+name+"' is taken");
+          } else {
+            alert("Signup error:  "+reason);
+          }
+        }
+      });
       return false;
     });
     
     $("#userCtx #login").submit(function(login) {
       console.log("submit login");
+      
       return false;
     });
 
-    // this could be a real jQuery plugin. probably is. #lazycode
-    app.page.prettyDates();  
+    
+    // $.couch.app.account("#userCtx")
     $.couch.session({
-    success : function(userCtx) {
+    success : function(r) {
+      var userCtx = r.userCtx;
       var body = $("body");  
         if (userCtx.name) {
           // logged in
           $("#userCtx .username").text(userCtx.name).
             attr({href : "/_utils/document.html?" 
-            + encodeURIComponent(userCtx.info.user_db) 
+            + encodeURIComponent(r.info.user_db) 
             + "/org.couchdb.user%3A"+userCtx.name});
           body.removeClass("loggedout");
           body.removeClass("adminparty");
@@ -55,23 +101,6 @@
           body.removeClass("adminparty");
           body.addClass("loggedout");
         };
-      }
-    });
-
-    app.design.view("tags",{
-      descending: true, 
-      group: true,
-      success: function(json) {
-        var total = 0;
-        for(var idx in json.rows) {
-          total += json.rows[idx].value;
-        }
-        var tags = [];
-        for(var idx in json.rows) {
-          var percent = Math.ceil(Math.pow((json.rows[idx].value / total), 0.25) * 200);
-          tags.push('<span style="font-size:'+percent+'%;">' + json.rows[idx].key + '</span>');
-        }
-        $("#tags-front").append(tags.join(", "));
       }
     });
   });
