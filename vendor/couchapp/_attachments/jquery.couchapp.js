@@ -153,24 +153,6 @@
         return instance;
       }
 
-      // this should be in it's own library
-      function prettyDate(time) {
-      	var date = new Date(time),
-      		diff = (((new Date()).getTime() - date.getTime()) / 1000),
-      		day_diff = Math.floor(diff / 86400);
-
-      	return day_diff < 1 && (
-      			diff < 60 && "just now" ||
-      			diff < 120 && "1 minute ago" ||
-      			diff < 3600 && Math.floor( diff / 60 ) + " minutes ago" ||
-      			diff < 7200 && "1 hour ago" ||
-      			diff < 86400 && Math.floor( diff / 3600 ) + " hours ago") ||
-      		day_diff == 1 && "yesterday" ||
-      		day_diff < 21 && day_diff + " days ago" ||
-      		day_diff < 45 && Math.ceil( day_diff / 7 ) + " weeks ago" ||
-      		day_diff < 730 && Math.ceil( day_diff / 31 ) + " months ago" ||
-      		Math.ceil( day_diff / 365 ) + " years ago";
-      }
       
       // via futon.js
       function Session() {
@@ -336,25 +318,23 @@
           });      
         },
         loggedInNow : function(loggedIn, loggedOut) {
-          login = login || $.cookies.get("login");
-          if (login) {
-            if (loggedIn) {loggedIn(login);}
-          } else {
-            if (loggedOut) {loggedOut();}
-          }
+          $.couch.session({
+            success : function(resp) {
+              var userCtx = resp.userCtx;
+              if (userCtx.name) {
+                if (loggedIn) {loggedIn(userCtx);}
+              } else if (userCtx.roles.indexOf("admin") == -1) {
+                if (loggedOut) {loggedOut();}
+              } else {
+                alert("Admin party! Fix this in Futon.");
+              }
+            };
+          });
         },
         db : db,
         design : design,
         view : design.view,
         docForm : docForm,
-        prettyDate : prettyDate,
-        page : {
-          prettyDates : function() {
-            $('.date').each(function() {
-              $(this).text(prettyDate(this.innerHTML));
-            });
-          }
-        },
         go : function(url) {
           // callback for when not logged in
           $('body').append('<a href="'+url+'">go</a>');
