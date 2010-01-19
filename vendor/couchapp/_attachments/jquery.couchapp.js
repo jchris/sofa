@@ -279,6 +279,8 @@
         };
       }
       
+      // merge these exports with a global object other plugins can tap into
+      $.CouchApp.app
       var exports = {
         showPath : function(funcname, docid) {
           // I wish this was shared with path.js...
@@ -342,6 +344,7 @@
           document.location = absurl;
         }
       };
+      
       appFun(exports);
     });
   };

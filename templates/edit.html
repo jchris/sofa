@@ -29,19 +29,22 @@
     </div>
   </body>
   <script src="/_utils/script/json2.js"></script>
-  <script src="/_utils/script/jquery.js?1.2.6"></script>
-  <script src="/_utils/script/jquery.couch.js?0.8.0"></script>
+  <script src="/_utils/script/jquery.js"></script>
+  <script src="/_utils/script/jquery.couch.js"></script>
   <script src="/_utils/script/jquery.cookies.js"></script>
-  <script src="<%= assets %>/jquery.scrollTo.js"></script>
-  <script src="<%= assets %>/vendor/couchapp/jquery.couchapp.js"></script>
-  <script src="<%= assets %>/blog.js"></script>
-  <script src="<%= assets %>/showdown.js"></script>
-  <script src="<%= assets %>/textile.js"></script>
+  <script src="../../vendor/couchapp/jquery.couchapp.js"></script>
+  <script src="../../vendor/couchapp/jquery.couchapp.docform.js"></script>
+  <script src="../../vendor/couchapp/jquery.prettydate.js"></script>
+  <script src="../../jquery.scrollTo.js"></script>
+  <script src="../../vendor/couchapp/jquery.couchapp.js"></script>
+  <script src="../../blog.js"></script>
+  <script src="../../showdown.js"></script>
+  <script src="../../textile.js"></script>
   <script type="text/javascript" charset="utf-8">
     $.CouchApp(function(app) {
-      app.loggedInNow(function(login) {
+      app.session(function(userCtx) {
         // w00t, we're logged in (according to the cookie)
-        $("#header").prepend('<span id="login">'+login+'</span>');
+        $("#header").prepend('<span id="login">'+userCtx.name+'</span>');
         // setup CouchApp document/form system, adding app-specific callbacks
         // rename docForm?
         var B = new Blog(app);
@@ -53,7 +56,7 @@
           template : {
             type : "post",
             format : "markdown",
-            author : login
+            author : userCtx.name
           },
           onLoad : function(doc) {
             if (doc._id) {
@@ -102,7 +105,7 @@
           $('body').scrollTo('#show-preview', {duration: 500});
         });
       }, function() {
-        app.go('<%= assets %>/account.html#'+document.location);
+        alert("Please login before refreshing the page to edit.");
       });
     });
   </script>
