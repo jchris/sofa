@@ -107,7 +107,7 @@ function Session() {
     $.couch.session({
       success : function(userCtx) {
         if (userCtx.name) {
-          $("#userCtx .username").text(userCtx.name).attr({href : "/_utils/document.html?"+encodeURIComponent(userCtx.info.user_db)+"/org.couchdb.user%3A"+userCtx.name});
+          $("#userCtx .username").text(userCtx.name).attr({href : "/_utils/document.html?"+encodeURIComponent(userCtx.info.authentication_db)+"/org.couchdb.user%3A"+userCtx.name});
           if (userCtx.roles.indexOf("_admin") != -1) {
             $("#userCtx .loggedinadmin").show();
           } else {

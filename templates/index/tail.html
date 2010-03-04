@@ -85,7 +85,7 @@ return;
           // logged in
           $("#userCtx .username").text(userCtx.name).
             attr({href : "/_utils/document.html?" 
-            + encodeURIComponent(r.info.user_db) 
+            + encodeURIComponent(r.info.authentication_db) 
             + "/org.couchdb.user%3A"+userCtx.name});
           body.removeClass("loggedout");
           body.removeClass("adminparty");

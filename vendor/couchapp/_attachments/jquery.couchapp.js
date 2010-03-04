@@ -93,9 +93,10 @@
 
       
       // merge these exports with a global object other plugins can tap into
-      $.CouchApp.app
+      
       
       var appExports = $.extend({
+        // legacy
         showPath : function(funcname, docid) {
           // I wish this was shared with path.js...
           return '/'+[dbname, '_design', dname, '_show', funcname, docid].join('/');
@@ -157,11 +158,29 @@
           document.location = absurl;
         }
       }, $.CouchApp.app);
-      
-       ;
-      
+            
       appFun(appExports);
     });
   };
-  
+  $.CouchApp.app = $.CouchApp.app || {};
+})(jQuery);
+
+// jquery.couchapp.paths.js is included inline as an example plugin.
+// TODO this is a good one to have work in the server-side context as well
+
+(function($) {
+  $.CouchApp.app.paths = {
+    show : function(funcname, docid) {
+      // I wish this was shared with path.js...
+      return '/'+[dbname, '_design', dname, '_show', funcname, docid].join('/');
+    },
+    list : function(funcname, viewname) {
+      // todo this should get uriEscaped
+      return '/'+[dbname, '_design', dname, '_list', funcname, viewname].join('/');
+    },
+    futonDoc : function(docid) {
+      return "/_utils/document.html?"+dbname+"/"+docid;
+    }
+  }
+
 })(jQuery);

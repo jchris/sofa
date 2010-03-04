@@ -123,10 +123,6 @@ p.post {
 }
 
 #comments {
-  display:none;
-}
-
-#comments {
   font-size:80%;
   background:#fdfdfd;
   padding:12px;
