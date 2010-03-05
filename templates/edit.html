@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title><%= blog.title %></title>
-    <link rel="stylesheet" href="<%= assets %>/screen.css" type="text/css">
+    <title>{{ blog.title }}</title>
+    <link rel="stylesheet" href="{{ assets }}/screen.css" type="text/css">
   </head>
   <body>
     <div id="header">
-      <h2><a href="<%= index %>"><%= blog.title %></a></h2>
+      <h2><a href="{{ index }}">{{ blog.title }}</a></h2>
     </div>
     <div id="content">
     <!-- form to create a post -->
@@ -51,7 +51,7 @@
         // thin controller - move to B?
 
         var postForm = app.docForm("form#new-post", {
-          id : <%= docid %>,
+          id : {{ docid }},
           fields : ["title", "body", "tags"],
           template : {
             type : "post",

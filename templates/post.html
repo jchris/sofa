@@ -1,19 +1,19 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title><%= title %> : <%= blogName %></title>
+    <title>{{ title }} : {{ blogName }}</title>
     <link rel="stylesheet" href="../../screen.css" type="text/css">
   </head>
   <body>
     <div id="header">
-      <a id="edit" href="<%= editPostPath %>">Edit this post</a>
-      <h2><a href="<%= index %>"><%= blogName %></a></h2>
+      <a id="edit" href="{{ editPostPath }}">Edit this post</a>
+      <h2><a href="{{ index }}">{{ blogName }}</a></h2>
     </div>
     <div id="content">
-      <h1><%= title %></h1>
+      <h1>{{ title }}</h1>
       <div id="post">
-        <span class="date"><%= date %></span>
-        <div class="body"><%= post %></div>
+        <span class="date">{{ date }}</span>
+        <div class="body">{{ post }}</div>
       </div>
       <div id="tags"></div>
       <div id="comments">
@@ -41,8 +41,8 @@
   <script src="/_utils/script/json2.js"></script>
   <script src="/_utils/script/jquery.js?1.2.6"></script>
   <script src="/_utils/script/jquery.couch.js?0.8.0"></script>
-  <script src="<%= assets %>/vendor/couchapp/jquery.couchapp.js"></script>
-  <script src="<%= assets %>/blog.js"></script>
+  <script src="{{ assets }}/vendor/couchapp/jquery.couchapp.js"></script>
+  <script src="{{ assets }}/blog.js"></script>
   <script type="text/javascript" charset="utf-8">
   $.CouchApp(function(app) {
       var docid = document.location.pathname.split('/').pop();
@@ -100,5 +100,5 @@
       });
     });
   </script>
-  <script src="<%= assets %>/showdown.js"></script>
+  <script src="{{ assets }}/showdown.js"></script>
 </html>

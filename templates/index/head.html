@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title><%= title %></title>
+    <title>{{ title }}</title>
     <link rel="stylesheet" href="../../screen.css" type="text/css"/>
     <link rel="alternate" type="application/atom+xml" 
-      title="Atom Feed" href="<%= feedPath %>"/>
+      title="Atom Feed" href="{{ feedPath }}"/>
   </head>
 
   <body>
@@ -39,7 +39,7 @@
         </div>
       </div>
       <!-- end mustache template -->
-      <h2><a href="<%= index %>"><%= title %></a></h2>
+      <h2><a href="{{ index }}">{{ title }}</a></h2>
     </div>
     <div id="tags-front"></div>
     <div id="content">

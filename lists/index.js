@@ -1,6 +1,6 @@
 function(head, req) {
-  // !json templates.index
-  // !json blog
+  var ddoc = this;
+
   // !code vendor/couchapp/path.js
   // !code vendor/couchapp/date.js
   // !code vendor/couchapp/template.js
@@ -14,8 +14,8 @@ function(head, req) {
   // thier priority. In this case HTML is the preferred format, so it comes first.
   provides("html", function() {
     // render the html head using a template
-    send(template(templates.index.head, {
-      title : blog.title,
+    send(template(ddoc.templates.index.head, {
+      title : ddoc.blog.title,
       feedPath : feedPath,
       newPostPath : showPath("edit"),
       index : indexPath,
