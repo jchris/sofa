@@ -1,3 +1,57 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>{{ title }}</title>
+    <link rel="stylesheet" href="../../screen.css" type="text/css"/>
+    <link rel="alternate" type="application/atom+xml" 
+      title="Atom Feed" href="{{ feedPath }}"/>
+  </head>
+
+  <body>
+    <div id="header">
+      <!-- make mustache template -->
+      <div id="userCtx">
+        <div class="loggedout">
+          <a href="#" class="signup">Signup</a> or <a href="#" class="login">Login</a>
+          <form id="login">
+            <label for="name">Name</label>
+            <input type="text" name="name" value="" id="name">
+            <label for="password">Password</label>
+            <input type="password" name="password" value="" id="password">
+            <input id="submit_login" type="submit" value="Login"> 
+          </form>
+          <form id="signup">
+            <label for="name">Name</label>
+            <input type="text" name="name" value="" id="name">
+            <label for="password">Password</label>
+            <input type="password" name="password" value="" id="password">
+            <input id="submit_login" type="submit" value="Signup"> 
+          </form>
+        </div>
+        <div class="loggedin">
+          Welcome <a class="username">?</a>! 
+          <a href="link/to/create" class="create">Create a Post</a> or
+          <a href="#" class="logout">Logout</a>
+        </div>
+        <div class="adminparty">
+          Welcome to Admin Party! 
+          <a href="/_utils/" target="_new">Fix this before using Sofa.</a>
+        </div>
+      </div>
+      <!-- end mustache template -->
+      <h2><a href="{{ index }}">{{ title }}</a></h2>
+    </div>
+    <div id="tags-front"></div>
+    <div id="content">
+      <h1>Recently...</h1>
+      <ul id="posts">
+        {{#posts}}
+          <li>
+            <h3><a href="{{ link }}">{{ title }}</a></h3>
+            <span class="date" title="{{ date }}">{{ date }}</span>
+            <div class="body">{{ summary }}</div>
+          </li>
+        {{/posts}}
     </ul>
     <a class="paginate" href="{{ older }}">older posts</a>
   </div>
@@ -12,9 +66,9 @@
 <script type="text/javascript" charset="utf-8">
   $.CouchApp(function(app) {
     // var userForm = app.userForm("#userCtx");
-    
+
     $('.date').prettyDate();
-    
+
     // todo browse by tags
     app.design.view("tags",{
       descending: true, 
@@ -68,14 +122,14 @@ return;
       });
       return false;
     });
-    
+
     $("#userCtx #login").submit(function(login) {
       console.log("submit login");
-      
+
       return false;
     });
 
-    
+
     // $.couch.app.account("#userCtx")
     $.couch.session({
     success : function(r) {

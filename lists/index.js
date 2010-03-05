@@ -1,5 +1,7 @@
 function(head, req) {
   var ddoc = this;
+  var index = this.templates.index;
+  var Mustache = require("lib/mustache");
 
   // !code vendor/couchapp/path.js
   // !code vendor/couchapp/date.js
@@ -14,7 +16,7 @@ function(head, req) {
   // thier priority. In this case HTML is the preferred format, so it comes first.
   provides("html", function() {
     // render the html head using a template
-    send(template(ddoc.templates.index.head, {
+    send(Mustache.to_html(index.head, {
       title : ddoc.blog.title,
       feedPath : feedPath,
       newPostPath : showPath("edit"),
@@ -27,7 +29,7 @@ function(head, req) {
     while (row = getRow()) {
       var post = row.value;
       key = row.key;
-      send(template(templates.index.row, {
+      send(Mustache.to_html(index.row, {
         title : post.title,
         summary : post.summary,
         date : post.created_at,
@@ -36,7 +38,7 @@ function(head, req) {
     }
     
     // render the html tail template
-    return template(templates.index.tail, {
+    return Mustache.to_html(templates.index.tail, {
       assets : assetPath(),
       older : olderPath(key)
     });
