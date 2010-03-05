@@ -54,10 +54,10 @@ function listPath() {
   return makePath(concatArgs(parts, arguments));
 };
 
-function olderPath(before_key) {
-  if (!before_key) return null;
+function olderPath(info) {
+  if (!info) return null;
   var q = req.query;
-  q.startkey = before_key;
+  q.startkey = info.prev_key;
   q.skip=1;
   return listPath('index','recent-posts',q);
 }

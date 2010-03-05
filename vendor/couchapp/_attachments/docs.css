@@ -1,0 +1,53 @@
+body {
+  font:1em Helvetica, sans-serif;
+  margin:0;
+  padding:4px;
+}
+
+h1 {
+  margin:0.5em;
+}
+
+h2 {
+  color:#222;
+}
+
+pre {
+  padding:4px;
+  margin:4px;
+  background:#bbb;
+}
+
+#content {
+  padding:4px;
+  margin:2px;
+}
+
+#sidebar {
+  float:right;
+  width:34%;
+}
+
+#docs {
+  -moz-box-shadow:0 0 2em #000;
+  -webkit-box-shadow:0 0 2em #000;
+  width:58%;
+  padding:8px;
+  margin:4px;
+}
+
+.example {
+  background:#ffd;
+  padding:4px;
+  margin:4px;
+  position:absolute;
+}
+
+textarea.code {
+  width:100%;
+}
+
+.edit {
+  float:right;
+  font-size:0.8em;
+}
