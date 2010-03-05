@@ -19,16 +19,23 @@ function(head, req) {
         date : post.created_at,
         html : post.html,
         blogName : ddoc.blog.title,
-        // comments : [{
-        //   comment : "foo"
-        // }]
         comments : getRowsWith(function(row) {
+          var v = row.value;
+          if (v.type != "comment") {
+            return;
+            // throw("not a comment")
+          }
           // keep getting comments until we get to the next post...
-          return row;
+          return {
+            name : v.commenter.name,
+            url : v.commenter.url,
+            avatar : 'http://www.gravatar.com/avatar/'+v.commenter.gravatar+'.jpg?s=40&d=identicon',
+            comment : v.comment
+          };
         })
       };
       stash.comments.iterator = true;
-      return Mustache.to_html(ddoc.templates.postc, stash);   
+      return Mustache.to_html(ddoc.templates.postc, stash, null, send);   
     }
   });
 }

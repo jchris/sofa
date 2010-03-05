@@ -19,10 +19,15 @@
       <div id="comments">
         <ul>
           {{#comments}}
-            <li>
-              Comment: 
-              {{comment}}
-            </li>
+          <li>
+            <h4>
+              {{#url}}<a href="{{url}}">{{/url}}
+                {{author}}
+              {{#url}}</a>{{/url}}
+            </h4>
+            <img class="gravatar" src="{{avatar}}"/>
+            <p>{{comment}}</p>
+          </li>
           {{/comments}}
         </ul>
         <!-- form to create a comment -->
