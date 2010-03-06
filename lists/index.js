@@ -1,51 +1,46 @@
 function(head, req) {
+  log("index.js")
   var ddoc = this;
   var index = this.templates.index;
   var Mustache = require("lib/mustache");
-  var List = require("vendor/couchapp/list")
+  var List = require("vendor/couchapp/commonjs/list")
+
 
   // !code vendor/couchapp/path.js
-  // !code vendor/couchapp/date.js
-  // !code vendor/couchapp/template.js
   // !code lib/atom.js
+
+  log("macros")
 
   var indexPath = listPath('index','recent-posts',{descending:true, limit:5});
   var feedPath = listPath('index','recent-posts',{descending:true, limit:5, format:"atom"});
+
+  log("providing!")
 
   // The provides function serves the format the client requests.
   // The first matching format is sent, so reordering functions changes 
   // thier priority. In this case HTML is the preferred format, so it comes first.
   provides("html", function() {
     // render the html head using a template
+    log("make stash")
     var stash = {
       title : ddoc.blog.title,
       feedPath : feedPath,
       newPostPath : showPath("edit"),
       index : indexPath,
       assets : assetPath(),
-      posts : getRows
+      posts : List.withRows(function(row) {
+        var post = row.value;
+        log("row")
+        return {
+          title : post.title,
+          summary : post.summary,
+          date : post.created_at,
+          link : showPath('post', row.id)
+        };
+      }),
+      older : "olderPath(last row's key)"
     };
-    
-    send(Mustache.to_html(index, stash));
-    
-    // loop over view rows, rendering one at a time
-    var row, key;
-    while (row = getRow()) {
-      var post = row.value;
-      key = row.key;
-      send(Mustache.to_html(index.row, {
-        title : post.title,
-        summary : post.summary,
-        date : post.created_at,
-        link : showPath('post', row.id)
-      }));        
-    }
-    
-    // render the html tail template
-    return Mustache.to_html(templates.index.tail, {
-      assets : assetPath(),
-      older : olderPath(key)
-    });
+    return Mustache.to_html(index, stash);
   });
 
   // if the client requests an atom feed and not html, 
