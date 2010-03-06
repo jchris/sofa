@@ -1,7 +1,7 @@
 function(doc, req) {  
   // !json templates.edit
   // !json blog
-  // !code vendor/couchapp/path.js
+  // !cxde vendor/couchapp/path.js
   // ! cxde vendor/couchapp/template.js
 
   // we only show html

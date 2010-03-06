@@ -39,29 +39,29 @@ function makePath(array) {
   }
 };
 
-function assetPath() {
-  var p = req.path, parts = ['', p[0], p[1] , p[2]];
-  return makePath(concatArgs(parts, arguments));
+exports.path = function(req) {
+  return {
+    asset : function() {
+      var p = req.path, parts = ['', p[0], p[1] , p[2]];
+      return makePath(concatArgs(parts, arguments));
+    },
+    show : function() {
+      var p = req.path, parts = ['', p[0], p[1] , p[2], '_show'];
+      return makePath(concatArgs(parts, arguments));
+    },
+    list : function() {
+      var p = req.path, parts = ['', p[0], p[1] , p[2], '_list'];
+      return makePath(concatArgs(parts, arguments));
+    },
+    older : function(info) {
+      if (!info) return null;
+      var q = req.query;
+      q.startkey = info.prev_key;
+      q.skip=1;
+      return listPath('index','recent-posts',q);
+    },
+    absolute : function(path) {
+      return 'http://' + req.headers.Host + path;
+    }
+  }
 };
-
-function showPath() {
-  var p = req.path, parts = ['', p[0], p[1] , p[2], '_show'];
-  return makePath(concatArgs(parts, arguments));
-};
-
-function listPath() {
-  var p = req.path, parts = ['', p[0], p[1] , p[2], '_list'];
-  return makePath(concatArgs(parts, arguments));
-};
-
-function olderPath(info) {
-  if (!info) return null;
-  var q = req.query;
-  q.startkey = info.prev_key;
-  q.skip=1;
-  return listPath('index','recent-posts',q);
-}
-
-function makeAbsolute(req, path) {
-  return 'http://' + req.headers.Host + path;
-}

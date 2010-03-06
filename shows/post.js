@@ -2,7 +2,7 @@ function(doc, req) {
   // !json templates.post
   // !json blog
   // !xcode vendor/couchapp/template.js
-  // !code vendor/couchapp/path.js
+  // !cxode vendor/couchapp/path.js
 
   // we only show html
   return template(templates.post, {

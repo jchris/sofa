@@ -3,45 +3,42 @@ function(head, req) {
   var ddoc = this;
   var index = this.templates.index;
   var Mustache = require("lib/mustache");
-  var List = require("vendor/couchapp/commonjs/list")
+  var List = require("vendor/couchapp/commonjs/list");
+  var path = require("vendor/couchapp/commonjs/path").path(req);
 
-
-  // !code vendor/couchapp/path.js
   // !code lib/atom.js
+  // log("requires")
 
-  log("macros")
+  var indexPath = path.list('index','recent-posts',{descending:true, limit:5});
+  var feedPath = path.list('index','recent-posts',{descending:true, limit:5, format:"atom"});
 
-  var indexPath = listPath('index','recent-posts',{descending:true, limit:5});
-  var feedPath = listPath('index','recent-posts',{descending:true, limit:5, format:"atom"});
-
-  log("providing!")
 
   // The provides function serves the format the client requests.
   // The first matching format is sent, so reordering functions changes 
   // thier priority. In this case HTML is the preferred format, so it comes first.
   provides("html", function() {
     // render the html head using a template
-    log("make stash")
     var stash = {
       title : ddoc.blog.title,
       feedPath : feedPath,
-      newPostPath : showPath("edit"),
+      newPostPath : path.show("edit"),
       index : indexPath,
-      assets : assetPath(),
+      assets : path.asset(),
       posts : List.withRows(function(row) {
         var post = row.value;
-        log("row")
         return {
           title : post.title,
           summary : post.summary,
           date : post.created_at,
-          link : showPath('post', row.id)
+          link : path.list('post','post-page', {startkey : [row.id]})
         };
       }),
       older : "olderPath(last row's key)"
     };
+    log("mstash")
     return Mustache.to_html(index, stash);
   });
+  return;
 
   // if the client requests an atom feed and not html, 
   // we run this function to generate the feed.
@@ -65,12 +62,12 @@ function(head, req) {
       do {
         // generate the entry for this row
         var feedEntry = Atom.entry({
-          entry_id : makeAbsolute(req, '/'+encodeURIComponent(req.info.db_name)+'/'+encodeURIComponent(row.id)),
+          entry_id : path.absolute('/'+encodeURIComponent(req.info.db_name)+'/'+encodeURIComponent(row.id)),
           title : row.value.title,
           content : row.value.html,
           updated : new Date(row.value.created_at),
           author : row.value.author,
-          alternate : makeAbsolute(req, showPath('post', row.id))
+          alternate : path.absolute(path.show('post', row.id))
         });
         // send the entry to client
         send(feedEntry);
