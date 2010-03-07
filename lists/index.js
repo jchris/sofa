@@ -1,7 +1,5 @@
 function(head, req) {
-  log("index.js")
   var ddoc = this;
-  var index = this.templates.index;
   var Mustache = require("lib/mustache");
   var List = require("vendor/couchapp/commonjs/list");
   var path = require("vendor/couchapp/commonjs/path").path(req);
@@ -17,6 +15,7 @@ function(head, req) {
   // The first matching format is sent, so reordering functions changes 
   // thier priority. In this case HTML is the preferred format, so it comes first.
   provides("html", function() {
+    var key = "";
     // render the html head using a template
     var stash = {
       title : ddoc.blog.title,
@@ -26,6 +25,7 @@ function(head, req) {
       assets : path.asset(),
       posts : List.withRows(function(row) {
         var post = row.value;
+        key = row.key;
         return {
           title : post.title,
           summary : post.summary,
@@ -33,10 +33,16 @@ function(head, req) {
           link : path.list('post','post-page', {startkey : [row.id]})
         };
       }),
-      older : "olderPath(last row's key)"
+      older : function() {
+        log("older")
+        return path.older(key);
+      },
+      "5" : path.limit(5),
+      "10" : path.limit(10),
+      "25" : path.limit(25)
     };
     log("mstash")
-    return Mustache.to_html(index, stash);
+    return Mustache.to_html(ddoc.templates.index, stash);
   });
   return;
 

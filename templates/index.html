@@ -53,7 +53,13 @@
           </li>
         {{/posts}}
     </ul>
-    <a class="paginate" href="{{ older }}">older posts</a>
+    <div class="paginate">
+      <a href="{{ older }}">older posts</a>
+      <a href="{{5}}">5</a>
+      <a href="{{10}}">10</a>
+      <a href="{{25}}">25</a>      
+    </div>
+
   </div>
 </body>
 <script src="/_utils/script/json2.js"></script>
@@ -87,47 +93,6 @@
       }
     });
 
-// below here todo move to couchapp files
-return;
-    // set css classes for login form
-    $("#userCtx a.login").click(function() {
-      $("#userCtx .loggedout").addClass("login").removeClass("signup");
-      console.log("c login");
-    });
-    $("#userCtx a.signup").click(function() {
-      console.log("c signup");
-      $("#userCtx .loggedout").addClass("signup").removeClass("login");
-    });
-
-
-    $("#userCtx #signup").submit(function(e) {
-      e.preventDefault();
-      console.log("submit signup");
-      var form = $(this);
-      var name = form.find("[name=name]").val();
-      var password = form.find("[name=password]").val();
-      $.couch.signup({
-        name : name
-      }, password, {
-        success : function() {
-          doLogin(name, password, callback);            
-        },
-        error : function(status, error, reason) {
-          if (error == "conflict") {
-            alert("Name '"+name+"' is taken");
-          } else {
-            alert("Signup error:  "+reason);
-          }
-        }
-      });
-      return false;
-    });
-
-    $("#userCtx #login").submit(function(login) {
-      console.log("submit login");
-
-      return false;
-    });
 
 
     // $.couch.app.account("#userCtx")

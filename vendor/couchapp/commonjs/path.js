@@ -53,12 +53,24 @@ exports.path = function(req) {
       var p = req.path, parts = ['', p[0], p[1] , p[2], '_list'];
       return makePath(concatArgs(parts, arguments));
     },
-    older : function(info) {
-      if (!info) return null;
-      var q = req.query;
-      q.startkey = info.prev_key;
-      q.skip=1;
-      return listPath('index','recent-posts',q);
+    limit : function(limit) {
+      var query = req.query;
+      var l = query.limit;
+      query.limit = limit;
+      var view = req.path[req.path.length - 1];
+      var list = req.path[req.path.length - 2];
+      var link = this.list(list, view, query);
+      query.limit = l;
+      return link;
+    },
+    older : function(key) {
+      if (!typeof key == "undefined") return null;
+      var query = req.query;
+      query.startkey = key;
+      query.skip=1;
+      var view = req.path[req.path.length - 1];
+      var list = req.path[req.path.length - 2];
+      return this.list(list, view, query);
     },
     absolute : function(path) {
       return 'http://' + req.headers.Host + path;
