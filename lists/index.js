@@ -3,9 +3,7 @@ function(head, req) {
   var Mustache = require("lib/mustache");
   var List = require("vendor/couchapp/commonjs/list");
   var path = require("vendor/couchapp/commonjs/path").path(req);
-
-  // !code lib/atom.js
-  // log("requires")
+  var Atom = require("vendor/couchapp/commonjs/atom");
 
   var indexPath = path.list('index','recent-posts',{descending:true, limit:5});
   var feedPath = path.list('index','recent-posts',{descending:true, limit:5, format:"atom"});
@@ -34,7 +32,6 @@ function(head, req) {
         };
       }),
       older : function() {
-        log("older")
         return path.older(key);
       },
       "5" : path.limit(5),
@@ -44,7 +41,6 @@ function(head, req) {
     log("mstash")
     return Mustache.to_html(ddoc.templates.index, stash);
   });
-  return;
 
   // if the client requests an atom feed and not html, 
   // we run this function to generate the feed.
@@ -55,9 +51,9 @@ function(head, req) {
     // generate the feed header
     var feedHeader = Atom.header({
       updated : (row ? new Date(row.value.created_at) : new Date()),
-      title : blog.title,
-      feed_id : makeAbsolute(req, indexPath),
-      feed_link : makeAbsolute(req, feedPath),
+      title : ddoc.blog.title,
+      feed_id : path.absolute(indexPath),
+      feed_link : path.absolute(feedPath),
     });
     
     // send the header to the client
