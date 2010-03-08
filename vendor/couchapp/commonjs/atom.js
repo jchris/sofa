@@ -1,3 +1,6 @@
+// atom feed generator
+// requries E4X support.
+
 function f(n) {    // Format integers to have at least two digits.
     return n < 10 ? '0' + n : n;
 }
@@ -17,7 +20,7 @@ exports.header = function(data) {
   f.id = data.feed_id;
   f.link.@href = data.feed_link;
   f.link.@rel = "self";
-  f.generator = "Sofa on CouchDB";
+  f.generator = "CouchApp on CouchDB";
   f.updated = rfc3339(data.updated);
   return f.toXMLString().replace(/\<\/feed\>/,'');
 };

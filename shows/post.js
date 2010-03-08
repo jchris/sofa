@@ -1,18 +1,5 @@
 function(doc, req) {  
-  // !json templates.post
-  // !json blog
-  // !xcode vendor/couchapp/template.js
-  // !cxode vendor/couchapp/path.js
-
-  // we only show html
-  return template(templates.post, {
-    title : doc.title,
-    blogName : blog.title,
-    post : doc.html,
-    date : doc.created_at,
-    author : doc.author,
-    assets : assetPath(),
-    editPostPath : showPath('edit', doc._id),
-    index : path.list('index','recent-posts',{descending:true, limit:5})
-  });
+  var path = require("vendor/couchapp/commonjs/path").path(req);
+  var redirect = require("vendor/couchapp/commonjs/redirect");
+  return redirect.permanent(path.list('post','post-page', {startkey : [doc._id]}));
 }
