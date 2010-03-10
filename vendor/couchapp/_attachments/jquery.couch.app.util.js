@@ -29,6 +29,10 @@ $.linkify = function(body) {
   });
 };
 
+$.fn.prettyDate = function() {
+  $(this).text($.prettyDate($(this).text()));
+};
+
 $.prettyDate = function(time){
 	var date = new Date(time),
 		diff = (((new Date()).getTime() - date.getTime()) / 1000),

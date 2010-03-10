@@ -25,9 +25,7 @@
     this.view = function(view, opts) {
       db.view(name+'/'+view, opts);
     };
-  };
-
-  var login;
+  }
   
   $.couch.app = $.couch.app || function(appFun) {
     $(function() {
@@ -47,32 +45,32 @@
         // field names like 'author-email' get turned into json like
         // {"author":{"email":"quentin@example.com"}}
         function formToDeepJSON(form, fields, doc) {
-          var form = $(form);
+          form = $(form);
           opts.fields.forEach(function(field) {
-            var val = form.find("[name="+field+"]").val()
-            if (!val) return;
+            var val = form.find("[name="+field+"]").val();
+            if (!val) {return;}
             var parts = field.split('-');
             var frontObj = doc, frontName = parts.shift();
             while (parts.length > 0) {
-              frontObj[frontName] = frontObj[frontName] || {}
+              frontObj[frontName] = frontObj[frontName] || {};
               frontObj = frontObj[frontName];
               frontName = parts.shift();
             }
             frontObj[frontName] = val;
           });
-        };
+        }
         
         // Apply the behavior
         $(formSelector).submit(function(e) {
           e.preventDefault();
           // formToDeepJSON acts on localFormDoc by reference
           formToDeepJSON(this, opts.fields, localFormDoc);
-          if (opts.beforeSave) opts.beforeSave(localFormDoc);
+          if (opts.beforeSave) {opts.beforeSave(localFormDoc);}
           db.saveDoc(localFormDoc, {
             success : function(resp) {
-              if (opts.success) opts.success(resp, localFormDoc);
+              if (opts.success) {opts.success(resp, localFormDoc);}
             }
-          })
+          });
           
           return false;
         });
@@ -88,20 +86,21 @@
               frontObj = frontObj[frontName];
               frontName = parts.shift();
             }
-            if (frontObj && frontObj[frontName])
-              form.find("[name="+field+"]").val(frontObj[frontName]);
+            if (frontObj && frontObj[frontName]) {
+              form.find("[name="+field+"]").val(frontObj[frontName]);              
+            }
           });            
-        };
+        }
         
         if (opts.id) {
           db.openDoc(opts.id, {
             success: function(doc) {
-              if (opts.onLoad) opts.onLoad(doc);
+              if (opts.onLoad) {opts.onLoad(doc);}
               localFormDoc = doc;
               docToForm(doc);
           }});
         } else if (opts.template) {
-          if (opts.onLoad) opts.onLoad(opts.template);
+          if (opts.onLoad) {opts.onLoad(opts.template);}
           localFormDoc = opts.template;
           docToForm(localFormDoc);
         }
@@ -116,59 +115,33 @@
             formToDeepJSON(formSelector, opts.fields, localFormDoc);
             return localFormDoc;
           }
-        }
+        };
         return instance;
       }
       
       var appExports = $.extend({
-        showPath : function(funcname, docid) {
-          // I wish this was shared with path.js...
-          return '/'+[dbname, '_design', dname, '_show', funcname, docid].join('/')
-        },
-        listPath : function(funcname, viewname) {
-          return '/'+[dbname, '_design', dname, '_list', funcname, viewname].join('/')
-        },
+        
         slugifyString : function(string) {
           return string.replace(/\W/g,'-').
             replace(/\-*$/,'').replace(/^\-*/,'').
             replace(/\-{2,}/,'-');
-        },
-        attemptLogin : function(win, fail) {
-          // depends on nasty hack in blog validation function
-          db.saveDoc({"author":"_self"}, { error: function(s, e, r) {
-            var namep = r.split(':');
-            if (namep[0] == '_self') {
-              login = namep.pop();
-              $.cookies.set("login", login, '/'+dbname)
-              win && win(login);
-            } else {
-              $.cookies.set("login", "", '/'+dbname)
-              fail && fail(s, e, r);
-            }
-          }});        
-        },
-        loggedInNow : function(loggedIn, loggedOut) {
-          login = login || $.cookies.get("login");
-          if (login) {
-            loggedIn && loggedIn(login);
-          } else {
-            loggedOut && loggedOut();
-          }
         },
         db : db,
         design : design,
         view : design.view,
         docForm : docForm
       }, $.couch.app.app);
+
+      function handleDDoc(doc) {
+        if (doc) {
+          appExports.ddoc = doc;
+        }
+        appFun(appExports);
+      }
       
     if ($.couch.app.ddocs[design.doc_id]) {
-      appExports.ddoc = $.couch.app.ddocs[design.doc_id];
-      appFun(appExports);
+      handleDDoc($.couch.app.ddocs[design.doc_id])
     } else {
-      function handleDDoc(doc) {
-        if (doc) appExports.ddoc = doc;
-        appFun(appExports);
-      };
       // only open 1 connection for this ddoc 
       if ($.couch.app.ddoc_handlers[design.doc_id]) {
         // we are already fetching, just wait
@@ -180,13 +153,13 @@
             $.couch.app.ddocs[design.doc_id] = doc;
             $.couch.app.ddoc_handlers[design.doc_id].forEach(function(h) {
               h(doc);
-            })
+            });
             $.couch.app.ddoc_handlers[design.doc_id] = null;
           },
           error : function() {
             $.couch.app.ddoc_handlers[design.doc_id].forEach(function(h) {
               h();
-            })
+            });
             $.couch.app.ddoc_handlers[design.doc_id] = null;
           }
         });

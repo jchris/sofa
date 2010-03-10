@@ -9,36 +9,7 @@
 
   <body>
     <div id="header">
-      <!-- make mustache template -->
-      <div id="userCtx">
-        <div class="loggedout">
-          <a href="#" class="signup">Signup</a> or <a href="#" class="login">Login</a>
-          <form id="login">
-            <label for="name">Name</label>
-            <input type="text" name="name" value="" id="name">
-            <label for="password">Password</label>
-            <input type="password" name="password" value="" id="password">
-            <input id="submit_login" type="submit" value="Login"> 
-          </form>
-          <form id="signup">
-            <label for="name">Name</label>
-            <input type="text" name="name" value="" id="name">
-            <label for="password">Password</label>
-            <input type="password" name="password" value="" id="password">
-            <input id="submit_login" type="submit" value="Signup"> 
-          </form>
-        </div>
-        <div class="loggedin">
-          Welcome <a class="username">?</a>! 
-          <a href="link/to/create" class="create">Create a Post</a> or
-          <a href="#" class="logout">Logout</a>
-        </div>
-        <div class="adminparty">
-          Welcome to Admin Party! 
-          <a href="/_utils/" target="_new">Fix this before using Sofa.</a>
-        </div>
-      </div>
-      <!-- end mustache template -->
+      <div id="account"></div>
       <h2><a href="{{ index }}">{{ title }}</a></h2>
     </div>
     <div id="tags-front"></div>
@@ -66,62 +37,10 @@
 <script src="/_utils/script/jquery.js"></script>
 <script src="/_utils/script/jquery.couch.js"></script>
 <script src="/_utils/script/jquery.form.js"></script>
-<script src="../../vendor/couchapp/jquery.couchapp.js"></script>
-<script src="../../vendor/couchapp/jquery.couchapp.docform.js"></script>
-<script src="../../vendor/couchapp/jquery.prettydate.js"></script>
-<script type="text/javascript" charset="utf-8">
-  $.CouchApp(function(app) {
-    // var userForm = app.userForm("#userCtx");
-
-    $('.date').prettyDate();
-
-    // todo browse by tags
-    app.design.view("tags",{
-      descending: true, 
-      group: true,
-      success: function(json) {
-        var total = 0;
-        for(var idx in json.rows) {
-          total += json.rows[idx].value;
-        }
-        var tags = [];
-        for(var idx in json.rows) {
-          var percent = Math.ceil(Math.pow((json.rows[idx].value / total), 0.25) * 200);
-          tags.push('<span style="font-size:'+percent+'%;">' + json.rows[idx].key + '</span>');
-        }
-        $("#tags-front").append(tags.join(", "));
-      }
-    });
-
-
-
-    // $.couch.app.account("#userCtx")
-    $.couch.session({
-    success : function(r) {
-      var userCtx = r.userCtx;
-      var body = $("body");  
-        if (userCtx.name) {
-          // logged in
-          $("#userCtx .username").text(userCtx.name).
-            attr({href : "/_utils/document.html?" 
-            + encodeURIComponent(r.info.authentication_db) 
-            + "/org.couchdb.user%3A"+userCtx.name});
-          body.removeClass("loggedout");
-          body.removeClass("adminparty");
-          body.addClass("loggedin");
-        } else if (userCtx.roles.indexOf("_admin") != -1) {
-          // admin party
-          body.removeClass("loggedin");
-          body.removeClass("loggedout");
-          body.addClass("adminparty");
-        } else {
-          // logged out
-          body.removeClass("loggedin");
-          body.removeClass("adminparty");
-          body.addClass("loggedout");
-        };
-      }
-    });
-  });
-</script>
+<script src="../../vendor/couchapp/jquery.couch.app.js"></script>
+<script src="../../vendor/couchapp/jquery.couch.app.util.js"></script>
+<script src="../../vendor/couchapp/jquery.evently.js"></script>
+<script src="../../vendor/couchapp/jquery.mustache.js"></script>
+<script src="../../vendor/couchapp/jquery.couch.docform.js"></script>
+<script src="../../script/app.js"></script>
 </html>

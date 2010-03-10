@@ -2,7 +2,7 @@ function(head, req) {
   var ddoc = this;
   var Mustache = require("lib/mustache");
   var List = require("vendor/couchapp/commonjs/list");
-  var path = require("vendor/couchapp/commonjs/path").path(req);
+  var path = require("vendor/couchapp/commonjs/path").init(req);
   var Atom = require("vendor/couchapp/commonjs/atom");
 
   var indexPath = path.list('index','recent-posts',{descending:true, limit:5});
@@ -38,7 +38,6 @@ function(head, req) {
       "10" : path.limit(10),
       "25" : path.limit(25)
     };
-    log("mstash")
     return Mustache.to_html(ddoc.templates.index, stash);
   });
 

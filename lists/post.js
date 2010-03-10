@@ -2,7 +2,7 @@ function(head, req) {
   var Mustache = require("lib/mustache");
   var ddoc = this;
   var List = require("vendor/couchapp/commonjs/list");
-  var path = require("vendor/couchapp/commonjs/path").path(req);
+  var path = require("vendor/couchapp/commonjs/path").init(req);
 
   var indexPath = path.list('index','recent-posts',{descending:true, limit:5});
   

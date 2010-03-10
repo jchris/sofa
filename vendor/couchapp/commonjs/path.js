@@ -39,7 +39,7 @@ function makePath(array) {
   }
 };
 
-exports.path = function(req) {
+exports.init = function(req) {
   return {
     asset : function() {
       var p = req.path, parts = ['', p[0], p[1] , p[2]];

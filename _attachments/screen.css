@@ -5,12 +5,10 @@ body {
   padding:0;
 }
 
-
-
-#userCtx {
-    font-size:0.8em;
-    text-shadow: #fff 0 0 4px;
-    float:right;
+#account {
+  font-size:0.8em;
+  text-shadow: #fff 0 0 4px;
+  float:right;
 }
 
 .loggedout.login form#login,
@@ -21,7 +19,6 @@ body {
   display:block;
 }
 
-
 div.loggedout form#signup,
 div.loggedout form#login,
 div.loggedin, 
@@ -29,7 +26,6 @@ div.adminparty,
 div.loggedout {
   display:none;
 }
-
 
 a {
   text-decoration:none;

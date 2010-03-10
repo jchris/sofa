@@ -1,16 +1,16 @@
-function (newDoc, oldDoc, userCtx) {
-  // !code lib/validate.js 
+function (newDoc, oldDoc, userCtx, secObj) {
+  var v = require("lib/validate").newValidator(newDoc, oldDoc, userCtx, secObj);
 
-  unchanged("type");
-  unchanged("author");
-  unchanged("created_at");
+  v.unchanged("type");
+  v.unchanged("author");
+  v.unchanged("created_at");
   
-  if (newDoc.created_at) dateFormat("created_at");
+  if (newDoc.created_at) v.dateFormat("created_at");
 
   // docs with authors can only be saved by their author
   // admin can author anything...
   if (!isAdmin(userCtx) && newDoc.author && newDoc.author != userCtx.name) {    
-      unauthorized("Only "+newDoc.author+" may edit this document.");
+    v.unauthorized("Only "+newDoc.author+" may edit this document.");
   }
 
   // authors and admins can always delete
@@ -18,14 +18,14 @@ function (newDoc, oldDoc, userCtx) {
     
   if (newDoc.type == 'post') {
     require("created_at", "author", "body", "html", "format", "title", "slug");
-    assert(newDoc.slug == newDoc._id, "Post slugs must be used as the _id.")
+    v.assert(newDoc.slug == newDoc._id, "Post slugs must be used as the _id.");
 
   } else if (newDoc.type == 'comment') {
-    require("created_at", "post_id", "comment", "html", "format", "commenter");
+    v.require("created_at", "post_id", "comment", "html", "format", "commenter");
     assert(newDoc.commenter.name && newDoc.commenter.email, 
       "Comments must include name and email.");
     if (newDoc.commenter.url) {      
-      assert(newDoc.commenter.url.match(/^https?:\/\/[^.]*\..*/), 
+      v.assert(newDoc.commenter.url.match(/^https?:\/\/[^.]*\..*/), 
         "Commenter URL must start with http://.");      
     }
   }
