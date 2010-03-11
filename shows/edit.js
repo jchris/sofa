@@ -1,15 +1,13 @@
 function(doc, req) {  
-  // !json templates.edit
-  // !json blog
-  // !cxde vendor/couchapp/path.js
-  // ! cxde vendor/couchapp/template.js
+  var ddoc = this;
+  var Mustache = require("lib/mustache");
+  var path = require("vendor/couchapp/commonjs/path").init(req);
 
-  // we only show html
-  return template(templates.edit, {
+  return Mustache.to_html(ddoc.templates.edit, {
     doc : doc,
-    docid : toJSON((doc && doc._id) || null), 
-    blog : blog,
-    assets : assetPath(),
+    docid : JSON.stringify((doc && doc._id) || null), 
+    blog : ddoc.blog,
+    assets : path.asset(),
     index : path.list('index','recent-posts',{descending:true,limit:8})
   });
 }
