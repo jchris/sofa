@@ -5,6 +5,6 @@ function(e, r) {
     name : r.userCtx.name,
     uri_name : encodeURIComponent(r.userCtx.name),
     auth_db : encodeURIComponent(r.info.authentication_db),
-    newPostPath : path("edit")
+    newPostPath : path.show("edit")
   };
 }

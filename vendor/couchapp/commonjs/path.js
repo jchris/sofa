@@ -1,9 +1,9 @@
 // from couch.js
 function encodeOptions(options) {
-  var buf = []
+  var buf = [];
   if (typeof(options) == "object" && options !== null) {
     for (var name in options) {
-      if (!options.hasOwnProperty(name)) continue;
+      if (!options.hasOwnProperty(name)) {continue;}
       var value = options[name];
       if (name == "key" || name == "startkey" || name == "endkey") {
         value = toJSON(value);

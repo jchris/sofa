@@ -119,6 +119,42 @@
         return instance;
       }
       
+      function resolveModule(names, parent, current) {
+        if (names.length === 0) {
+          if (typeof current != "string") {
+            throw ["error","invalid_require_path",
+              'Must require a JavaScript string, not: '+(typeof current)];
+          }
+          return [current, parent];
+        }
+        // we need to traverse the path
+        var n = names.shift();
+        if (n == '..') {
+          if (!(parent && parent.parent)) {
+            throw ["error", "invalid_require_path", 'Object has no parent '+JSON.stringify(current)];
+          }
+          return resolveModule(names, parent.parent.parent, parent.parent);
+        } else if (n == '.') {
+          if (!parent) {
+            throw ["error", "invalid_require_path", 'Object has no parent '+JSON.stringify(current)];
+          }
+          return resolveModule(names, parent.parent, parent);
+        }
+        if (!current[n]) {
+          throw ["error", "invalid_require_path", 'Object has no property "'+n+'". '+JSON.stringify(current)];
+        }
+        var p = current;
+        current = current[n];
+        current.parent = p;
+        return resolveModule(names, p, current);
+      }
+      
+      var p = document.location.pathname.split('/');
+      p.shift();
+      var mockReq = {
+        path : p
+      };
+      
       var appExports = $.extend({
         
         slugifyString : function(string) {
@@ -129,13 +165,30 @@
         db : db,
         design : design,
         view : design.view,
-        docForm : docForm
+        docForm : docForm,
+        req : mockReq
       }, $.couch.app.app);
 
-      function handleDDoc(doc) {
-        if (doc) {
-          appExports.ddoc = doc;
+      function handleDDoc(ddoc) {
+        if (ddoc) {
+          var require = function(name, parent) {
+            var exports = {};
+            var resolved = resolveModule(name.split('/'), parent, ddoc);
+            var source = resolved[0]; 
+            parent = resolved[1];
+            var s = "var func = function (exports, require) { " + source + " };";
+            try {
+              eval(s);
+              func.apply(ddoc, [exports, function(name) {return require(name, parent, source)}]);
+            } catch(e) { 
+              throw ["error","compilation_error","Module require('"+name+"') raised error "+e.toSource()]; 
+            }
+            return exports;
+          }
+          appExports.ddoc = ddoc;
+          appExports.require = require;
         }
+        // todo make app-exports the this in the execution context?
         appFun(appExports);
       }
       
