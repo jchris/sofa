@@ -4,10 +4,13 @@ function(doc, req) {
   var path = require("vendor/couchapp/commonjs/path").init(req);
 
   return Mustache.to_html(ddoc.templates.edit, {
+    header : {
+      index : path.list('index','recent-posts',{descending:true,limit:5}),
+      blogName : ddoc.blog.title
+    },
     doc : doc,
-    docid : JSON.stringify((doc && doc._id) || null), 
-    blog : ddoc.blog,
-    assets : path.asset(),
-    index : path.list('index','recent-posts',{descending:true,limit:8})
-  });
+    docid : JSON.stringify((doc && doc._id) || null),
+    pageTitle : doc ? "Edit: "+doc.title : "Create a new post",
+    assets : path.asset()
+  }, ddoc.templates.partials);
 }

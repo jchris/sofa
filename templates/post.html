@@ -5,19 +5,28 @@
     <link rel="stylesheet" href="../../screen.css" type="text/css">
   </head>
   <body>
-    <div id="header">
-      <a id="edit" href="{{ editPostPath }}">Edit this post</a>
-      <h2><a href="{{ index }}">{{ blogName }}</a></h2>
-    </div>
+    {{>header}}
     <div id="content">
       <h1>{{ title }}</h1>
       <div id="post">
         <span class="date">{{ date }}</span>
-        <div class="body">{{ post }}</div>
+        <div class="body">{{{ html }}}</div>
       </div>
       <div id="tags"></div>
       <div id="comments">
-        <ul></ul>
+        <ul>
+          {{#comments}}
+          <li>
+            <h4>
+              {{#url}}<a href="{{url}}">{{/url}}
+                {{author}}
+              {{#url}}</a>{{/url}}
+            </h4>
+            <img class="gravatar" src="{{avatar}}"/>
+            <p>{{comment}}</p>
+          </li>
+          {{/comments}}
+        </ul>
         <!-- form to create a comment -->
         <form id="new-comment" action="post.html" method="post">
           <h3>Comment on this post</h3>
@@ -39,36 +48,18 @@
     </div>    
   </body>
   <script src="/_utils/script/json2.js"></script>
-  <script src="/_utils/script/jquery.js?1.2.6"></script>
-  <script src="/_utils/script/jquery.couch.js?0.8.0"></script>
-  <script src="{{ assets }}/vendor/couchapp/jquery.couchapp.js"></script>
-  <script src="{{ assets }}/blog.js"></script>
+  <script src="/_utils/script/jquery.js"></script>
+  <script src="/_utils/script/jquery.couch.js"></script>
+  <script src="../../vendor/couchapp/jquery.couch.app.js"></script>
+  <script src="../../vendor/couchapp/jquery.couch.app.util.js"></script>
+  <script src="../../vendor/couchapp/jquery.evently.js"></script>
+  <script src="../../vendor/couchapp/jquery.mustache.js"></script>
+  <script src="../../blog.js"></script>
+  <script src="../../script/app.js"></script>
   <script type="text/javascript" charset="utf-8">
   $.CouchApp(function(app) {
       var docid = document.location.pathname.split('/').pop();
       var B = new Blog(app);
-      
-      $('.date').each(function() {
-        $(this).text(app.prettyDate(this.innerHTML));
-      });
-      
-      function displayComments() {
-        app.view("comments", {
-          startkey: [docid],
-          endkey: [docid, {}],
-          reduce : false,
-          success: function(json) {
-            var ul = $("#comments ul");
-            for (var i=0; i < json.rows.length; i++) {
-              var c = json.rows[i].value;
-              ul.append(B.commentListing(c));
-            }
-            $('#comments').fadeIn(2000);      
-          }
-        });
-      };
-      
-      displayComments();
       
       var commentForm = app.docForm("form#new-comment", {
         fields : [
@@ -83,13 +74,10 @@
           format : "markdown"
         },
         beforeSave : function(doc) {
-          doc.html = B.formatBody(doc.comment, doc.format);
           doc.created_at = new Date();
         },
         success : function(resp, doc) {
-          $("#new-comment").html('<h2>Success! Your comment has posted.</h2>');
-          $("#comments ul").append(B.commentListing(doc));
-          $("#comments ul li:last").hide().fadeIn(2000);
+          $("#new-comment").html('<h2>Success! Your comment has posted.</h2><p>Refresh the page to see it.</p>');
         }
       });
       

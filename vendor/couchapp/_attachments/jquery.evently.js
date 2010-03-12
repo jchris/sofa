@@ -71,7 +71,9 @@ function $$(node) {
   $.fn.evently = function(events, app, args) {
     var elem = $(this);
     // store the app on the element for later use
-    $$(elem).app = app;
+    if (app) {
+      $$(elem).app = app;      
+    }
 
     // setup the handlers onto elem
     forIn(events, function(name, h) {

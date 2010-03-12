@@ -5,13 +5,11 @@
     <link rel="stylesheet" href="{{ assets }}/screen.css" type="text/css">
   </head>
   <body>
-    <div id="header">
-      <h2><a href="{{ index }}">{{ blog.title }}</a></h2>
-    </div>
+    {{>header}}
     <div id="content">
     <!-- form to create a post -->
     <form id="new-post" action="new.html" method="post">
-      <h1>Create a new post</h1>
+      <h1>{{pageTitle}}</h1>
         <p><label>Title</label>
           <input type="text" size="50" name="title" value=""></p>
       <p><label for="body">Body</label>
@@ -31,71 +29,70 @@
   <script src="/_utils/script/json2.js"></script>
   <script src="/_utils/script/jquery.js"></script>
   <script src="/_utils/script/jquery.couch.js"></script>
-  <script src="/_utils/script/jquery.cookies.js"></script>
-  <script src="../../vendor/couchapp/jquery.couchapp.js"></script>
-  <script src="../../vendor/couchapp/jquery.couchapp.docform.js"></script>
-  <script src="../../vendor/couchapp/jquery.prettydate.js"></script>
+  <script src="../../vendor/couchapp/jquery.couch.app.js"></script>
+  <script src="../../vendor/couchapp/jquery.couch.app.util.js"></script>
+  <script src="../../vendor/couchapp/jquery.evently.js"></script>
+  <script src="../../vendor/couchapp/jquery.mustache.js"></script>
   <script src="../../jquery.scrollTo.js"></script>
-  <script src="../../vendor/couchapp/jquery.couchapp.js"></script>
-  <script src="../../blog.js"></script>
   <script src="../../showdown.js"></script>
   <script src="../../textile.js"></script>
+  <script src="../../script/app.js"></script>
   <script type="text/javascript" charset="utf-8">
-    $.CouchApp(function(app) {
-      app.session(function(userCtx) {
-        // w00t, we're logged in (according to the cookie)
-        $("#header").prepend('<span id="login">'+userCtx.name+'</span>');
-        // setup CouchApp document/form system, adding app-specific callbacks
-        // rename docForm?
-        var B = new Blog(app);
+    $.couch.app(function(app) {
+        var path = app.require("vendor/couchapp/commonjs/path").init(app.req);
         // thin controller - move to B?
-
-        var postForm = app.docForm("form#new-post", {
-          id : {{ docid }},
-          fields : ["title", "body", "tags"],
-          template : {
-            type : "post",
-            format : "markdown",
-            author : userCtx.name
-          },
-          onLoad : function(doc) {
-            if (doc._id) {
-              B.editing(doc._id);
-              $('h1').html('Editing <a href="../post/'+doc._id+'">'+doc._id+'</a>');
-              $('#preview').before('<input type="button" id="delete" value="Delete Post"/> ');
-              $("#delete").click(function() {
-                postForm.deleteDoc({
-                  success: function(resp) {
-                    $("h1").text("Deleted "+resp.id);
-                    $('form#new-post input').attr('disabled', true);
+        $("#account").evently({
+          loggedIn : function(e,r) {
+            var userCtx = r.userCtx;
+            var postForm = app.docForm("form#new-post", {
+              id : {{ docid }},
+              fields : ["title", "body", "tags"],
+              template : {
+                type : "post",
+                format : "markdown",
+                author : userCtx.name
+              },
+              onLoad : function(doc) {
+                if (doc._id) {
+                  $('h1').html('Editing <a href="'+path.show('post',doc._id)+'">'+doc._id+'</a>');                  
+                  $('#preview').before('<input type="button" id="delete" value="Delete Post"/> ');
+                  $("#delete").click(function() {
+                    postForm.deleteDoc({
+                      success: function(resp) {
+                        $("h1").text("Deleted "+resp.id);
+                        $('form#new-post input').attr('disabled', true);
+                      }
+                    });
+                    return false;
+                  });
+                }
+                $('label[for=body]').append(' <em>with '+(doc.format||'html')+'</em>');
+              },
+              beforeSave : function(doc) {
+                doc.html = B.formatBody(doc.body, doc.format);
+                if (!doc.created_at) {
+                  doc.created_at = new Date();
+                }
+                if (!doc.slug) {
+                  doc.slug = app.slugifyString(doc.title);
+                  doc._id = doc.slug;
+                }
+                if(doc.tags) {
+                  doc.tags = doc.tags.split(",");
+                  for(var idx in doc.tags) {
+                    doc.tags[idx] = $.trim(doc.tags[idx]);
                   }
-                });
-                return false;
-              });
-            }
-            $('label[for=body]').append(' <em>with '+(doc.format||'html')+'</em>');
-          },
-          beforeSave : function(doc) {
-            doc.html = B.formatBody(doc.body, doc.format);
-            if (!doc.created_at) {
-              doc.created_at = new Date();
-            }
-            if (!doc.slug) {
-              doc.slug = app.slugifyString(doc.title);
-              doc._id = doc.slug;
-            }
-            if(doc.tags) {
-              doc.tags = doc.tags.split(",");
-              for(var idx in doc.tags) {
-                doc.tags[idx] = $.trim(doc.tags[idx]);
+                }
+              },
+              success : function(resp) {
+                $("#saved").text("Saved _rev: "+resp.rev).fadeIn(500).fadeOut(3000);
+                B.editing(resp.id);
               }
-            }
-          },
-          success : function(resp) {
-            $("#saved").text("Saved _rev: "+resp.rev).fadeIn(500).fadeOut(3000);
-            B.editing(resp.id);
+            });
           }
-        });  
+        })
+
+ 
 
         $("#preview").click(function() {
           var doc = postForm.localDoc();
@@ -104,9 +101,6 @@
           // scroll down
           $('body').scrollTo('#show-preview', {duration: 500});
         });
-      }, function() {
-        alert("Please login before refreshing the page to edit.");
       });
-    });
   </script>
 </html>

@@ -1,10 +1,17 @@
 function(e, r) {
   var app = $$(this).app;
   var path = app.require("vendor/couchapp/commonjs/path").init(app.req);
-  return {
+  var data = {
     name : r.userCtx.name,
     uri_name : encodeURIComponent(r.userCtx.name),
-    auth_db : encodeURIComponent(r.info.authentication_db),
-    newPostPath : path.show("edit")
+    auth_db : encodeURIComponent(r.info.authentication_db) 
   };
+  if (app.req.path.indexOf("post-page") == -1) {
+    data.postPath = path.show("edit")+"/";
+    data.postMessage = "New post.";
+  } else {
+    data.postPath = path.show("edit", app.req.query.startkey[0]);
+    data.postMessage = "Edit this post.";
+  }
+  return data;
 }

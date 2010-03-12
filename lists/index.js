@@ -16,10 +16,12 @@ function(head, req) {
     var key = "";
     // render the html head using a template
     var stash = {
-      title : ddoc.blog.title,
+      header : {
+        index : indexPath,
+        blogName : ddoc.blog.title
+      },
       feedPath : feedPath,
       newPostPath : path.show("edit"),
-      index : indexPath,
       assets : path.asset(),
       posts : List.withRows(function(row) {
         var post = row.value;
@@ -38,7 +40,7 @@ function(head, req) {
       "10" : path.limit(10),
       "25" : path.limit(25)
     };
-    return Mustache.to_html(ddoc.templates.index, stash);
+    return Mustache.to_html(ddoc.templates.index, stash, ddoc.templates.partials, send);
   });
 
   // if the client requests an atom feed and not html, 

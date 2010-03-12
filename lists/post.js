@@ -13,11 +13,13 @@ function(head, req) {
       throw("not a post");
     } else {
       var stash = {
+        header : {
+          index : indexPath,
+          blogName : ddoc.blog.title
+        },
         title : post.title,
-        index : indexPath,
         date : post.created_at,
         html : post.html,
-        blogName : ddoc.blog.title,
         comments : List.withRows(function(row) {
           var v = row.value;
           if (v.type != "comment") {
@@ -33,7 +35,7 @@ function(head, req) {
           };
         })
       };
-      return Mustache.to_html(ddoc.templates.postc, stash, null, send);   
+      return Mustache.to_html(ddoc.templates.post, stash, ddoc.templates.partials, send);   
     }
   });
 }

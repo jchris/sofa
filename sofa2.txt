@@ -1,10 +1,11 @@
+edit page works
+  docform as it's own plugin
 commonjs everything
-  commonjs require()
 prune dead code
 use profile and signup widgets for authors and (optionally) comments
 fixup comments
+  // make the html in the view, not the client
 atom comments firehose feed (per post also?)
-docform as it's own plugin
 ability to share link code between client and server
 
   

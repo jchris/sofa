@@ -151,8 +151,21 @@
       
       var p = document.location.pathname.split('/');
       p.shift();
+      var qs = document.location.search.replace(/^\?/,'').split('&');
+      var q = {};
+      qs.forEach(function(param) {
+        var ps = param.split('=');
+        var k = decodeURIComponent(ps[0]);
+        var v = decodeURIComponent(ps[1]);
+        if (["startkey", "endkey", "key"].indexOf(k) != -1) {
+          q[k] = JSON.parse(v);
+        } else {
+          q[k] = v;
+        }
+      });
       var mockReq = {
-        path : p
+        path : p,
+        query : q
       };
       
       var appExports = $.extend({
@@ -189,7 +202,7 @@
           appExports.require = require;
         }
         // todo make app-exports the this in the execution context?
-        appFun(appExports);
+        appFun.apply(appExports, [appExports]);
       }
       
     if ($.couch.app.ddocs[design.doc_id]) {
