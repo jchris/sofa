@@ -1,5 +1,5 @@
 function (newDoc, oldDoc, userCtx, secObj) {
-  var v = require("lib/validate").newValidator(newDoc, oldDoc, userCtx, secObj);
+  var v = require("lib/validate").init(newDoc, oldDoc, userCtx, secObj);
 
   v.unchanged("type");
   v.unchanged("author");
@@ -9,20 +9,19 @@ function (newDoc, oldDoc, userCtx, secObj) {
 
   // docs with authors can only be saved by their author
   // admin can author anything...
-  if (!isAdmin(userCtx) && newDoc.author && newDoc.author != userCtx.name) {    
+  if (!v.isAdmin(userCtx) && newDoc.author && newDoc.author != userCtx.name) {    
     v.unauthorized("Only "+newDoc.author+" may edit this document.");
   }
 
-  // authors and admins can always delete
-  if (isAdmin(userCtx) && newDoc._deleted) return true;
+  // admins can always delete
+  if (v.isAdmin(userCtx) && newDoc._deleted) return true;
     
   if (newDoc.type == 'post') {
-    require("created_at", "author", "body", "html", "format", "title", "slug");
-    v.assert(newDoc.slug == newDoc._id, "Post slugs must be used as the _id.");
+    v.require("created_at", "author", "body", "html", "format", "title");
 
   } else if (newDoc.type == 'comment') {
     v.require("created_at", "post_id", "comment", "html", "format", "commenter");
-    assert(newDoc.commenter.name && newDoc.commenter.email, 
+    v.assert(newDoc.commenter.name && newDoc.commenter.email, 
       "Comments must include name and email.");
     if (newDoc.commenter.url) {      
       v.assert(newDoc.commenter.url.match(/^https?:\/\/[^.]*\..*/), 

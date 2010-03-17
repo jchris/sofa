@@ -41,6 +41,7 @@
     $.couch.app(function(app) {
         var path = app.require("vendor/couchapp/commonjs/path").init(app.req);
         // var format = app.require("lib/format");
+        var blog = app.require("lib/blog");
         $("#account").evently({
           loggedIn : function(e,r) {
             var userCtx = r.userCtx;
@@ -54,6 +55,7 @@
               },
               onLoad : function(doc) {
                 if (doc._id) {
+                  // todo: $('h1').html('Editing '+paths.linkTo("post", doc));                  
                   $('h1').html('Editing <a href="'+path.show('post',doc._id)+'">'+doc._id+'</a>');                  
                   $('#preview').before('<input type="button" id="delete" value="Delete Post"/> ');
                   $("#delete").click(function() {
@@ -69,13 +71,11 @@
                 $('label[for=body]').append(' <em>with '+(doc.format||'html')+'</em>');
               },
               beforeSave : function(doc) {
-                doc.html = B.formatBody(doc.body, doc.format);
                 if (!doc.created_at) {
                   doc.created_at = new Date();
                 }
-                if (!doc.slug) {
-                  doc.slug = app.slugifyString(doc.title);
-                  doc._id = doc.slug;
+                if (!doc._id) {
+                  doc._id = blog.slugifyString(doc.title);
                 }
                 if(doc.tags) {
                   doc.tags = doc.tags.split(",");
@@ -85,8 +85,8 @@
                 }
               },
               success : function(resp) {
-                $("#saved").text("Saved _rev: "+resp.rev).fadeIn(500).fadeOut(3000);
-                B.editing(resp.id);
+                $("#saved").text("Saved _rev: "+resp.rev).fadeIn(500).fadeOut(6000);
+                $('h1').html('Editing <a href="'+path.show('post',doc._id)+'">'+doc._id+'</a>');                  
               }
             });
           }

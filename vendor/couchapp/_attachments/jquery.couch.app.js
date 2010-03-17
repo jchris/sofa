@@ -169,12 +169,6 @@
       };
       
       var appExports = $.extend({
-        
-        slugifyString : function(string) {
-          return string.replace(/\W/g,'-').
-            replace(/\-*$/,'').replace(/^\-*/,'').
-            replace(/\-{2,}/,'-');
-        },
         db : db,
         design : design,
         view : design.view,

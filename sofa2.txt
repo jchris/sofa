@@ -1,5 +1,7 @@
 edit page works
   docform as it's own plugin
+  save markdown or textile raw, convert to html in a view
+    do this for comments too
 commonjs everything
 prune dead code
 use profile and signup widgets for authors and (optionally) comments
