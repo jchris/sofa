@@ -44,18 +44,18 @@
     this.design.view("tags",{
       descending: true, 
       group: true,
-      success: function(json) {
+      success: (function(json) {
         var total = 0;
         for(var idx in json.rows) {
           total += json.rows[idx].value;
-        }
+        };
         var tags = [];
         for(var idx in json.rows) {
           var percent = Math.ceil(Math.pow((json.rows[idx].value / total), 0.25) * 200);
           tags.push('<span style="font-size:'+percent+'%;">' + json.rows[idx].key + '</span>');
-        }
-        $("#tags-front").append(tags.join(", "));
-      }
+        };
+        $("#tags-front").append(tags.join(" "));
+      })
     });
   });
 </script>

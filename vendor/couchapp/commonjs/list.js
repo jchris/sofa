@@ -7,3 +7,7 @@ exports.withRows = function(fun) {
   f.iterator = true;
   return f;
 }
+
+exports.send = function(chunk) {
+  send(chunk + "\n")
+}

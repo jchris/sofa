@@ -40,7 +40,7 @@
   <script type="text/javascript" charset="utf-8">
     $.couch.app(function(app) {
         var path = app.require("vendor/couchapp/commonjs/path").init(app.req);
-        // thin controller - move to B?
+        // var format = app.require("lib/format");
         $("#account").evently({
           loggedIn : function(e,r) {
             var userCtx = r.userCtx;
@@ -92,13 +92,10 @@
           }
         })
 
- 
-
         $("#preview").click(function() {
           var doc = postForm.localDoc();
           var html = B.formatBody(doc.body, doc.format);
           $('#show-preview').html(html);
-          // scroll down
           $('body').scrollTo('#show-preview', {duration: 500});
         });
       });

@@ -30,7 +30,9 @@ $.linkify = function(body) {
 };
 
 $.fn.prettyDate = function() {
-  $(this).text($.prettyDate($(this).text()));
+  $(this).each(function() {
+    $(this).text($.prettyDate($(this).text()));    
+  });
 };
 
 $.prettyDate = function(time){

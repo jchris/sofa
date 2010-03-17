@@ -40,7 +40,7 @@ function(head, req) {
       "10" : path.limit(10),
       "25" : path.limit(25)
     };
-    return Mustache.to_html(ddoc.templates.index, stash, ddoc.templates.partials, send);
+    return Mustache.to_html(ddoc.templates.index, stash, ddoc.templates.partials, List.send);
   });
 
   // if the client requests an atom feed and not html, 

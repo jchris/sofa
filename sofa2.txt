@@ -7,7 +7,7 @@ fixup comments
   // make the html in the view, not the client
 atom comments firehose feed (per post also?)
 ability to share link code between client and server
-
+evently tagcloud
   
   
   screens
