@@ -17,10 +17,10 @@ function (newDoc, oldDoc, userCtx, secObj) {
   if (v.isAdmin(userCtx) && newDoc._deleted) return true;
     
   if (newDoc.type == 'post') {
-    v.require("created_at", "author", "body", "html", "format", "title");
+    v.require("created_at", "author", "body", "format", "title");
 
   } else if (newDoc.type == 'comment') {
-    v.require("created_at", "post_id", "comment", "html", "format", "commenter");
+    v.require("created_at", "post_id", "comment", "format", "commenter");
     v.assert(newDoc.commenter.name && newDoc.commenter.email, 
       "Comments must include name and email.");
     if (newDoc.commenter.url) {      
