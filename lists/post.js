@@ -19,6 +19,7 @@ function(head, req) {
           blogName : ddoc.blog.title
         },
         title : post.title,
+        post_id : post._id,
         date : post.created_at,
         html : markdown.encode(post.body),
         comments : List.withRows(function(row) {
@@ -26,14 +27,12 @@ function(head, req) {
           if (v.type != "comment") {
             return;
           }
-          log("v")
-          log(v)
           // keep getting comments until we get to the next post...
           return {
             name : v.commenter.name,
             url : v.commenter.url,
             avatar : 'http://www.gravatar.com/avatar/'+v.commenter.gravatar+'.jpg?s=40&d=identicon',
-            html : markdown.encode(v.comment),
+            html : markdown.encode(Mustache.escape(v.comment)),
             created_at : v.created_at
           };
         })
