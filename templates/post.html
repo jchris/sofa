@@ -18,12 +18,11 @@
           {{#comments}}
           <li>
             <h4>
-              {{#url}}<a href="{{url}}">{{/url}}
-                {{author}}
-              {{#url}}</a>{{/url}}
+              by {{#url}}<a href="{{url}}">{{/url}}{{name}}{{#url}}</a>{{/url}},
+              <span class="date">{{created_at}}</span>
             </h4>
             <img class="gravatar" src="{{avatar}}"/>
-            <p>{{comment}}</p>
+            <p>{{{html}}}</p>
           </li>
           {{/comments}}
         </ul>

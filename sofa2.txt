@@ -8,6 +8,7 @@ edit page works
   save markdown or textile raw, convert to html in a view
     do this for comments too
     fixup comments
+        // todo verify that this is "safe"
       // make the html in the view, not the client
 
 commonjs everything

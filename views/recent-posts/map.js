@@ -2,14 +2,17 @@ function(doc) {
   // !code _attachments/showdown.js
   
   if (doc.format == "textile") {
+    // backwards compatibility for old documents
     if (doc.html) {
-      var html = doc.html;      
+      var html = doc.html;
     } else {
       var html = "editing textile documents is not yet implemented. please convert to Markdown";
     }
   } else if (doc.format == "markdown") {
     var converter = new Showdown.converter();
     var html = converter.makeHtml(doc.body);
+  } else {
+    var html = "Document body format not supported."
   }
   if (doc.type == "post") {
     var summary = (html.replace(/<(.|\n)*?>/g, '').substring(0,350) + '...');

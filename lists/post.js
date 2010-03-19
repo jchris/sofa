@@ -3,6 +3,7 @@ function(head, req) {
   var ddoc = this;
   var List = require("vendor/couchapp/commonjs/list");
   var path = require("vendor/couchapp/commonjs/path").init(req);
+  var markdown = require("vendor/markdown/lib/markdown");
 
   var indexPath = path.list('index','recent-posts',{descending:true, limit:5});
   
@@ -19,8 +20,9 @@ function(head, req) {
         },
         title : post.title,
         date : post.created_at,
-        html : post.html,
+        html : markdown.encode("post.body"),
         comments : List.withRows(function(row) {
+          var markdown = require("vendor/markdown/lib/markdown");
           var v = row.value;
           if (v.type != "comment") {
             return;
@@ -31,7 +33,8 @@ function(head, req) {
             name : v.commenter.name,
             url : v.commenter.url,
             avatar : 'http://www.gravatar.com/avatar/'+v.commenter.gravatar+'.jpg?s=40&d=identicon',
-            comment : v.comment
+            comment : markdown.encode("v.comment"),
+            created_at : v.created_at
           };
         })
       };
@@ -39,3 +42,4 @@ function(head, req) {
     }
   });
 }
+
