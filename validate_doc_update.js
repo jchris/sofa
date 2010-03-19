@@ -23,7 +23,7 @@ function (newDoc, oldDoc, userCtx, secObj) {
     v.require("created_at", "post_id", "comment", "format", "commenter");
     v.assert(newDoc.commenter.name && newDoc.commenter.email, 
       "Comments must include name and email.");
-    if (newDoc.commenter.url) {      
+    if (newDoc.commenter.url) {
       v.assert(newDoc.commenter.url.match(/^https?:\/\/[^.]*\..*/), 
         "Commenter URL must start with http://.");      
     }

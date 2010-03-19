@@ -1,3 +1,8 @@
+create new comments should properly collate
+fixup comments
+    // todo verify that this is "safe"
+  // make the html in the view, not the client
+
 link code
   add a name key to the rewriter paths
 
@@ -7,9 +12,7 @@ edit page works
   docform as it's own plugin
   save markdown or textile raw, convert to html in a view
     do this for comments too
-    fixup comments
-        // todo verify that this is "safe"
-      // make the html in the view, not the client
+
 
 commonjs everything
   make it so require can be used in map and reduce, in combination with the JSON macro

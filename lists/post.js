@@ -26,6 +26,8 @@ function(head, req) {
           if (v.type != "comment") {
             return;
           }
+          log("v")
+          log(v)
           // keep getting comments until we get to the next post...
           return {
             name : v.commenter.name,
