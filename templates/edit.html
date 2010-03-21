@@ -22,7 +22,7 @@
         <input type="submit" value="Save &rarr;"/> <span id="saved" style="display:none;">Saved</span>
         </p>
     </form>
-    <a href="http://warpedvisions.org/projects/markdown-cheat-sheet/">Markdown help</a>
+    <a target="_new" href="http://warpedvisions.org/projects/markdown-cheat-sheet/">Markdown help</a>
       <div id="show-preview"></div>
     </div>
   </body>
@@ -41,11 +41,11 @@
     $.couch.app(function(app) {
         var path = app.require("vendor/couchapp/commonjs/path").init(app.req);
         // var format = app.require("lib/format");
-        var blog = app.require("lib/blog");
+        var postForm, blog = app.require("lib/blog");
         $("#account").evently({
           loggedIn : function(e,r) {
             var userCtx = r.userCtx;
-            var postForm = app.docForm("form#new-post", {
+            postForm = app.docForm("form#new-post", {
               id : {{ docid }},
               fields : ["title", "body", "tags"],
               template : {
@@ -92,9 +92,20 @@
           }
         })
 
+        var formatBody = function(body, format) {
+          if (format == 'markdown') {
+            var converter = new Showdown.converter();
+            return converter.makeHtml(body);
+          } else if (format == 'textile') {
+            return "superTextile(body);" // TODO use commonjs one
+          } else {
+            return body;
+          }
+        }
+
         $("#preview").click(function() {
           var doc = postForm.localDoc();
-          var html = B.formatBody(doc.body, doc.format);
+          var html = formatBody(doc.body, doc.format);
           $('#show-preview').html(html);
           $('body').scrollTo('#show-preview', {duration: 500});
         });
