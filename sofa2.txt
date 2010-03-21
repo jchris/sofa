@@ -1,8 +1,4 @@
-create new comments should properly collate
-fixup comments
-    // todo verify that this is "safe"
-  // make the html in the view, not the client
-
+test suite
 link code
   add a name key to the rewriter paths
 
@@ -18,6 +14,7 @@ commonjs everything
   make it so require can be used in map and reduce, in combination with the JSON macro
   
 prune dead code
+
 use profile and signup widgets for authors and (optionally) comments
 atom comments firehose feed (per post also?)
 ability to share link code between client and server
