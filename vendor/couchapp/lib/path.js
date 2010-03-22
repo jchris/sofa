@@ -53,6 +53,10 @@ exports.init = function(req) {
       var p = req.path, parts = ['', p[0], p[1] , p[2], '_list'];
       return makePath(concatArgs(parts, arguments));
     },
+    update : function() {
+      var p = req.path, parts = ['', p[0], p[1] , p[2], '_update'];
+      return makePath(concatArgs(parts, arguments));
+    },
     limit : function(limit) {
       var query = req.query;
       var l = query.limit;
