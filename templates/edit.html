@@ -33,15 +33,14 @@
   <script src="../../vendor/couchapp/jquery.couch.app.util.js"></script>
   <script src="../../vendor/couchapp/jquery.evently.js"></script>
   <script src="../../vendor/couchapp/jquery.mustache.js"></script>
-  <script src="../../jquery.scrollTo.js"></script>
-  <script src="../../showdown.js"></script>
-  <script src="../../textile.js"></script>
+  <script src="../../script/jquery.scrollTo.js"></script>
   <script src="../../script/app.js"></script>
   <script type="text/javascript" charset="utf-8">
     $.couch.app(function(app) {
         var path = app.require("vendor/couchapp/commonjs/path").init(app.req);
-        // var format = app.require("lib/format");
         var postForm, blog = app.require("lib/blog");
+        
+        // apply docForm at login.
         $("#account").evently({
           loggedIn : function(e,r) {
             var userCtx = r.userCtx;
@@ -55,7 +54,6 @@
               },
               onLoad : function(doc) {
                 if (doc._id) {
-                  // todo: $('h1').html('Editing '+paths.linkTo("post", doc));                  
                   $('h1').html('Editing <a href="'+path.show('post',doc._id)+'">'+doc._id+'</a>');                  
                   $('#preview').before('<input type="button" id="delete" value="Delete Post"/> ');
                   $("#delete").click(function() {

@@ -28,7 +28,7 @@ function(head, req) {
         key = row.key;
         return {
           title : post.title,
-          summary : post.summary,
+          author : post.author,
           date : post.created_at,
           link : path.list('post','post-page', {startkey : [row.id]})
         };

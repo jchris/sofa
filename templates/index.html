@@ -15,8 +15,10 @@
         {{#posts}}
           <li>
             <h3><a href="{{ link }}">{{ title }}</a></h3>
-            <span class="date" title="{{ date }}">{{ date }}</span>
-            <div class="body">{{ summary }}</div>
+            <span class="by">
+              <span class="date">{{ date }}</span> 
+              by {{author}}
+            </span>
           </li>
         {{/posts}}
     </ul>

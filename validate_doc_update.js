@@ -1,8 +1,8 @@
 function (newDoc, oldDoc, userCtx, secObj) {
   var v = require("lib/validate").init(newDoc, oldDoc, userCtx, secObj);
 
-  // admins can always delete
-  if ((v.isAdmin() || v.isAuthor()) && newDoc._deleted) return true;
+  // admins or owner can always delete
+  if ((v.isAdmin() || (oldDoc && (oldDoc.author == userCtx.name))) && newDoc._deleted) return true;
 
   v.unchanged("type");
   v.unchanged("author");
