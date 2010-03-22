@@ -1,6 +1,6 @@
 function(e, r) {
   var app = $$(this).app;
-  var path = app.require("vendor/couchapp/commonjs/path").init(app.req);
+  var path = app.require("vendor/couchapp/lib/path").init(app.req);
   var data = {
     name : r.userCtx.name,
     uri_name : encodeURIComponent(r.userCtx.name),

@@ -1,8 +1,8 @@
 function(head, req) {
   var Mustache = require("lib/mustache");
   var ddoc = this;
-  var List = require("vendor/couchapp/commonjs/list");
-  var path = require("vendor/couchapp/commonjs/path").init(req);
+  var List = require("vendor/couchapp/lib/list");
+  var path = require("vendor/couchapp/lib/path").init(req);
   var markdown = require("vendor/markdown/lib/markdown");
 
   var indexPath = path.list('index','recent-posts',{descending:true, limit:5});
