@@ -16,7 +16,7 @@ function(doc) {
   // }
   if (doc.type == "post") {
     // var summary = (html.replace(/<(.|\n)*?>/g, '').substring(0,350) + '...');
-    emit(doc.created_at, {
+    emit(new Date(doc.created_at), {
       body : doc.body,
       title : doc.title,
       author : doc.author,

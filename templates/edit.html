@@ -86,26 +86,16 @@
               },
               success : function(resp) {
                 $("#saved").text("Saved _rev: "+resp.rev).fadeIn(500).fadeOut(6000);
-                $('h1').html('Editing <a href="'+path.show('post',doc._id)+'">'+doc._id+'</a>');                  
+                $('h1').html('Editing <a href="'+path.show('post',resp.id)+'">'+resp.id+'</a>');                  
               }
             });
           }
-        })
-
-        var formatBody = function(body, format) {
-          if (format == 'markdown') {
-            var converter = new Showdown.converter();
-            return converter.makeHtml(body);
-          } else if (format == 'textile') {
-            return "superTextile(body);" // TODO use commonjs one
-          } else {
-            return body;
-          }
-        }
+        });
 
         $("#preview").click(function() {
+          var markdown = app.require("vendor/markdown/lib/markdown");
           var doc = postForm.localDoc();
-          var html = formatBody(doc.body, doc.format);
+          var html = markdown.encode(doc.body);
           $('#show-preview').html(html);
           $('body').scrollTo('#show-preview', {duration: 500});
         });
