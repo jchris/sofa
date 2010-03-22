@@ -1,3 +1,5 @@
+rename commonjs to lib
+
 test suite
 link code
   add a name key to the rewriter paths

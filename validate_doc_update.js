@@ -1,6 +1,10 @@
 function (newDoc, oldDoc, userCtx, secObj) {
   var v = require("lib/validate").init(newDoc, oldDoc, userCtx, secObj);
 
+  v.isAuthor = function() {
+    return v.isAdmin() || userCtx.roles.indexOf("author") !=1;
+  };
+
   // admins or owner can always delete
   if ((v.isAdmin() || (oldDoc && (oldDoc.author == userCtx.name))) && newDoc._deleted) return true;
 
@@ -17,8 +21,10 @@ function (newDoc, oldDoc, userCtx, secObj) {
   }
       
   if (newDoc.type == 'post') {
+    if (!v.isAuthor()) {
+      v.unauthorized("Only authors may edit posts.");
+    }
     v.require("created_at", "author", "body", "format", "title");
-
   } else if (newDoc.type == 'comment') {
     v.require("created_at", "post_id", "comment", "format", "commenter");
     v.assert(newDoc.commenter.name && newDoc.commenter.email, 
