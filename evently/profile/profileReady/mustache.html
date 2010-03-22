@@ -1,0 +1,14 @@
+<!-- form to create a comment -->
+<form id="new-comment" action="post.html" method="post">
+  <div class="avatar">
+    {{#avatar_url}}<img src="{{avatar_url}}"/>{{/avatar_url}}
+  </div>
+  <h3>Comment on this post, {{nickname}}:</h3>
+  <p><label>Comment <em>(with <a href="http://warpedvisions.org/projects/markdown-cheat-sheet/">Markdown</a>)</em></label>
+  <textarea name="comment" rows="8" cols="40"></textarea></p>
+  <p>
+    <input type="button" id="preview" value="Preview">
+    <input type="submit" value="Save &rarr;">
+  </p>
+</form>
+<div id="comment-preview"></div>

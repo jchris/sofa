@@ -10,8 +10,9 @@ edit page works
   docform as it's own plugin
   save markdown or textile raw, convert to html in a view
     do this for comments too
-
-
+only authors can create posts
+  new post edit post links only for authors/admins
+  
 commonjs everything
   make it so require can be used in map and reduce, in combination with the JSON macro
   

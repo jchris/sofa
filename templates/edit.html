@@ -54,7 +54,7 @@
               },
               onLoad : function(doc) {
                 if (doc._id) {
-                  $('h1').html('Editing <a href="'+path.show('post',doc._id)+'">'+doc._id+'</a>');                  
+                  $('h1').html('Editing <a href="'+path.show('post',doc._id)+'">'+doc._id+'</a> by '+doc.author);                  
                   $('#preview').before('<input type="button" id="delete" value="Delete Post"/> ');
                   $("#delete").click(function() {
                     postForm.deleteDoc({
@@ -84,7 +84,7 @@
               },
               success : function(resp) {
                 $("#saved").text("Saved _rev: "+resp.rev).fadeIn(500).fadeOut(6000);
-                $('h1').html('Editing <a href="'+path.show('post',resp.id)+'">'+resp.id+'</a>');                  
+                $('h1').html('Editing <a href="'+path.show('post',resp.id)+'">'+resp.id+'</a> by '+doc.author);    
               }
             });
           }

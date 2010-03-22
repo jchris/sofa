@@ -26,23 +26,7 @@
           </li>
           {{/comments}}
         </ul>
-        <!-- form to create a comment -->
-        <form id="new-comment" action="post.html" method="post">
-          <h3>Comment on this post</h3>
-          <p><label>Name</label>
-          <input type="text" name="commenter-name" value=""></p>
-          <p><label>Url <em>(optional)</em></label>
-          <input type="text" name="commenter-url" value=""></p>
-          <p><label>Email <em>(for <a href="http://gravatar.com">Gravatar</a>)</em></label>
-          <input type="text" name="commenter-email" value=""></p>
-          <p><label>Comment <em>(with <a href="http://warpedvisions.org/projects/markdown-cheat-sheet/">Markdown</a>)</em></label>
-          <textarea name="comment" rows="8" cols="40"></textarea></p>
-          <p>
-            <input type="button" id="preview" value="Preview">
-            <input type="submit" value="Save &rarr;">
-          </p>
-        </form>
-        <div id="comment-preview"></div>
+        <div id="profile"></div>
       </div>
     </div>    
   </body>
@@ -57,28 +41,15 @@
   <script src="../../script/app.js"></script>
   <script type="text/javascript" charset="utf-8">
   $.CouchApp(function(app) {
+    $("#profile").evently($.extend(true, {}, app.ddoc.vendor.couchapp.evently.profile, app.ddoc.evently.profile), app);
+    $.evently.connect($("#account"), $("#profile"), ["loggedIn", "loggedOut"]);
+    
+    
+    
       var docid = document.location.pathname.split('/').pop();
       var B = new Blog(app);
       
-      var commentForm = app.docForm("form#new-comment", {
-        fields : [
-          "commenter-name", 
-          "commenter-email", 
-          "commenter-url", 
-          "comment"
-        ],
-        template : {
-          type : "comment",
-          post_id : "{{post_id}}",
-          format : "markdown"
-        },
-        beforeSave : function(doc) {
-          doc.created_at = new Date();
-        },
-        success : function(resp, doc) {
-          $("#new-comment").html('<h2>Success! Your comment has posted.</h2><p>Refresh the page to see it.</p>');
-        }
-      });
+
       
       $("#preview").click(function() {
         var doc = commentForm.localDoc();

@@ -2,7 +2,7 @@ function (newDoc, oldDoc, userCtx, secObj) {
   var v = require("lib/validate").init(newDoc, oldDoc, userCtx, secObj);
 
   v.isAuthor = function() {
-    return v.isAdmin() || userCtx.roles.indexOf("author") !=1;
+    return v.isAdmin() || userCtx.roles.indexOf("author") != -1;
   };
 
   // admins or owner can always delete
@@ -16,7 +16,7 @@ function (newDoc, oldDoc, userCtx, secObj) {
 
   // docs with authors can only be saved by their author
   // admin can author anything...
-  if (!v.isAdmin(userCtx) && newDoc.author && newDoc.author != userCtx.name) {    
+  if (!v.isAdmin() && newDoc.author && newDoc.author != userCtx.name) {    
     v.unauthorized("Only "+newDoc.author+" may edit this document.");
   }
       
