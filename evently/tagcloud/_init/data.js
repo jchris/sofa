@@ -7,7 +7,8 @@ function(resp) {
     // todo remove duplication of link definitions
     var link = path.list("index","tags",{
       descending : true, 
-      reduce : false, 
+      reduce : false,
+      limit : 10,
       startkey : [tag, {}], 
       endkey : [tag]});
     tags.push({

@@ -24,7 +24,7 @@ function superTextile(s) {
     r = r.replace(re,'<em>$1</em>');
 	
 	//jeff: so do dashes
-    re = new RegExp('[\s\n]-(.+?)-[\s\n]','g');
+    re = new RegExp('[\\s\\n]-(.+?)-[\\s\\n]','g');
     r = r.replace(re,'<del>$1</del>');
 
     // links
@@ -43,15 +43,15 @@ function superTextile(s) {
 	
 		// Jeff's hack to show single line breaks as they should.
 		// insert breaks - but you get some....stupid ones
-	    re = new RegExp('(.*)\n([^#\*\n].*)','g');
+	    re = new RegExp('(.*)\\n([^#\\*\\n].*)','g');
 	    r = r.replace(re,'$1<br />$2');
 		// remove the stupid breaks.
-	    re = new RegExp('\n<br />','g');
+	    re = new RegExp('\\n<br />','g');
 	    r = r.replace(re,'\n');
 	
     lines = r.split('\n');
     nr = '';
-    for (var i=0;i<lines.length;i++) {
+    for (i=0;i<lines.length;i++) {
         line = lines[i].replace(/\s*$/,'');
         changed = 0;
         if (line.search(/^\s*bq\.\s+/) != -1) { 
@@ -61,21 +61,21 @@ function superTextile(s) {
 		
 		// jeff adds h#.
         if (line.search(/^\s*h[1|2|3|4|5|6]\.\s+/) != -1) { 
-	    	re = new RegExp('h([1|2|3|4|5|6])\.(.+)','g');
+	    	re = new RegExp('h([1|2|3|4|5|6])\\.(.+)','g');
 	    	line = line.replace(re,'<h$1>$2</h$1>');
 			changed = 1; 
 		}
 		
 		if (line.search(/^\s*\*\s+/) != -1) { line = line.replace(/^\s*\*\s+/,'\t<liu>') + '</liu>'; changed = 1; } // * for bullet list; make up an liu tag to be fixed later
         if (line.search(/^\s*#\s+/) != -1) { line = line.replace(/^\s*#\s+/,'\t<lio>') + '</lio>'; changed = 1; } // # for numeric list; make up an lio tag to be fixed later
-        if (!changed && (line.replace(/\s/g,'').length > 0)) line = '<p>'+line+'</p>';
+        if (!changed && (line.replace(/\s/g,'').length > 0)) {line = '<p>'+line+'</p>';}
         lines[i] = line + '\n';
     }
 	
     // Second pass to do lists
     inlist = 0; 
 	listtype = '';
-    for (var i=0;i<lines.length;i++) {
+    for (i=0;i<lines.length;i++) {
         line = lines[i];
         if (inlist && listtype == 'ul' && !line.match(/^\t<liu/)) { line = '</ul>\n' + line; inlist = 0; }
         if (inlist && listtype == 'ol' && !line.match(/^\t<lio/)) { line = '</ol>\n' + line; inlist = 0; }
@@ -90,3 +90,5 @@ function superTextile(s) {
 
     return r;
 }
+
+exports.encode = superTextile;

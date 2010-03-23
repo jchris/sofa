@@ -4,6 +4,7 @@ function(head, req) {
   var List = require("vendor/couchapp/lib/list");
   var path = require("vendor/couchapp/lib/path").init(req);
   var markdown = require("vendor/markdown/lib/markdown");
+  var textile = require("vendor/textile/textile");
 
   var indexPath = path.list('index','recent-posts',{descending:true, limit:10});
   
@@ -13,6 +14,14 @@ function(head, req) {
     if (post.type != "post") {
       throw("not a post");
     } else {
+      if (post.format == "markdown") {
+        var html = markdown.encode(post.body);
+      } else if (post.format == "textile") {
+        var html = textile.encode(post.body);
+      } else {
+        var html = Mustache.escape(post.html);
+      }
+
       var stash = {
         header : {
           index : indexPath,
@@ -21,7 +30,7 @@ function(head, req) {
         title : post.title,
         post_id : post._id,
         date : post.created_at,
-        html : markdown.encode(post.body),
+        html : html,
         comments : List.withRows(function(row) {
           var v = row.value;
           if (v.type != "comment") {
