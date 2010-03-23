@@ -26,11 +26,24 @@ function(head, req) {
       posts : List.withRows(function(row) {
         var post = row.value;
         key = row.key;
+        log(post.tags || "post.tags")
         return {
           title : post.title,
           author : post.author,
           date : post.created_at,
-          link : path.list('post','post-page', {startkey : [row.id]})
+          link : path.list('post','post-page', {startkey : [row.id]}),
+          has_tags : post.tags ? true : false,
+          tags : post.tags ? post.tags.map(function(tag) {
+            return {
+              tag : tag,
+              link : path.list("index", "tags", {
+                descending : true, 
+                reduce : false, 
+                startkey : [tag, {}], 
+                endkey : [tag]
+              })
+            }
+          }) : []
         };
       }),
       older : function() {

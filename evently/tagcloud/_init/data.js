@@ -3,8 +3,8 @@ function(resp) {
   var path = app.require("vendor/couchapp/lib/path").init(app.req);
   var tags = [];
   resp.rows.forEach(function(r) {
-    if (r.value < 2) return;
     var tag = r.key[0];
+    // todo remove duplication of link definitions
     var link = path.list("index","tags",{
       descending : true, 
       reduce : false, 

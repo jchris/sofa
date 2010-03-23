@@ -85,16 +85,23 @@ h4 {
   width:220px;
   margin:2ex 1em;
 }
-#tagcloud a {
+
+.tags a, #tagcloud a {
   color:#999;
 }
-#tagcloud a:hover {
+.tags a:hover, #tagcloud a:hover {
   color:#9b9;
 }
 
+.tags, .by {
+  font-size:80%;
+  color:#666;
+  margin-top:0;
+}
+
+
 label {
   display:block;
-  clear:left;
 }
 
 #post .body {
@@ -112,12 +119,6 @@ label {
 #posts li {
   margin-bottom:16px;
 }
-
-.by {
-  font-size:80%;
-  margin-top:0;
-}
-
 
 p.post {
   font-family: serif;

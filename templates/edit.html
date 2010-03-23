@@ -6,6 +6,7 @@
   </head>
   <body>
     {{>header}}
+    <div id="tagcloud"></div>
     <div id="content">
     <!-- form to create a post -->
     <form id="new-post" action="new.html" method="post">
@@ -15,7 +16,7 @@
       <p><label for="body">Body</label>
       <textarea name="body" rows="28" cols="80"></textarea></p>
       <p>
-        <label for="tags">Tags (split by ',')</label><input type="text" name="tags" value="" id="tags">
+        <label for="tags">Click tags to add them. (split by ',')</label><input size="50" type="text" name="tags" value="" id="tags">
       </p>
       <p>
         <input id="preview" type="button" value="Preview"/>
@@ -37,9 +38,27 @@
   <script src="../../script/app.js"></script>
   <script type="text/javascript" charset="utf-8">
     $.couch.app(function(app) {
+      // extend the tagcloud so that clicks add tags to the current post
+      var tagcloud = $.extend(true, {}, this.ddoc.evently.tagcloud, {
+        _init : {
+          selectors : {
+            a : {
+              click : function() {
+                var tag = $(this).text();
+                var tags = $("input[name=tags]").val();
+                if (tags) tags = tags+", ";
+                $("input[name=tags]").val(tags + tag);
+                return false;
+              }
+            }
+          }
+        }
+      });
+      $("#tagcloud").evently(tagcloud, this);
+
         var path = app.require("vendor/couchapp/lib/path").init(app.req);
         var postForm, blog = app.require("lib/blog");
-        
+
         // apply docForm at login.
         $("#account").evently({
           loggedIn : function(e,r) {
@@ -54,7 +73,7 @@
               },
               onLoad : function(doc) {
                 if (doc._id) {
-                  $('h1').html('Editing <a href="'+path.show('post',doc._id)+'">'+doc._id+'</a> by '+doc.author);                  
+                  $('h1').html('Editing <a href="'+path.show('post',doc._id)+'">'+doc._id+'</a> by '+doc.author);
                   $('#preview').before('<input type="button" id="delete" value="Delete Post"/> ');
                   $("#delete").click(function() {
                     postForm.deleteDoc({
