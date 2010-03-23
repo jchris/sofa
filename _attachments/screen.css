@@ -80,11 +80,16 @@ h4 {
   margin-left:240px;
 }
 
-#tags-front {
-    float:left;
-    width:220px;
-    margin:2ex 1em;
-    color:#999;
+#tagcloud {
+  float:left;
+  width:220px;
+  margin:2ex 1em;
+}
+#tagcloud a {
+  color:#999;
+}
+#tagcloud a:hover {
+  color:#9b9;
 }
 
 label {

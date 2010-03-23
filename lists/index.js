@@ -5,8 +5,8 @@ function(head, req) {
   var path = require("vendor/couchapp/lib/path").init(req);
   var Atom = require("vendor/couchapp/lib/atom");
 
-  var indexPath = path.list('index','recent-posts',{descending:true, limit:5});
-  var feedPath = path.list('index','recent-posts',{descending:true, limit:5, format:"atom"});
+  var indexPath = path.list('index','recent-posts',{descending:true, limit:10});
+  var feedPath = path.list('index','recent-posts',{descending:true, limit:10, format:"atom"});
 
 
   // The provides function serves the format the client requests.

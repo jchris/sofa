@@ -16,14 +16,7 @@
       <div id="comments">
         <ul>
           {{#comments}}
-          <li>
-            <h4>
-              by {{#url}}<a href="{{url}}">{{/url}}{{name}}{{#url}}</a>{{/url}},
-              <span class="date">{{created_at}}</span>
-            </h4>
-            <img class="gravatar" src="{{avatar}}"/>
-            <p>{{{html}}}</p>
-          </li>
+            {{>comment}}
           {{/comments}}
         </ul>
         <div id="profile"></div>
@@ -37,26 +30,12 @@
   <script src="../../vendor/couchapp/jquery.couch.app.util.js"></script>
   <script src="../../vendor/couchapp/jquery.evently.js"></script>
   <script src="../../vendor/couchapp/jquery.mustache.js"></script>
-  <script src="../../blog.js"></script>
   <script src="../../script/app.js"></script>
   <script type="text/javascript" charset="utf-8">
   $.CouchApp(function(app) {
+    app.post_id = "{{post_id}}";
     $("#profile").evently($.extend(true, {}, app.ddoc.vendor.couchapp.evently.profile, app.ddoc.evently.profile), app);
     $.evently.connect($("#account"), $("#profile"), ["loggedIn", "loggedOut"]);
-    
-    
-    
-      var docid = document.location.pathname.split('/').pop();
-      var B = new Blog(app);
-      
-
-      
-      $("#preview").click(function() {
-        var doc = commentForm.localDoc();
-        var html = B.formatBody(doc.comment, doc.format);
-        $('#comment-preview').html(html);
-      });
-    });
+  });
   </script>
-  <script src="{{ assets }}/showdown.js"></script>
 </html>

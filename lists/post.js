@@ -5,7 +5,7 @@ function(head, req) {
   var path = require("vendor/couchapp/lib/path").init(req);
   var markdown = require("vendor/markdown/lib/markdown");
 
-  var indexPath = path.list('index','recent-posts',{descending:true, limit:5});
+  var indexPath = path.list('index','recent-posts',{descending:true, limit:10});
   
   provides("html", function() {
     // get the first row and make sure it's a post
@@ -29,11 +29,13 @@ function(head, req) {
           }
           // keep getting comments until we get to the next post...
           return {
-            name : v.commenter.name,
-            url : v.commenter.url,
-            avatar : 'http://www.gravatar.com/avatar/'+v.commenter.gravatar+'.jpg?s=40&d=identicon',
-            html : markdown.encode(Mustache.escape(v.comment)),
-            created_at : v.created_at
+            comment : {
+              name : v.commenter.nickname || v.commenter.name,
+              url : v.commenter.url,
+              avatar : v.commenter.gravatar_url || 'http://www.gravatar.com/avatar/'+v.commenter.gravatar+'.jpg?s=40&d=identicon',
+              html : markdown.encode(Mustache.escape(v.comment)),
+              created_at : v.created_at
+            }
           };
         })
       };

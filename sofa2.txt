@@ -1,24 +1,16 @@
-rename commonjs to lib
+remove "format" from validation function and code (assume markdown with special case for old textile)
 
 test suite
 link code
   add a name key to the rewriter paths
 
-ability to say which roles can edit / create blog posts
-
-edit page works
   docform as it's own plugin
-  save markdown or textile raw, convert to html in a view
-    do this for comments too
-only authors can create posts
-  new post edit post links only for authors/admins
-  
+
 commonjs everything
   make it so require can be used in map and reduce, in combination with the JSON macro
   
 prune dead code
 
-use profile and signup widgets for authors and (optionally) comments
 atom comments firehose feed (per post also?)
 ability to share link code between client and server
 evently tagcloud

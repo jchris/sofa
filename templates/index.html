@@ -8,7 +8,7 @@
   </head>
   <body>
     {{>header}}
-    <div id="tags-front"></div>
+    <div id="tagcloud"></div>
     <div id="content">
       <h1>Recently...</h1>
       <ul id="posts">
@@ -43,22 +43,23 @@
 <script type="text/javascript" charset="utf-8">
   $.couch.app(function() {
     // todo browse by tags
-    this.design.view("tags",{
-      descending: true, 
-      group: true,
-      success: (function(json) {
-        var total = 0;
-        for(var idx in json.rows) {
-          total += json.rows[idx].value;
-        };
-        var tags = [];
-        for(var idx in json.rows) {
-          var percent = Math.ceil(Math.pow((json.rows[idx].value / total), 0.25) * 200);
-          tags.push('<span style="font-size:'+percent+'%;">' + json.rows[idx].key + '</span>');
-        };
-        $("#tags-front").append(tags.join(" "));
-      })
-    });
+    $("#tagcloud").evently(this.ddoc.evently.tagcloud, this);
+    // this.design.view("tags",{
+    //   descending: true, 
+    //   group: true,
+    //   success: (function(json) {
+    //     var total = 0;
+    //     for(var idx in json.rows) {
+    //       total += json.rows[idx].value;
+    //     };
+    //     var tags = [];
+    //     for(var idx in json.rows) {
+    //       var percent = Math.ceil(Math.pow((json.rows[idx].value / total), 0.25) * 200);
+    //       tags.push('<span style="font-size:'+percent+'%;">' + json.rows[idx].key + '</span>');
+    //     };
+    //     $("#tags-front").append(tags.join(" "));
+    //   })
+    // });
   });
 </script>
 </html>

@@ -27,7 +27,7 @@ function (newDoc, oldDoc, userCtx, secObj) {
     v.require("created_at", "author", "body", "format", "title");
   } else if (newDoc.type == 'comment') {
     v.require("created_at", "post_id", "comment", "format", "commenter");
-    v.assert(newDoc.commenter.name && newDoc.commenter.email, 
+    v.assert((newDoc.commenter.name || newDoc.commenter.nickname) && (typeof newDoc.commenter.email != "undefined"), 
       "Comments must include name and email.");
     if (newDoc.commenter.url) {
       v.assert(newDoc.commenter.url.match(/^https?:\/\/[^.]*\..*/), 

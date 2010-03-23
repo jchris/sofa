@@ -1,5 +1,5 @@
 function() {
-  // TODO this can be cleaned up with docForm
+  // TODO this can be cleaned up with docForm?
 
   var name = $("input[name=userCtxName]",this).val();
   var newProfile = {
