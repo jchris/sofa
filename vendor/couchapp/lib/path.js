@@ -6,7 +6,7 @@ function encodeOptions(options) {
       if (!options.hasOwnProperty(name)) {continue;}
       var value = options[name];
       if (name == "key" || name == "startkey" || name == "endkey") {
-        value = toJSON(value);
+        value = JSON.stringify(value);
       }
       buf.push(encodeURIComponent(name) + "=" + encodeURIComponent(value));
     }

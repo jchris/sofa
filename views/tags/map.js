@@ -1,7 +1,9 @@
 function(doc) {
-  if(doc.tags && doc.tags.length) {
+  if(doc.type == "post" && doc.tags && doc.tags.length) {
     for(var idx in doc.tags) {
-      emit(doc.tags[idx], 1);
+      if (doc.tags[idx]){ 
+        emit([doc.tags[idx].toLowerCase(), doc.created_at], doc);
+      }
     }
   }
 }
