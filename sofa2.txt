@@ -1,4 +1,6 @@
-remove "format" from validation function and code (assume markdown with special case for old textile)
+comments feed
+atom comments firehose feed (per post also?)
+feed links on index page
 
 test suite
 link code
@@ -6,15 +8,10 @@ link code
 
   docform as it's own plugin
 
-commonjs everything
-  make it so require can be used in map and reduce, in combination with the JSON macro
-  
 prune dead code
 
-atom comments firehose feed (per post also?)
+
 ability to share link code between client and server
-evently tagcloud
-convert old posts to Markdown, drop Textile support?
   
   
   screens
@@ -23,9 +20,6 @@ convert old posts to Markdown, drop Textile support?
     permalink page
     edit page
     recent comments
-  
-  remove old account page
-  login dialog on index page
 
 
 

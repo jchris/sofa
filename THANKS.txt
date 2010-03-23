@@ -2,8 +2,10 @@ Sofa THANKS
 =====================
 
 A number of people have contributed to Sofa by reporting problems,
-suggesting improvements, submitting changes or asking hard question
+suggesting improvements, submitting changes or asking hard questions.
 
 Some of these people are:
 
 * Andy Wenk <andy.wenk@googlemail.com>
+* Jan Lehnardt
+* You

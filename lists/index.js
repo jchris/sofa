@@ -18,7 +18,8 @@ function(head, req) {
     var stash = {
       header : {
         index : indexPath,
-        blogName : ddoc.blog.title
+        blogName : ddoc.blog.title,
+        feedPath : feedPath
       },
       feedPath : feedPath,
       newPostPath : path.show("edit"),
@@ -26,7 +27,6 @@ function(head, req) {
       posts : List.withRows(function(row) {
         var post = row.value;
         key = row.key;
-        log(post.tags || "post.tags")
         return {
           title : post.title,
           author : post.author,
@@ -58,7 +58,11 @@ function(head, req) {
 
   // if the client requests an atom feed and not html, 
   // we run this function to generate the feed.
-  provides("atom", function() {
+  provides("atom", function() {    
+    var path = require("vendor/couchapp/lib/path").init(req);
+    var markdown = require("vendor/markdown/lib/markdown");
+    var textile = require("vendor/textile/textile");
+
     // we load the first row to find the most recent change date
     var row = getRow();
     
@@ -76,11 +80,18 @@ function(head, req) {
     // loop over all rows
     if (row) {
       do {
+        if (row.value.format == "markdown") {
+          var html = markdown.encode(row.value.body);
+        } else if (row.value.format == "textile") {
+          var html = textile.encode(row.value.body);
+        } else {
+          var html = Mustache.escape(row.value.html);
+        }
         // generate the entry for this row
         var feedEntry = Atom.entry({
           entry_id : path.absolute('/'+encodeURIComponent(req.info.db_name)+'/'+encodeURIComponent(row.id)),
           title : row.value.title,
-          content : row.value.html,
+          content : html,
           updated : new Date(row.value.created_at),
           author : row.value.author,
           alternate : path.absolute(path.show('post', row.id))

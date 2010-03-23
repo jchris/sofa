@@ -53,7 +53,3 @@ You can customize the blog title and other stuff in the `blog.json` file.
 ### Todo
 
  * comments feed
- * tag browsing index
- * non-hack login method (waiting on CouchDB)
-
- 
