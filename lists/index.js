@@ -23,6 +23,7 @@ function(head, req) {
         feedPath : feedPath,
         commentsFeed : commentsFeed
       },
+      scripts : {},
       feedPath : feedPath,
       newPostPath : path.show("edit"),
       assets : path.asset(),

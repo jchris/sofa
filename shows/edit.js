@@ -14,6 +14,7 @@ function(doc, req) {
       feedPath : feedPath,
       commentsFeed : commentsFeed
     },
+    scripts : {},
     doc : doc,
     docid : JSON.stringify((doc && doc._id) || null),
     pageTitle : doc ? "Edit: "+doc.title : "Create a new post",

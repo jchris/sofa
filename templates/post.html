@@ -2,7 +2,7 @@
 <html>
   <head>
     <title>{{ title }} : {{ blogName }}</title>
-    <link rel="stylesheet" href="../../screen.css" type="text/css">
+    <link rel="stylesheet" href="../../style/screen.css" type="text/css">
   </head>
   <body>
     {{>header}}
@@ -23,14 +23,7 @@
       </div>
     </div>    
   </body>
-  <script src="/_utils/script/json2.js"></script>
-  <script src="/_utils/script/jquery.js"></script>
-  <script src="/_utils/script/jquery.couch.js"></script>
-  <script src="../../vendor/couchapp/jquery.couch.app.js"></script>
-  <script src="../../vendor/couchapp/jquery.couch.app.util.js"></script>
-  <script src="../../vendor/couchapp/jquery.evently.js"></script>
-  <script src="../../vendor/couchapp/jquery.mustache.js"></script>
-  <script src="../../script/app.js"></script>
+  {{>scripts}}
   <script type="text/javascript" charset="utf-8">
   $.CouchApp(function(app) {
     app.post_id = "{{post_id}}";

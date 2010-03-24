@@ -2,7 +2,7 @@ backport Mustache changes
 comments feed
 atom comments firehose feed (per post also?)
 feed links on index page
-
+js requires in partial
 test suite
 link code
   add a name key to the rewriter paths

@@ -2,7 +2,7 @@
 <html>
   <head>
     <title>{{ blog.title }}</title>
-    <link rel="stylesheet" href="{{ assets }}/screen.css" type="text/css">
+    <link rel="stylesheet" href="{{ assets }}/style/screen.css" type="text/css">
   </head>
   <body>
     {{>header}}
@@ -27,15 +27,8 @@
       <div id="show-preview"></div>
     </div>
   </body>
-  <script src="/_utils/script/json2.js"></script>
-  <script src="/_utils/script/jquery.js"></script>
-  <script src="/_utils/script/jquery.couch.js"></script>
-  <script src="../../vendor/couchapp/jquery.couch.app.js"></script>
-  <script src="../../vendor/couchapp/jquery.couch.app.util.js"></script>
-  <script src="../../vendor/couchapp/jquery.evently.js"></script>
-  <script src="../../vendor/couchapp/jquery.mustache.js"></script>
+  {{>scripts}}
   <script src="../../script/jquery.scrollTo.js"></script>
-  <script src="../../script/app.js"></script>
   <script type="text/javascript" charset="utf-8">
     $.couch.app(function(app) {
       // extend the tagcloud so that clicks add tags to the current post

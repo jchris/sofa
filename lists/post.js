@@ -31,6 +31,7 @@ function(head, req) {
           feedPath : feedPath,
           commentsFeed : commentsFeed
         },
+        scripts : {},
         title : post.title,
         post_id : post._id,
         date : post.created_at,
