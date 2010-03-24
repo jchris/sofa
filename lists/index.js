@@ -7,6 +7,7 @@ function(head, req) {
 
   var indexPath = path.list('index','recent-posts',{descending:true, limit:10});
   var feedPath = path.list('index','recent-posts',{descending:true, limit:10, format:"atom"});
+  var commentsFeed = path.list('comments','comments',{descending:true, limit:10, format:"atom"});
 
 
   // The provides function serves the format the client requests.
@@ -19,7 +20,8 @@ function(head, req) {
       header : {
         index : indexPath,
         blogName : ddoc.blog.title,
-        feedPath : feedPath
+        feedPath : feedPath,
+        commentsFeed : commentsFeed
       },
       feedPath : feedPath,
       newPostPath : path.show("edit"),

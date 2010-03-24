@@ -11,20 +11,9 @@ body {
   float:right;
 }
 
-.loggedout.login form#login,
-.loggedout.signup form#signup,
-.adminparty #userCtx div.adminparty, 
-.loggedin #userCtx div.loggedin, 
-.loggedout #userCtx div.loggedout {
-  display:block;
-}
-
-div.loggedout form#signup,
-div.loggedout form#login,
-div.loggedin, 
-div.adminparty,
-div.loggedout {
-  display:none;
+#feeds {
+  font-size:0.6em;
+  text-shadow: #fff 0 0 4px;
 }
 
 a {

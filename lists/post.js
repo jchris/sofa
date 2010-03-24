@@ -7,12 +7,14 @@ function(head, req) {
   var textile = require("vendor/textile/textile");
 
   var indexPath = path.list('index','recent-posts',{descending:true, limit:10});
+  var feedPath = path.list('index','recent-posts',{descending:true, limit:10, format:"atom"});
+  var commentsFeed = path.list('comments','comments',{descending:true, limit:10, format:"atom"});
   
   provides("html", function() {
     // get the first row and make sure it's a post
     var post = getRow().value;
     if (post.type != "post") {
-      throw("not a post");
+      throw(["error", "not_found", "not a post"]);
     } else {
       if (post.format == "markdown") {
         var html = markdown.encode(post.body);
@@ -25,7 +27,9 @@ function(head, req) {
       var stash = {
         header : {
           index : indexPath,
-          blogName : ddoc.blog.title
+          blogName : ddoc.blog.title,
+          feedPath : feedPath,
+          commentsFeed : commentsFeed
         },
         title : post.title,
         post_id : post._id,
@@ -48,7 +52,7 @@ function(head, req) {
           };
         })
       };
-      return Mustache.to_html(ddoc.templates.post, stash, ddoc.templates.partials, send);   
+      return Mustache.to_html(ddoc.templates.post, stash, ddoc.templates.partials, List.send);   
     }
   });
 }
