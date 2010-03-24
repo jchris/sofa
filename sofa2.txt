@@ -1,10 +1,7 @@
 backport Mustache changes
-comments feed
-atom comments firehose feed (per post also?)
-feed links on index page
-js requires in partial
 test suite
 link code
+  ability to share link code between client and server
   add a name key to the rewriter paths
 
   docform as it's own plugin
@@ -12,7 +9,6 @@ link code
 prune dead code
 
 
-ability to share link code between client and server
   
   
   screens
@@ -24,9 +20,6 @@ ability to share link code between client and server
 
 
 
-laters
-  tag autocomplete
-  tag browsing
 
 relaxville
   # copy couchapp to sofa ->

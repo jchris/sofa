@@ -37,13 +37,14 @@ function(head, req) {
           link : path.list('post','post-page', {startkey : [row.id]}),
           has_tags : post.tags ? true : false,
           tags : post.tags ? post.tags.map(function(tag) {
+            var t = tag.toLowerCase();
             return {
               tag : tag,
               link : path.list("index", "tags", {
                 descending : true, 
                 reduce : false, 
-                startkey : [tag, {}], 
-                endkey : [tag]
+                startkey : [t, {}], 
+                endkey : [t]
               })
             }
           }) : []
