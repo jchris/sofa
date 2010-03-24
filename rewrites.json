@@ -1,11 +1,23 @@
 [
   {
-    "from" : "/",
+    "from" : "",
     "to" : "_list/index/recent-posts",
     "query" : {
       "descending" : true,
       "limit" : 10
     }
+  },
+  {
+    "from" : "script/*",
+    "to" : "script/*"
+  },
+  {
+    "from" : "style/*",
+    "to" : "style/*"
+  },
+  {
+    "from" : "vendor/*",
+    "to" : "vendor/*"
   },
   {
     "from" : "/*",
