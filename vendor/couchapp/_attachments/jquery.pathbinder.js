@@ -30,6 +30,10 @@
           triggerOnPath(defaultPath);
         }
       })
+    },
+    go : function(path) {
+      goPath(path);          
+      triggerOnPath(path);
     }
   };
 
