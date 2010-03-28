@@ -3,6 +3,12 @@ body {
   line-height:1.2em;
   margin:0;
   padding:0;
+  
+}
+
+#profile {
+/*  margin:2em;*/
+/*  padding:.5em;*/
 }
 
 #account {
@@ -57,7 +63,7 @@ h4 {
 #header {
   background:#9a9;
   padding:8px;
-/*  color:#fff;*/
+  border-bottom: 1em solid #b9dab9;
 }
 
 #content {

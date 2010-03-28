@@ -74,7 +74,7 @@ function $$(node) {
     if (app) {
       $$(elem).app = app;      
     }
-
+    $$(elem).widget = events;
     // setup the handlers onto elem
     forIn(events, function(name, h) {
       eventlyHandler(elem, name, h, args);
@@ -145,6 +145,9 @@ function $$(node) {
     if (h.query && !qrun) {
       // $.log("query before renderElement", arguments)
       runQuery(me, h, args)
+    } else if (h.async && !qrun) {
+      $.log("runAsync")
+      runAsync(me, h, args)
     } else {
       // $.log("renderElement")
       // $.log(me, h, args, qrun)
@@ -183,6 +186,15 @@ function $$(node) {
       runIfFun(me, h.partials, args)));
   };
   
+  function runAsync(me, h, args) {
+    var app = $$(me).app;
+    // the callback is the first argument
+    funViaString(h.async).apply(me, [function() {
+      renderElement(me, h, arguments, true);
+    }].concat(args));
+  };
+  
+  
   function runQuery(me, h, args) {
     // $.log("runQuery: args", args)
     var app = $$(me).app;
@@ -212,6 +224,7 @@ function $$(node) {
         renderElement(me, h, [resp], true);
         userSuccess && userSuccess(resp);
       };
+      $.log(app)
       app.view(viewName, q);      
     }
   }
