@@ -1,6 +1,6 @@
-$.log = function() {
+$.log = function(m) {
   if (window && window.console && window.console.log) {
-    window.console.log(arguments);
+    window.console.log(arguments.length == 1 ? m : arguments);
   }
 };
 
@@ -55,3 +55,12 @@ $.prettyDate = function(time){
 		day_diff < 730 && Math.ceil( day_diff / 31 ) + " months ago" ||
 		Math.ceil( day_diff / 365 ) + " years ago";
 };
+
+$.argsToArray = function(args) {
+  if (!args.callee) return args;
+  var array = [];
+  for (var i=0; i < args.length; i++) {
+    array.push(args[i]);
+  };
+  return array;
+}

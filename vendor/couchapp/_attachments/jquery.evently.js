@@ -74,7 +74,7 @@ function $$(node) {
     if (app) {
       $$(elem).app = app;      
     }
-    $$(elem).widget = events;
+    $$(elem).evently = events;
     // setup the handlers onto elem
     forIn(events, function(name, h) {
       eventlyHandler(elem, name, h, args);
@@ -105,7 +105,7 @@ function $$(node) {
     }
     var f = funViaString(h);
     if (typeof f == "function") {
-      elem.bind(name,  {args:args}, f); 
+      elem.bind(name, {args:args}, f); 
     } else if (typeof f == "string") {
       elem.bind(name, {args:args}, function() {
         $(this).trigger(f, arguments);
@@ -131,6 +131,7 @@ function $$(node) {
   };
   
   $.fn.replace = function(elem) {
+    $.log("Replace", this)
     $(this).empty().append(elem);
   };
   
@@ -146,7 +147,6 @@ function $$(node) {
       // $.log("query before renderElement", arguments)
       runQuery(me, h, args)
     } else if (h.async && !qrun) {
-      $.log("runAsync")
       runAsync(me, h, args)
     } else {
       // $.log("renderElement")
@@ -156,6 +156,7 @@ function $$(node) {
       var act = h.render || "replace";
       var app = $$(me).app;
       if (h.mustache) {
+        $.log("rendering", h.mustache)
         var newElem = mustachioed(me, h, args);
         me[act](newElem);
       }
@@ -186,12 +187,12 @@ function $$(node) {
       runIfFun(me, h.partials, args)));
   };
   
-  function runAsync(me, h, args) {
+  function runAsync(me, h, args) {  
     var app = $$(me).app;
     // the callback is the first argument
     funViaString(h.async).apply(me, [function() {
-      renderElement(me, h, arguments, true);
-    }].concat(args));
+      renderElement(me, h, $.argsToArray(arguments).concat($.argsToArray(args)), true);
+    }].concat($.argsToArray(args)));
   };
   
   
@@ -213,7 +214,7 @@ function $$(node) {
       q.success = function(resp) {
         $.log("runQuery newRows success", resp.rows.length, me, resp)
         resp.rows.reverse().forEach(function(row) {
-          renderElement(me, h, [row], true)
+          renderElement(me, h, [row].concat($.argsToArray(args)), true)
         });
         if (userSuccess) userSuccess(resp);
       };
@@ -221,7 +222,7 @@ function $$(node) {
     } else {
       q.success = function(resp) {
         // $.log("runQuery success", resp)
-        renderElement(me, h, [resp], true);
+        renderElement(me, h, [resp].concat($.argsToArray(args)), true);
         userSuccess && userSuccess(resp);
       };
       $.log(app)

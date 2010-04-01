@@ -4,6 +4,8 @@
   var PATH_REPLACER = "([^\/]+)",
       PATH_NAME_MATCHER = /:([\w\d]+)/g,
       QUERY_STRING_MATCHER = /\?([^#]*)$/,
+      SPLAT_MATCHER = /(\*)/,
+      SPLAT_REPLACER = "(.+)",
       _currentPath,
       _lastPath,
       _pathInterval;
@@ -33,7 +35,7 @@
       })
     },
     go : function(path) {
-      goPath(path);          
+      goPath(path);
       triggerOnPath(path);
     },
     onChange : function (fun) {
@@ -60,13 +62,22 @@
 
   function triggerOnPath(path) {
     $.pathbinder.changeFuns.forEach(function(fun) {fun(path)});
-    var pathSpec, path_params, params = {};
+    var pathSpec, path_params, params = {}, param_name, param;
     for (var i=0; i < $.pathbinder.paths.length; i++) {
       pathSpec = $.pathbinder.paths[i];
+      $.log("pathSpec", pathSpec);
       if ((path_params = pathSpec.matcher.exec(path)) !== null) {
+        $.log("path_params", path_params);
         path_params.shift();
         for (var j=0; j < path_params.length; j++) {
-          params[pathSpec.param_names[j]] = decodeURIComponent(path_params[j]);
+          param_name = pathSpec.param_names[j];
+          param = decodeURIComponent(path_params[j]);
+          if (param_name) {
+            params[param_name] = param;
+          } else {
+            if (!params.splat) params.splat = [];
+            params.splat.push(param);
+          }
         };
         // $.log("path trigger for "+path);
         pathSpec.callback(params);
@@ -117,10 +128,12 @@
 
     return {
       param_names : param_names,
-      matcher : new RegExp(path.replace(PATH_NAME_MATCHER, PATH_REPLACER) + "$"),
+      matcher : new RegExp(path.replace(
+        PATH_NAME_MATCHER, PATH_REPLACER).replace(
+        SPLAT_MATCHER, SPLAT_REPLACER) + "$"),
       template : path.replace(PATH_NAME_MATCHER, function(a, b) {
         return '{{'+b+'}}';
-      }),
+      }).replace(SPLAT_MATCHER, '{{splat}}'),
       callback : callback
     };
   };
