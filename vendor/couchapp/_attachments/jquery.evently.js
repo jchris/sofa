@@ -188,10 +188,10 @@ function $$(node) {
   };
   
   function runAsync(me, h, args) {  
-    var app = $$(me).app;
     // the callback is the first argument
     funViaString(h.async).apply(me, [function() {
-      renderElement(me, h, $.argsToArray(arguments).concat($.argsToArray(args)), true);
+      renderElement(me, h, 
+        $.argsToArray(arguments).concat($.argsToArray(args)), true);
     }].concat($.argsToArray(args)));
   };
   

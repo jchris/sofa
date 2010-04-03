@@ -81,7 +81,7 @@
         };
         // $.log("path trigger for "+path);
         pathSpec.callback(params);
-        return true;
+        // return true; // removed this to allow for multi match
       }
     };
   };
