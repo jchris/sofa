@@ -103,7 +103,7 @@
         });
 
         $("#preview").click(function() {
-          var markdown = app.require("vendor/markdown/lib/markdown");
+          var markdown = app.require("vendor/couchapp/lib/markdown");
           var doc = postForm.localDoc();
           var html = markdown.encode(doc.body);
           $('#show-preview').html(html);

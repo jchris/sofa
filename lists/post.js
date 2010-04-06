@@ -3,7 +3,7 @@ function(head, req) {
   var ddoc = this;
   var List = require("vendor/couchapp/lib/list");
   var path = require("vendor/couchapp/lib/path").init(req);
-  var markdown = require("vendor/markdown/lib/markdown");
+  var markdown = require("vendor/couchapp/lib/markdown");
   var textile = require("vendor/textile/textile");
 
   var indexPath = path.list('index','recent-posts',{descending:true, limit:10});

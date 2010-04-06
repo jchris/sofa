@@ -1,7 +1,7 @@
 function() {
   var f = $(this), app = $$(this).app;
   var Mustache = app.require("lib/mustache");
-  var markdown = app.require("vendor/markdown/lib/markdown");
+  var markdown = app.require("vendor/couchapp/lib/markdown");
 
   var c = {
     name : $$("#profile").profile.nickname,

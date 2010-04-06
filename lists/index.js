@@ -64,7 +64,7 @@ function(head, req) {
   // we run this function to generate the feed.
   provides("atom", function() {    
     var path = require("vendor/couchapp/lib/path").init(req);
-    var markdown = require("vendor/markdown/lib/markdown");
+    var markdown = require("vendor/couchapp/lib/markdown");
     var textile = require("vendor/textile/textile");
 
     // we load the first row to find the most recent change date

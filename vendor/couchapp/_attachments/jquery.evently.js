@@ -140,14 +140,14 @@ function $$(node) {
   // as well as call this in a way that replaces the host elements content
   // this would be easy if there is a simple way to get at the element we just appended
   // (as html) so that we can attache the selectors
-  function renderElement(me, h, args, qrun) {
+  function renderElement(me, h, args, qrun, arun) {
     // if there's a query object we run the query,
     // and then call the data function with the response.
-    if (h.query && !qrun) {
+    if (h.async && !arun) {
+      runAsync(me, h, args)
+    } else if (h.query && !qrun) {
       // $.log("query before renderElement", arguments)
       runQuery(me, h, args)
-    } else if (h.async && !qrun) {
-      runAsync(me, h, args)
     } else {
       // $.log("renderElement")
       // $.log(me, h, args, qrun)
@@ -191,7 +191,7 @@ function $$(node) {
     // the callback is the first argument
     funViaString(h.async).apply(me, [function() {
       renderElement(me, h, 
-        $.argsToArray(arguments).concat($.argsToArray(args)), true);
+        $.argsToArray(arguments).concat($.argsToArray(args)), false, true);
     }].concat($.argsToArray(args)));
   };
   
