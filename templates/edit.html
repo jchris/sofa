@@ -64,6 +64,7 @@
                 format : "markdown",
                 author : userCtx.name
               },
+              attachPrevRev : true,
               onLoad : function(doc) {
                 if (doc._id) {
                   $('h1').html('Editing <a href="'+path.show('post',doc._id)+'">'+doc._id+'</a> by '+doc.author);

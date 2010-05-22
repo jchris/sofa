@@ -44,7 +44,7 @@
         var localFormDoc = {};
         opts = opts || {};
         opts.fields = opts.fields || [];
-        
+
         // turn the form into deep json
         // field names like 'author-email' get turned into json like
         // {"author":{"email":"quentin@example.com"}}
@@ -108,6 +108,7 @@
         
         if (opts.id) {
           db.openDoc(opts.id, {
+            attachPrevRev : opts.attachPrevRev,
             success: function(doc) {
               if (opts.onLoad) {opts.onLoad(doc);}
               localFormDoc = doc;
