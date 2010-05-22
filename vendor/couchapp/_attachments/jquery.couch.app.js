@@ -25,12 +25,16 @@
     this.view = function(view, opts) {
       db.view(name+'/'+view, opts);
     };
+    this.list = function(list, view, opts) {
+      db.list(name+'/'+list, view, opts);
+    };
   }
-  
-  $.couch.app = $.couch.app || function(appFun) {
+
+  $.couch.app = $.couch.app || function(appFun, opts) {
+    opts = opts || {};
     $(function() {
-      var dbname = document.location.href.split('/')[3];
-      var dname = unescape(document.location.href).split('/')[5];
+      var dbname = opts.db || document.location.href.split('/')[3];
+      var dname = opts.design || unescape(document.location.href).split('/')[5];
       var db = $.couch.db(dbname);
       var design = new Design(db, dname);
       
@@ -47,8 +51,13 @@
         function formToDeepJSON(form, fields, doc) {
           form = $(form);
           opts.fields.forEach(function(field) {
-            var val = form.find("[name="+field+"]").val();
-            if (!val) {return;}
+            var element = form.find("[name="+field+"]");
+            if (element.attr('type') === 'checkbox') {
+                var val = element.attr('checked');
+            } else {
+                var val = element.val();
+                if (!val) return;
+            }
             var parts = field.split('-');
             var frontObj = doc, frontName = parts.shift();
             while (parts.length > 0) {
@@ -87,9 +96,14 @@
               frontName = parts.shift();
             }
             if (frontObj && frontObj[frontName]) {
-              form.find("[name="+field+"]").val(frontObj[frontName]);              
+              var element = form.find("[name="+field+"]");
+              if (element.attr('type') === 'checkbox') {
+                element.attr('checked', frontObj[frontName]);
+              } else {
+                element.val(frontObj[frontName]);
+              }
             }
-          });            
+          });
         }
         
         if (opts.id) {
@@ -172,6 +186,7 @@
         db : db,
         design : design,
         view : design.view,
+        list : design.list,
         docForm : docForm,
         req : mockReq
       }, $.couch.app.app);
@@ -233,3 +248,45 @@
   // legacy support. $.CouchApp is deprecated, please use $.couch.app
   $.CouchApp = $.couch.app;
 })(jQuery);
+
+// JavaScript 1.6 compatibility functions that are missing from IE7/IE8
+
+if (!Array.prototype.forEach)
+{
+    Array.prototype.forEach = function(fun /*, thisp*/)
+    {
+        var len = this.length >>> 0;
+        if (typeof fun != "function")
+            throw new TypeError();
+
+        var thisp = arguments[1];
+        for (var i = 0; i < len; i++)
+        {
+            if (i in this)
+                fun.call(thisp, this[i], i, this);
+        }
+    };
+}
+
+if (!Array.prototype.indexOf)
+{
+    Array.prototype.indexOf = function(elt)
+    {
+        var len = this.length >>> 0;
+
+        var from = Number(arguments[1]) || 0;
+        from = (from < 0)
+                ? Math.ceil(from)
+                : Math.floor(from);
+        if (from < 0)
+            from += len;
+
+        for (; from < len; from++)
+        {
+            if (from in this &&
+                this[from] === elt)
+                return from;
+        }
+        return -1;
+    };
+}

@@ -1,6 +1,8 @@
 function() {
+  var md5 = $$(this).app.require("vendor/couchapp/lib/md5");
+  
   // TODO this can be cleaned up with docForm?
-
+  // it still needs the workflow to edit an existing profile
   var name = $("input[name=userCtxName]",this).val();
   var newProfile = {
     rand : Math.random().toString(), 
@@ -10,12 +12,9 @@ function() {
   }, widget = $(this);
 
   // setup gravatar_url
-  if (typeof hex_md5 == "undefined") {
-    alert("creating a profile requires md5.js to be loaded in the page");
-    return;
+  if (md5) {
+    newProfile.gravatar_url = 'http://www.gravatar.com/avatar/'+md5.hex(newProfile.email || newProfile.rand)+'.jpg?s=40&d=identicon';    
   }
-
-  newProfile.gravatar_url = 'http://www.gravatar.com/avatar/'+hex_md5(newProfile.email || newProfile.rand)+'.jpg?s=40&d=identicon';
 
   // store the user profile on the user account document
   $.couch.userDb(function(db) {
