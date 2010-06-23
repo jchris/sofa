@@ -9,7 +9,7 @@
     <div id="tagcloud"></div>
     <div id="content">
     <!-- form to create a post -->
-    <form id="new-post" action="new.html" method="post">
+    <form id="new-post">
       <h1>{{pageTitle}}</h1>
         <p><label>Title</label>
           <input type="text" size="50" name="title" value=""></p>
@@ -28,6 +28,7 @@
     </div>
   </body>
   {{>scripts}}
+  <script src="/_utils/script/base64.js"></script>
   <script src="../../script/jquery.scrollTo.js"></script>
   <script type="text/javascript" charset="utf-8">
     $.couch.app(function(app) {
@@ -97,7 +98,7 @@
               },
               success : function(resp) {
                 $("#saved").text("Saved _rev: "+resp.rev).fadeIn(500).fadeOut(6000);
-                $('h1').html('Editing <a href="'+path.show('post',resp.id)+'">'+resp.id+'</a> by '+doc.author);    
+                $('h1').html('Editing <a href="'+path.show('post',resp.id)+'">'+resp.id+'</a>');    
               }
             });
           }
