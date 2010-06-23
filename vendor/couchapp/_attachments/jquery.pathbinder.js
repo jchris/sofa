@@ -38,6 +38,9 @@
       goPath(path);
       triggerOnPath(path);
     },
+    currentPath : function() {
+      return getPath();
+    },
     onChange : function (fun) {
       $.pathbinder.changeFuns.push(fun);
     }
@@ -79,7 +82,6 @@
             params.splat.push(param);
           }
         };
-        // $.log("path trigger for "+path);
         pathSpec.callback(params);
         // return true; // removed this to allow for multi match
       }
@@ -107,6 +109,7 @@
   };
   
   function goPath(newPath) {
+    // $.log("goPath", newPath)
     window.location = '#'+newPath;
     _lastPath = getPath();
   };
@@ -130,7 +133,7 @@
       param_names : param_names,
       matcher : new RegExp(path.replace(
         PATH_NAME_MATCHER, PATH_REPLACER).replace(
-        SPLAT_MATCHER, SPLAT_REPLACER) + "$"),
+        SPLAT_MATCHER, SPLAT_REPLACER) + "/?$"),
       template : path.replace(PATH_NAME_MATCHER, function(a, b) {
         return '{{'+b+'}}';
       }).replace(SPLAT_MATCHER, '{{splat}}'),
@@ -138,19 +141,30 @@
     };
   };
 
-  $.fn.pathbinder = function(name, path) {
-    var self = $(this);
-    var pathSpec = makePathSpec(path, function(params) {
-      $.log("path cb", name, path, self)
-      self.trigger(name, [params]);
+  $.fn.pathbinder = function(name, paths, options) {
+    options = options || {};
+    var self = $(this), pathList = paths.split(/\n/);
+    $.each(pathList, function() {
+      var path = this;
+      if (path) {
+        // $.log("bind path", path);
+        var pathSpec = makePathSpec(path, function(params) {
+          // $.log("path cb", name, path, self)
+          // $.log("trigger path: "+path+" params: ", params);
+          self.trigger(name, [params]);
+        });
+        // set the path when the event triggered through other means
+        if (options.bindPath) {
+          self.bind(name, function(ev, params) {
+            params = params || {};
+            // $.log("set path", name, pathSpec)
+            setPath(pathSpec, params);
+          });
+        }
+        // trigger when the path matches
+        registerPath(pathSpec);
+      }
     });
-    self.bind(name, function(ev, params) {
-      // set the path when triggered
-      // $.log("set path", name, pathSpec)
-      setPath(pathSpec, params);
-    });
-    // trigger when the path matches
-    registerPath(pathSpec);
   };
 })(jQuery);
   

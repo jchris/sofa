@@ -65,7 +65,8 @@ function $$(node) {
       });
     },
     paths : [],
-    changesDBs : {}
+    changesDBs : {},
+    changesOpts : {}
   };
   
   function extractFrom(name, evs) {
@@ -177,7 +178,7 @@ function $$(node) {
       // $.log(me, h, args, qrun)
       // otherwise we just render the template with the current args
       var selectors = runIfFun(me, h.selectors, args);
-      var act = h.render || "replace";
+      var act = (h.render || "replace").replace(/\s/g,"");
       var app = $$(me).app;
       if (h.mustache) {
         // $.log("rendering", h.mustache)
@@ -316,34 +317,47 @@ function $$(node) {
   
   // only start one changes listener per db
   function followChanges(app) {
-    var dbName = app.db.name;
+    var dbName = app.db.name, changeEvent = function(resp) {
+      $("body").trigger("evently.changes."+dbName, [resp]);
+    };
     if (!$.evently.changesDBs[dbName]) {
-      connectToChanges(app, function() {
-        $("body").trigger("evently.changes."+dbName);
-      });
+      if (app.db.changes) {
+        // new api in jquery.couch.js 1.0
+        app.db.changes(null, $.evently.changesOpts).onChange(changeEvent);
+      } else {
+        // in case you are still on CouchDB 0.11 ;) deprecated.
+        connectToChanges(app, changeEvent);
+      }
       $.evently.changesDBs[dbName] = true;
     }
   }
-  
-  function connectToChanges(app, fun) {
-    function resetHXR(x) {
-      x.abort();
-      connectToChanges(app, fun);    
+  $.evently.followChanges = followChanges;
+  // deprecated. use db.changes() from jquery.couch.js
+  // this does not have an api for closing changes request.
+  function connectToChanges(app, fun, update_seq) {
+    function changesReq(seq) {
+      var url = app.db.uri+"_changes?heartbeat=10000&feed=longpoll&since="+seq;
+      if ($.evently.changesOpts.include_docs) {
+        url = url + "&include_docs=true";
+      }
+      $.ajax({
+        url: url,
+        contentType: "application/json",
+        dataType: "json",
+        complete: function(req) {
+          var resp = $.httpData(req, "json");
+          fun(resp);
+          connectToChanges(app, fun, resp.last_seq);
+        }
+      });
     };
-    app.db.info({success: function(db_info) {  
-      var c_xhr = jQuery.ajaxSettings.xhr();
-      c_xhr.open("GET", app.db.uri+"_changes?feed=continuous&since="+db_info.update_seq, true);
-      c_xhr.send("");
-      // todo use a timeout to prevent rapid triggers
-      var t;
-      c_xhr.onreadystatechange = function() {
-        clearTimeout(t);
-        t = setTimeout(fun, 100);
-      };
-      setTimeout(function() {
-        resetHXR(c_xhr);      
-      }, 1000 * 60);
-    }});
+    if (update_seq) {
+      changesReq(update_seq);
+    } else {
+      app.db.info({success: function(db_info) {
+        changesReq(db_info.update_seq);
+      }});
+    }
   };
   
 })(jQuery);
