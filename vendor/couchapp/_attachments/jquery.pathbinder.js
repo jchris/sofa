@@ -64,6 +64,7 @@
   }
 
   function triggerOnPath(path) {
+    path = path.replace(/^#/,'');
     $.pathbinder.changeFuns.forEach(function(fun) {fun(path)});
     var pathSpec, path_params, params = {}, param_name, param;
     for (var i=0; i < $.pathbinder.paths.length; i++) {
@@ -131,7 +132,7 @@
 
     return {
       param_names : param_names,
-      matcher : new RegExp(path.replace(
+      matcher : new RegExp("^" + path.replace(
         PATH_NAME_MATCHER, PATH_REPLACER).replace(
         SPLAT_MATCHER, SPLAT_REPLACER) + "/?$"),
       template : path.replace(PATH_NAME_MATCHER, function(a, b) {

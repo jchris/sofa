@@ -31,7 +31,7 @@ function $$(node) {
             return f.apply(this, arguments);
           } catch(e) {
             // IF YOU SEE AN ERROR HERE IT HAPPENED WHEN WE TRIED TO RUN YOUR FUNCTION
-            // $.log({"message": "Error in evently function.", "error": e, "src" : fun});
+            $.log({"message": "Error in evently function.", "error": e, "src" : fun});
             throw(e);
           }
         };
