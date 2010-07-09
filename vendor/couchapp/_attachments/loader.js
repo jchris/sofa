@@ -1,8 +1,8 @@
 
 function couchapp_load(scripts) {
-  document.write(scripts.map(function(s) {
-    return '<script src="'+s+'"></script>';
-  }).join(''));  
+  for (var i=0; i < scripts.length; i++) {
+    document.write('<script src="'+scripts[i]+'"><\/script>')
+  };
 };
 
 couchapp_load([

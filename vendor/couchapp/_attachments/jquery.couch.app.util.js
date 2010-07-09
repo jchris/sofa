@@ -4,6 +4,23 @@ $.log = function(m) {
   }
 };
 
+// http://stackoverflow.com/questions/1184624/serialize-form-to-json-with-jquery/1186309#1186309
+$.fn.serializeObject = function() {
+    var o = {};
+    var a = this.serializeArray();
+    $.each(a, function() {
+        if (o[this.name]) {
+            if (!o[this.name].push) {
+                o[this.name] = [o[this.name]];
+            }
+            o[this.name].push(this.value || '');
+        } else {
+            o[this.name] = this.value || '';
+        }
+    });
+    return o;
+};
+
 // todo remove this crap
 function escapeHTML(st) {                                       
   return(                                                                 
@@ -23,9 +40,9 @@ $.linkify = function(body) {
   return body.replace(/((ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?)/gi,function(a) {
     return '<a target="_blank" href="'+a+'">'+a+'</a>';
   }).replace(/\@([\w\-]+)/g,function(user,name) {
-    return '<a href="#/mentions/'+encodeURIComponent(name)+'">'+user+'</a>';
+    return '<a href="#/mentions/'+encodeURIComponent(name.toLowerCase())+'">'+user+'</a>';
   }).replace(/\#([\w\-\.]+)/g,function(word,tag) {
-    return '<a href="#/tags/'+encodeURIComponent(tag)+'">'+word+'</a>';
+    return '<a href="#/tags/'+encodeURIComponent(tag.toLowerCase())+'">'+word+'</a>';
   });
 };
 
