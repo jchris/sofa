@@ -19,9 +19,14 @@
 // });
 
 (function($) {
-  
-  function Design(db, name) {
+
+  function Design(db, name, code) {
     this.doc_id = "_design/"+name;
+    if (code) {
+      this.code_path = this.doc_id + "/" + code;
+    } else {
+      this.code_path = this.doc_id;
+    }
     this.view = function(view, opts) {
       db.view(name+'/'+view, opts);
     };
@@ -30,223 +35,127 @@
     };
   }
 
+  function docForm() { alert("docForm has been moved to vendor/couchapp/lib/docForm.js, use app.require to load") };
+
+  function resolveModule(names, parent, current) {
+    if (names.length === 0) {
+      if (typeof current != "string") {
+        throw ["error","invalid_require_path",
+          'Must require a JavaScript string, not: '+(typeof current)];
+      }
+      return [current, parent];
+    }
+    var n = names.shift();
+    if (n == '..') {
+      if (!(parent && parent.parent)) {
+        throw ["error", "invalid_require_path", 'Object has no parent '+JSON.stringify(current)];
+      }
+      return resolveModule(names, parent.parent.parent, parent.parent);
+    } else if (n == '.') {
+      if (!parent) {
+        throw ["error", "invalid_require_path", 'Object has no parent '+JSON.stringify(current)];
+      }
+      return resolveModule(names, parent.parent, parent);
+    }
+    if (!current[n]) {
+      throw ["error", "invalid_require_path", 'Object has no property "'+n+'". '+JSON.stringify(current)];
+    }
+    var p = current;
+    current = current[n];
+    current.parent = p;
+    return resolveModule(names, p, current);
+  }
+
+  function makeRequire(ddoc) {
+    var moduleCache = [];
+    function getCachedModule(name, parent) {
+      var key, i, len = moduleCache.length;
+      for (i=0;i<len;++i) {
+        key = moduleCache[i].key;
+        if (key[0] === name && key[1] === parent) {
+          return moduleCache[i].module;
+        }
+      }
+      return null;
+    }
+    function setCachedModule(name, parent, module) {
+      moduleCache.push({ key: [name, parent], module: module });
+    }
+    var require = function (name, parent) {
+      var cachedModule = getCachedModule(name, parent);
+      if (cachedModule !== null) {
+        return cachedModule;
+      }
+      var exports = {};
+      var resolved = resolveModule(name.split('/'), parent, ddoc);
+      var source = resolved[0]; 
+      parent = resolved[1];
+      var s = "var func = function (exports, require) { " + source + " };";
+      try {
+        eval(s);
+        func.apply(ddoc, [exports, function(name) {return require(name, parent, source)}]);
+      } catch(e) { 
+        throw ["error","compilation_error","Module require('"+name+"') raised error "+e.toSource()]; 
+      }
+      setCachedModule(name, parent, exports);
+      return exports;
+    }
+    return require;
+  };
+
+  function mockReq() {
+    var p = document.location.pathname.split('/'),
+      qs = document.location.search.replace(/^\?/,'').split('&'),
+      q = {};
+    qs.forEach(function(param) {
+      var ps = param.split('='),
+        k = decodeURIComponent(ps[0]),
+        v = decodeURIComponent(ps[1]);
+      if (["startkey", "endkey", "key"].indexOf(k) != -1) {
+        q[k] = JSON.parse(v);
+      } else {
+        q[k] = v;
+      }
+    });
+    p.shift();
+    return {
+      path : p,
+      query : q
+    };
+  };
+
   $.couch.app = $.couch.app || function(appFun, opts) {
     opts = opts || {};
-    $(function() {
-      var dbname = opts.db || document.location.href.split('/')[3];
-      var dname = opts.design || unescape(document.location.href).split('/')[5];
-      var db = $.couch.db(dbname);
-      var design = new Design(db, dname);
-      
-      // docForm applies CouchDB behavior to HTML forms.
-      // todo make this a couch.app plugin
-      function docForm(formSelector, opts) {
-        var localFormDoc = {};
-        opts = opts || {};
-        opts.fields = opts.fields || [];
-
-        // turn the form into deep json
-        // field names like 'author-email' get turned into json like
-        // {"author":{"email":"quentin@example.com"}}
-        function formToDeepJSON(form, fields, doc) {
-          form = $(form);
-          opts.fields.forEach(function(field) {
-            var element = form.find("[name="+field+"]");
-            if (element.attr('type') === 'checkbox') {
-                var val = element.attr('checked');
-            } else {
-                var val = element.val();
-                if (!val) return;
-            }
-            var parts = field.split('-');
-            var frontObj = doc, frontName = parts.shift();
-            while (parts.length > 0) {
-              frontObj[frontName] = frontObj[frontName] || {};
-              frontObj = frontObj[frontName];
-              frontName = parts.shift();
-            }
-            frontObj[frontName] = val;
-          });
-        }
-        
-        // Apply the behavior
-        $(formSelector).submit(function(e) {
-          e.preventDefault();
-          if (opts.validate && opts.validate() == false) { return false;}
-          // formToDeepJSON acts on localFormDoc by reference
-          formToDeepJSON(this, opts.fields, localFormDoc);
-          if (opts.beforeSave) {opts.beforeSave(localFormDoc);}
-          db.saveDoc(localFormDoc, {
-            success : function(resp) {
-              if (opts.success) {opts.success(resp, localFormDoc);}
-            }
-          });
-          
-          return false;
-        });
-
-        // populate form from an existing doc
-        function docToForm(doc) {
-          var form = $(formSelector);
-          // fills in forms
-          opts.fields.forEach(function(field) {
-            var parts = field.split('-');
-            var run = true, frontObj = doc, frontName = parts.shift();
-            while (frontObj && parts.length > 0) {                
-              frontObj = frontObj[frontName];
-              frontName = parts.shift();
-            }
-            if (frontObj && frontObj[frontName]) {
-              var element = form.find("[name="+field+"]");
-              if (element.attr('type') === 'checkbox') {
-                element.attr('checked', frontObj[frontName]);
-              } else {
-                element.val(frontObj[frontName]);
-              }
-            }
-          });
-        }
-        
-        if (opts.id) {
-          db.openDoc(opts.id, {
-            attachPrevRev : opts.attachPrevRev,
-            error: function() {
-              if (opts.error) {opts.error.apply(opts, arguments);}
-            },
-            success: function(doc) {
-              if (opts.load || opts.onLoad) {(opts.load || opts.onLoad)(doc);}
-              localFormDoc = doc;
-              docToForm(doc);
-          }});
-        } else if (opts.template) {
-          if (opts.load || opts.onLoad) {(opts.load || opts.onLoad)(opts.template);}
-          localFormDoc = opts.template;
-          docToForm(localFormDoc);
-        }
-        var instance = {
-          deleteDoc : function(opts) {
-            opts = opts || {};
-            if (confirm("Really delete this document?")) {                
-              db.removeDoc(localFormDoc, opts);
-            }
-          },
-          localDoc : function() {
-            formToDeepJSON(formSelector, opts.fields, localFormDoc);
-            return localFormDoc;
-          }
-        };
-        return instance;
+    var urlPrefix = (opts.urlPrefix || ""),
+      index = urlPrefix.split('/').length,
+      fragments = unescape(document.location.href).split('/'),
+      dbname = opts.db || fragments[index + 2],
+      dname = opts.design || fragments[index + 4];
+    $.couch.urlPrefix = urlPrefix;
+    var db = $.couch.db(dbname),
+      design = new Design(db, dname, opts.load_path);
+    var appExports = $.extend({
+      db : db,
+      design : design,
+      view : design.view,
+      list : design.list,
+      docForm : docForm, // deprecated
+      req : mockReq()
+    }, $.couch.app.app);
+    function handleDDoc(ddoc) {        
+      if (ddoc) {
+        appExports.ddoc = ddoc;
+        appExports.require = makeRequire(ddoc);
       }
-      
-      function resolveModule(names, parent, current) {
-        if (names.length === 0) {
-          if (typeof current != "string") {
-            throw ["error","invalid_require_path",
-              'Must require a JavaScript string, not: '+(typeof current)];
-          }
-          return [current, parent];
-        }
-        // we need to traverse the path
-        var n = names.shift();
-        if (n == '..') {
-          if (!(parent && parent.parent)) {
-            throw ["error", "invalid_require_path", 'Object has no parent '+JSON.stringify(current)];
-          }
-          return resolveModule(names, parent.parent.parent, parent.parent);
-        } else if (n == '.') {
-          if (!parent) {
-            throw ["error", "invalid_require_path", 'Object has no parent '+JSON.stringify(current)];
-          }
-          return resolveModule(names, parent.parent, parent);
-        }
-        if (!current[n]) {
-          throw ["error", "invalid_require_path", 'Object has no property "'+n+'". '+JSON.stringify(current)];
-        }
-        var p = current;
-        current = current[n];
-        current.parent = p;
-        return resolveModule(names, p, current);
-      }
-      
-      var p = document.location.pathname.split('/');
-      p.shift();
-      var qs = document.location.search.replace(/^\?/,'').split('&');
-      var q = {};
-      qs.forEach(function(param) {
-        var ps = param.split('=');
-        var k = decodeURIComponent(ps[0]);
-        var v = decodeURIComponent(ps[1]);
-        if (["startkey", "endkey", "key"].indexOf(k) != -1) {
-          q[k] = JSON.parse(v);
-        } else {
-          q[k] = v;
-        }
-      });
-      var mockReq = {
-        path : p,
-        query : q
-      };
-      
-      var appExports = $.extend({
-        db : db,
-        design : design,
-        view : design.view,
-        list : design.list,
-        docForm : docForm,
-        req : mockReq
-      }, $.couch.app.app);
-
-      function handleDDoc(ddoc) {
-        var moduleCache = [];
-        
-        function getCachedModule(name, parent) {
-          var key, i, len = moduleCache.length;
-          for (i=0;i<len;++i) {
-            key = moduleCache[i].key;
-            if (key[0] === name && key[1] === parent) {
-              return moduleCache[i].module;
-            }
-          }
-          
-          return null;
-        }
-        
-        function setCachedModule(name, parent, module) {
-          moduleCache.push({ key: [name, parent], module: module });
-        }
-        
-        if (ddoc) {
-          var require = function(name, parent) {
-            var cachedModule = getCachedModule(name, parent);
-            if (cachedModule !== null) {
-              return cachedModule;
-            }
-            
-            var exports = {};
-            var resolved = resolveModule(name.split('/'), parent, ddoc);
-            var source = resolved[0]; 
-            parent = resolved[1];
-            var s = "var func = function (exports, require) { " + source + " };";
-            try {
-              eval(s);
-              func.apply(ddoc, [exports, function(name) {return require(name, parent, source)}]);
-            } catch(e) { 
-              throw ["error","compilation_error","Module require('"+name+"') raised error "+e.toSource()]; 
-            }
-            
-            setCachedModule(name, parent, exports);
-            
-            return exports;
-          }
-          appExports.ddoc = ddoc;
-          appExports.require = require;
-        }
-        // todo make app-exports the this in the execution context?
-        appFun.apply(appExports, [appExports]);
-      }
-      
+      appFun.apply(appExports, [appExports]);
+    }
+    if (opts.ddoc) {
+      // allow the ddoc to be embedded in the html
+      // to avoid a second http request
+      $.couch.app.ddocs[design.doc_id] = opts.ddoc;
+    }
     if ($.couch.app.ddocs[design.doc_id]) {
-      handleDDoc($.couch.app.ddocs[design.doc_id])
+      $(function() {handleDDoc($.couch.app.ddocs[design.doc_id])});
     } else {
       // only open 1 connection for this ddoc 
       if ($.couch.app.ddoc_handlers[design.doc_id]) {
@@ -254,25 +163,24 @@
         $.couch.app.ddoc_handlers[design.doc_id].push(handleDDoc);
       } else {
         $.couch.app.ddoc_handlers[design.doc_id] = [handleDDoc];
-        db.openDoc(design.doc_id, {
+        // use getDbProperty to bypass %2F encoding on _show/app
+        db.getDbProperty(design.code_path, {
           success : function(doc) {
             $.couch.app.ddocs[design.doc_id] = doc;
             $.couch.app.ddoc_handlers[design.doc_id].forEach(function(h) {
-              h(doc);
+              $(function() {h(doc)});
             });
             $.couch.app.ddoc_handlers[design.doc_id] = null;
           },
           error : function() {
             $.couch.app.ddoc_handlers[design.doc_id].forEach(function(h) {
-              h();
+              $(function() {h()});
             });
             $.couch.app.ddoc_handlers[design.doc_id] = null;
           }
         });
       }
     }
-      
-    });
   };
   $.couch.app.ddocs = {};
   $.couch.app.ddoc_handlers = {};

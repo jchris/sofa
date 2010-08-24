@@ -1,11 +1,8 @@
 /*
-Shameless port of a shameless port
-@defunkt => @janl => @aq
- 
-See http://github.com/defunkt/mustache for more info.
-*/
- 
-;(function($) {
+ * CommonJS-compatible mustache.js module
+ *
+ * See http://github.com/janl/mustache.js for more info.
+ */
 
 /*
   mustache.js — Logic-less templates in JavaScript
@@ -335,12 +332,8 @@ var Mustache = function() {
   });
 }();
 
-  $.mustache = function(template, view, partials) {
-    return Mustache.to_html(template, view, partials);
-  };
+exports.name = Mustache.name;
+exports.version = Mustache.version;
 
-  $.mustache.escape = function(text) {
-    return Mustache.escape(text);
-  };
-
-})(jQuery);
+exports.to_html = Mustache.to_html;
+exports.escape = Mustache.escape;

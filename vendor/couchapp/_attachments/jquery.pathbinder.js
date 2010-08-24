@@ -14,6 +14,7 @@
     _currentPath = getPath();
     // if path is actually changed from what we thought it was, then react
     if (_lastPath != _currentPath) {
+      _lastPath = _currentPath;
       return triggerOnPath(_currentPath);
     }
   }
@@ -110,8 +111,10 @@
   };
   
   function goPath(newPath) {
-    // $.log("goPath", newPath)
-    window.location = '#'+newPath;
+    if (newPath) {
+      // $.log("goPath", newPath)
+      window.location = '#'+newPath;
+    }
     _lastPath = getPath();
   };
   
