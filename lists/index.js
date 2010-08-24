@@ -36,7 +36,7 @@ function(head, req) {
           date : post.created_at,
           link : path.list('post','post-page', {startkey : [row.id]}),
           has_tags : post.tags ? true : false,
-          tags : post.tags ? post.tags.map(function(tag) {
+          tags : post.tags && post.tags.map ? post.tags.map(function(tag) {
             var t = tag.toLowerCase();
             return {
               tag : tag,
