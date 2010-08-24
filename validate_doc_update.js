@@ -6,7 +6,8 @@ function (newDoc, oldDoc, userCtx, secObj) {
   };
 
   // admins or owner can always delete
-  if ((v.isAdmin() || (oldDoc && (oldDoc.author == userCtx.name))) && newDoc._deleted) return true;
+  if (v.isAdmin()) return true;
+  if (((oldDoc && (oldDoc.author == userCtx.name))) && newDoc._deleted) return true;
 
   v.unchanged("type");
   v.unchanged("author");
