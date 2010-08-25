@@ -41,6 +41,9 @@
 <script type="text/javascript" charset="utf-8">
   $.couch.app(function() {
     $("#tagcloud").evently(this.ddoc.evently.tagcloud, this);
+  }, {
+    db : "{{db}}",
+    design : "{{design}}"
   });
 </script>
 </html>

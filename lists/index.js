@@ -9,7 +9,7 @@ function(head, req) {
   var feedPath = path.list('index','recent-posts',{descending:true, limit:10, format:"atom"});
   var commentsFeed = path.list('comments','comments',{descending:true, limit:10, format:"atom"});
 
-
+  var path_parts = req.path;
   // The provides function serves the format the client requests.
   // The first matching format is sent, so reordering functions changes 
   // thier priority. In this case HTML is the preferred format, so it comes first.
@@ -24,6 +24,8 @@ function(head, req) {
         commentsFeed : commentsFeed
       },
       scripts : {},
+      db : req.path[0],
+      design : req.path[2],
       feedPath : feedPath,
       newPostPath : path.show("edit"),
       assets : path.asset(),
