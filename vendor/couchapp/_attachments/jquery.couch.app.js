@@ -37,67 +37,71 @@
 
   function docForm() { alert("docForm has been moved to vendor/couchapp/lib/docForm.js, use app.require to load") };
 
-  function resolveModule(names, parent, current) {
+  function resolveModule(path, names, parents, current) {
+    parents = parents || [];
     if (names.length === 0) {
       if (typeof current != "string") {
         throw ["error","invalid_require_path",
           'Must require a JavaScript string, not: '+(typeof current)];
       }
-      return [current, parent];
+      return [current, parents];
     }
     var n = names.shift();
     if (n == '..') {
-      if (!(parent && parent.parent)) {
-        throw ["error", "invalid_require_path", 'Object has no parent '+JSON.stringify(current)];
+      parents.pop();
+      var pp = parents.pop();
+      if (!pp) {
+        throw ["error", "invalid_require_path", path];
       }
-      return resolveModule(names, parent.parent.parent, parent.parent);
+      return resolveModule(path, names, parents, pp);
     } else if (n == '.') {
-      if (!parent) {
-        throw ["error", "invalid_require_path", 'Object has no parent '+JSON.stringify(current)];
+      var p = parents.pop();
+      if (!p) {
+        throw ["error", "invalid_require_path", path];
       }
-      return resolveModule(names, parent.parent, parent);
+      return resolveModule(path, names, parents, p);
+    } else {
+      parents = [];
     }
     if (!current[n]) {
-      throw ["error", "invalid_require_path", 'Object has no property "'+n+'". '+JSON.stringify(current)];
+      throw ["error", "invalid_require_path", path];
     }
-    var p = current;
-    current = current[n];
-    current.parent = p;
-    return resolveModule(names, p, current);
+    parents.push(current);
+    return resolveModule(path, names, parents, current[n]);
   }
 
   function makeRequire(ddoc) {
     var moduleCache = [];
-    function getCachedModule(name, parent) {
+    function getCachedModule(name, parents) {
       var key, i, len = moduleCache.length;
       for (i=0;i<len;++i) {
         key = moduleCache[i].key;
-        if (key[0] === name && key[1] === parent) {
+        if (key[0] === name && key[1] === parents) {
           return moduleCache[i].module;
         }
       }
       return null;
     }
-    function setCachedModule(name, parent, module) {
-      moduleCache.push({ key: [name, parent], module: module });
+    function setCachedModule(name, parents, module) {
+      moduleCache.push({ key: [name, parents], module: module });
     }
-    var require = function (name, parent) {
-      var cachedModule = getCachedModule(name, parent);
+    var require = function (name, parents) {
+      var cachedModule = getCachedModule(name, parents);
       if (cachedModule !== null) {
         return cachedModule;
       }
       var exports = {};
-      var resolved = resolveModule(name.split('/'), parent, ddoc);
+      var resolved = resolveModule(name, name.split('/'), parents, ddoc);
       var source = resolved[0]; 
-      parent = resolved[1];
+      parents = resolved[1];
       var s = "var func = function (exports, require) { " + source + " };";
       try {
         eval(s);
-        func.apply(ddoc, [exports, function(name) {return require(name, parent, source)}]);
+        func.apply(ddoc, [exports, function(name) {return require(name, parents)}]);
       } catch(e) { 
         throw ["error","compilation_error","Module require('"+name+"') raised error "+e.toSource()]; 
       }
-      setCachedModule(name, parent, exports);
+      setCachedModule(name, parents, exports);
       return exports;
     }
     return require;

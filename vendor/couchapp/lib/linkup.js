@@ -11,8 +11,8 @@ exports.encode = function(body, person_prefix, tag_prefix) {
   return body.replace(/((ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?)/gi,function(a) {
     return '<a target="_blank" href="'+a+'">'+a+'</a>';
   }).replace(/\@([\w\-]+)/g,function(user,name) {
-    return '<a href="'+person_prefix+encodeURIComponent(name.toLowerCase())+'">'+user+'</a>';
+    return '<a href="'+person_prefix+encodeURIComponent(name)+'">'+user+'</a>';
   }).replace(/\#([\w\-\.]+)/g,function(word,tag) {
-    return '<a href="'+tag_prefix+encodeURIComponent(tag.toLowerCase())+'">'+word+'</a>';
+    return '<a href="'+tag_prefix+encodeURIComponent(tag)+'">'+word+'</a>';
   });
 };

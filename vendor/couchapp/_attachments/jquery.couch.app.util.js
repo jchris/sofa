@@ -48,7 +48,13 @@ $.linkify = function(body) {
 
 $.fn.prettyDate = function() {
   $(this).each(function() {
-    $(this).text($.prettyDate($(this).text()));    
+    var string, title = $(this).attr("title");
+    if (title) {
+      string = $.prettyDate(title);
+    } else {
+      string = $.prettyDate($(this).text());
+    }
+    $(this).text(string);
   });
 };
 
@@ -69,8 +75,9 @@ $.prettyDate = function(time){
 		day_diff == 1 && "yesterday" ||
 		day_diff < 21 && day_diff + " days ago" ||
 		day_diff < 45 && Math.ceil( day_diff / 7 ) + " weeks ago" ||
-		day_diff < 730 && Math.ceil( day_diff / 31 ) + " months ago" ||
-		Math.ceil( day_diff / 365 ) + " years ago";
+    time;
+    // day_diff < 730 && Math.ceil( day_diff / 31 ) + " months ago" ||
+    // Math.ceil( day_diff / 365 ) + " years ago";
 };
 
 $.argsToArray = function(args) {

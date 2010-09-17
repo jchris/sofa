@@ -26,15 +26,22 @@ function docForm(formSelector, opts) {
   function formToDeepJSON(form, fields, doc) {
     form = $(form);
     fields.forEach(function(field) {
-      var element = form.find("[name="+field+"]");
+      var element = form.find("[name="+field+"]"),
+          parts = field.split('-'),
+          frontObj = doc, frontName = parts.shift();
+
       if (element.attr('type') === 'checkbox') {
           var val = element.attr('checked');
       } else {
           var val = element.val();
-          if (!val) return;
+          if (!val) {
+            if (frontObj[field]) {
+                delete frontObj[field];
+            }
+            return;
+          }
       }
-      var parts = field.split('-');
-      var frontObj = doc, frontName = parts.shift();
+      
       while (parts.length > 0) {
         frontObj[frontName] = frontObj[frontName] || {};
         frontObj = frontObj[frontName];
