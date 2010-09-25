@@ -7,7 +7,8 @@ Currently supports authoring by anyone with the proper roles, and comments from 
 
 ## Current News
 
-Things are moving crazy fast around here right now as I bring this stuff up to ship-shape for the [CouchDB book](http://books.couchdb.org). I'll be renaming methods and stuff (if I find the time), any API feedback will be appreciated.
+Things are moving crazy fast around here right now as I bring this stuff up to ship-shape for the [CouchDB book](http://guide.couchdb.org). I'll be renaming methods and stuff (if I 
+find the time), any API feedback will be appreciated.
 
 ## Install CouchDB
 
