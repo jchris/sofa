@@ -1,6 +1,7 @@
 # Sofa: Standalone CouchDB Blog
 
-Sofa showcases the [potential of pure CouchDB applications](http://jchris.mfdz.com/code/2008/10/standalone_applications_with_co). It should provide an easy way for people to put their thoughts online, anywhere there's a running Couch. It's just HTML, JavaScript and the magic of CouchDB.
+Sofa showcases the [potential of pure CouchDB applications](http://bit.ly/apAju8). It should provide an easy way for people to put their thoughts online, anywhere there's a running 
+Couch. It's just HTML, JavaScript and the magic of CouchDB.
 
 Currently supports authoring by anyone with the proper roles, and comments from anyone with a user account.
 
