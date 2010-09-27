@@ -7,7 +7,7 @@ function(doc, req) {
   var feedPath = path.list('index','recent-posts',{descending:true, limit:10, format:"atom"});
   var commentsFeed = path.list('comments','comments',{descending:true, limit:10, format:"atom"});
 
-  return Mustache.to_html(ddoc.templates.edit, {
+  var data = {
     header : {
       index : indexPath,
       blogName : ddoc.blog.title,
@@ -15,9 +15,21 @@ function(doc, req) {
       commentsFeed : commentsFeed
     },
     scripts : {},
-    doc : doc,
-    docid : JSON.stringify((doc && doc._id) || null),
     pageTitle : doc ? "Edit: "+doc.title : "Create a new post",
     assets : path.asset()
-  }, ddoc.templates.partials);
+  };
+  
+  if (doc) {
+    data.doc = JSON.stringify(doc);
+    data.title = doc.title;
+    data.body = doc.body;
+    data.tags = doc.tags.join(", ");
+  } else {
+    data.doc = JSON.stringify({
+      type : "post",
+      format : "markdown"
+    });
+  }
+
+  return Mustache.to_html(ddoc.templates.edit, data, ddoc.templates.partials);
 }

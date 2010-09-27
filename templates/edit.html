@@ -12,15 +12,17 @@
     <form id="new-post" action="new.html" method="post">
       <h1>{{pageTitle}}</h1>
         <p><label>Title</label>
-          <input type="text" size="50" name="title" value=""></p>
+          <input type="text" size="50" name="title" value="{{title}}"></p>
       <p><label for="body">Body</label>
-      <textarea name="body" rows="28" cols="80"></textarea></p>
+      <textarea name="body" rows="28" cols="80">{{body}}</textarea></p>
       <p>
-        <label for="tags">Click tags to add them. (split by ',')</label><input size="50" type="text" name="tags" value="" id="tags">
+        <label for="tags">Click tags to add them. (split by ',')</label>
+        <input size="50" type="text" name="tags" value="{{tags}}">
       </p>
       <p>
         <input id="preview" type="button" value="Preview"/>
-        <input type="submit" value="Save &rarr;"/> <span id="saved" style="display:none;">Saved</span>
+        <input type="submit" value="Save &rarr;"/> 
+        <span id="saved" style="display:none;">Saved</span>
         </p>
     </form>
     <a target="_new" href="http://warpedvisions.org/projects/markdown-cheat-sheet/">Markdown help</a>
@@ -31,6 +33,9 @@
   <script src="../../script/jquery.scrollTo.js"></script>
   <script type="text/javascript" charset="utf-8">
     $.couch.app(function(app) {
+      var path = app.require("vendor/couchapp/lib/path").init(app.req);
+      var postForm, blog = app.require("lib/blog");
+      
       // extend the tagcloud so that clicks add tags to the current post
       var tagcloud = $.extend(true, {}, this.ddoc.evently.tagcloud, {
         _init : {
@@ -48,67 +53,52 @@
         }
       });
       $("#tagcloud").evently(tagcloud, this);
+      var postDoc = {{{doc}}};
 
-        var path = app.require("vendor/couchapp/lib/path").init(app.req);
-        var postForm, blog = app.require("lib/blog");
-
-        // apply docForm at login.
-        $("#account").evently({
-          loggedIn : function(e,r) {
-            var userCtx = r.userCtx;
-            postForm = app.docForm("form#new-post", {
-              id : {{ docid }},
-              fields : ["title", "body", "tags"],
-              template : {
-                type : "post",
-                format : "markdown",
-                author : userCtx.name
-              },
-              onLoad : function(doc) {
-                if (doc._id) {
-                  $('h1').html('Editing <a href="'+path.show('post',doc._id)+'">'+doc._id+'</a> by '+doc.author);
-                  $('#preview').before('<input type="button" id="delete" value="Delete Post"/> ');
-                  $("#delete").click(function() {
-                    postForm.deleteDoc({
-                      success: function(resp) {
-                        $("h1").text("Deleted "+resp.id);
-                        $('form#new-post input').attr('disabled', true);
-                      }
-                    });
-                    return false;
-                  });
-                }
-                $('label[for=body]').append(' <em>with '+(doc.format||'html')+'</em>');
-              },
-              beforeSave : function(doc) {
-                if (!doc.created_at) {
-                  doc.created_at = new Date();
-                }
-                if (!doc._id) {
-                  doc._id = blog.slugifyString(doc.title);
-                }
-                if(doc.tags) {
-                  doc.tags = doc.tags.split(",");
-                  for(var idx in doc.tags) {
-                    doc.tags[idx] = $.trim(doc.tags[idx]);
-                  }
-                }
-              },
-              success : function(resp) {
-                $("#saved").text("Saved _rev: "+resp.rev).fadeIn(500).fadeOut(6000);
-                $('h1').html('Editing <a href="'+path.show('post',resp.id)+'">'+resp.id+'</a> by '+doc.author);    
-              }
-            });
+      $('label[for=body]').append(' <em>with '+(postDoc.format||'html')+'</em>');
+      $("form#new-post").submit(function() {
+        postDoc.author = $$("#account").userCtx.name;
+        postDoc.body = $("textarea[name=body]").val();
+        postDoc.title = $("input[name=title]").val();
+        var dtags = [], tags = $("input[name=tags]").val().split(",");
+        for(var i in tags) {
+          dtags.push($.trim(tags[i]));
+        }
+        postDoc.tags = dtags;
+        if (!postDoc.created_at) {
+          postDoc.created_at = new Date();
+        }
+        if (!postDoc._id) {
+          postDoc._id = blog.slugifyString(postDoc.title);
+        }
+        app.db.saveDoc(postDoc, {
+          success : function(resp) {
+            $("#saved").text("Saved _rev: "+resp.rev).fadeIn(500).fadeOut(6000);
+            $('h1').html('Editing <a href="'+path.show('post',resp.id)+'">'+resp.id+'</a> by '+postDoc.author);
           }
         });
-
-        $("#preview").click(function() {
-          var markdown = app.require("vendor/couchapp/lib/markdown");
-          var doc = postForm.localDoc();
-          var html = markdown.encode(doc.body);
-          $('#show-preview').html(html);
-          $('body').scrollTo('#show-preview', {duration: 500});
-        });
+        return false;
       });
+
+      if (postDoc._id) {
+        $('#preview').before('<input type="button" id="delete" value="Delete Post"/> ');
+        $("#delete").click(function() {
+          app.db.deleteDoc(postDoc, {
+            success : function(resp) {
+              $("h1").text("Deleted "+resp.id);
+              $('form#new-post input').attr('disabled', true);
+            }
+          });
+          return false;
+        });
+      }
+
+      $("#preview").click(function() {
+        var markdown = app.require("vendor/couchapp/lib/markdown");
+        var html = markdown.encode($("textarea[name=body]").val());
+        $('#show-preview').html(html);
+        $('body').scrollTo('#show-preview', {duration: 500});
+      });
+    });
   </script>
 </html>
