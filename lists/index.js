@@ -4,7 +4,8 @@ function(head, req) {
   var List = require("vendor/couchapp/lib/list");
   var path = require("vendor/couchapp/lib/path").init(req);
   var Atom = require("vendor/couchapp/lib/atom");
-
+  var newDate = require("lib/date").newDate;
+  
   var indexPath = path.list('index','recent-posts',{descending:true, limit:10});
   var feedPath = path.list('index','recent-posts',{descending:true, limit:10, format:"atom"});
   var commentsFeed = path.list('comments','comments',{descending:true, limit:10, format:"atom"});
@@ -74,7 +75,7 @@ function(head, req) {
     
     // generate the feed header
     var feedHeader = Atom.header({
-      updated : (row ? new Date(row.value.created_at) : new Date()),
+      updated : (row ? newDate(row.value.created_at) : new Date()),
       title : ddoc.blog.title,
       feed_id : path.absolute(indexPath),
       feed_link : path.absolute(feedPath),
@@ -98,7 +99,7 @@ function(head, req) {
           entry_id : path.absolute('/'+encodeURIComponent(req.info.db_name)+'/'+encodeURIComponent(row.id)),
           title : row.value.title,
           content : html,
-          updated : new Date(row.value.created_at),
+          updated : newDate(row.value.created_at),
           author : row.value.author,
           alternate : path.absolute(path.show('post', row.id))
         });

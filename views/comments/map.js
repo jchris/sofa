@@ -5,6 +5,6 @@ function(doc) {
       // todo normalize this schema-ness
       doc.commenter.gravatar = hex_md5(doc.commenter.email);      
     }
-    emit(new Date(doc.created_at), doc);
+    emit(doc.created_at, doc);
   }
 };
