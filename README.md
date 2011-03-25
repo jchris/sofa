@@ -24,7 +24,7 @@ CouchApp is a set of utilities for developing standalone CouchDB applications Yo
 
 ### Setup Admin Access
 
-If you are going to put your blog in public, you'll want to [set up an Admin account (screencast)](http://www.youtube.com/watch?v=oHKvV3Nh-CI).
+If you are going to put your blog in public, you'll want to [set up an Admin account (screencast)](http://www.youtube.com/watch?v=oHKvV3Nh-CI) or [(text)](http://wiki.apache.org/couchdb/Setting_up_an_Admin_account). 
 
 
 ## Install Sofa
