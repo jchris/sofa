@@ -43,3 +43,7 @@ You can customize the blog title and other stuff in the `blog.json` file.
 
 [Visit your new blog.](http://127.0.0.1:5984/blogdb/_design/sofa/_list/index/recent-posts?descending=true&limit=5)
 
+## License
+
+Licensed under Apache 2.0: http://www.apache.org/licenses/LICENSE-2.0
+
