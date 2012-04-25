@@ -13,7 +13,7 @@ function() {
 
   // setup gravatar_url
   if (md5) {
-    newProfile.gravatar_url = 'http://www.gravatar.com/avatar/'+md5.hex(newProfile.email || newProfile.rand)+'.jpg?s=40&d=identicon';    
+    newProfile.gravatar_url = 'http://www.gravatar.com/avatar/'+md5.hex(newProfile.email || newProfile.rand)+'.jpg?s=40&d=identicon';
   }
 
   // store the user profile on the user account document

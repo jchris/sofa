@@ -1,13 +1,9 @@
 function(doc) {
-  // todo make commonjs
-  // !code helpers/md5.js
+  var comments = require("views/lib/comments");
   
   if (doc.type == "post") {
     emit([doc._id], doc);
   } else if (doc.type == "comment") {
-    if (doc.commenter && doc.commenter.email && !doc.commenter.gravatar_url) {
-      doc.commenter.gravatar = hex_md5(doc.commenter.email);      
-    }
-    emit([doc.post_id, doc.created_at], doc);
+    emit([doc.post_id, doc.created_at], comments.withGravatar(doc));
   }
 };
