@@ -3,8 +3,8 @@
     "from" : "",
     "to" : "_list/index/recent-posts",
     "query" : {
-      "descending" : true,
-      "limit" : 10
+      "descending" : "true",
+      "limit" : "10"
     }
   },
   {
