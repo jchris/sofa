@@ -24,7 +24,7 @@ CouchApp is a set of utilities for developing standalone CouchDB applications Yo
 
 ### Setup Admin Access
 
-If you are going to put your blog in public, you'll want to [set up an Admin account (screencast)](http://www.youtube.com/watch?v=oHKvV3Nh-CI).
+If you are going to put your blog in public, you'll want to [set up an Admin account (screencast)](http://www.youtube.com/watch?v=oHKvV3Nh-CI) or [(text)](http://wiki.apache.org/couchdb/Setting_up_an_Admin_account). 
 
 
 ## Install Sofa
@@ -35,7 +35,7 @@ If you are going to put your blog in public, you'll want to [set up an Admin acc
   
 You'll want to edit the HTML and CSS to personalize your site. Don't worry, the markup is pretty basic, so it's easy to rework. Adding new features is just a few lines of JavaScript away.
 
-Anytime you make edits to the on-disk version of Sofa, and want to see them in your browser, just run `couchapp push . http://127.0.0.1:5984/blogdb` again. **You probably want to setup your `.couchapprc` file.** You should read the CouchApp readme to learn about that.
+Anytime you make edits to the on-disk version of Sofa, and want to see them in your browser, just run `couchapp push . http://127.0.0.1:5984/blogdb` again. **You probably want to setup your `.couchapprc` file.** You should read ["Configuring CouchApp with .couchapprc"](http://guide.couchdb.org/draft/managing.html#configuring) to learn more about that.
 
 You can customize the blog title and other stuff in the `blog.json` file.
 
