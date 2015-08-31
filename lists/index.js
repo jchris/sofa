@@ -31,7 +31,7 @@ function(head, req) {
       assets : path.asset(),
       posts : List.withRows(function(row) {
         var post = row.value;
-        key = row.key;
+        key = row.key[0];
         return {
           title : post.title,
           author : post.author,

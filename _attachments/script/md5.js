@@ -36,6 +36,7 @@ function md5_vm_test()
 
 /*
  * Calculate the MD5 of an array of little-endian words, and a bit length
+ keep
  */
 function core_md5(x, len)
 {
@@ -197,6 +198,7 @@ function bit_rol(num, cnt)
 /*
  * Convert a string to an array of little-endian words
  * If chrsz is ASCII, characters >255 have their hi-byte silently ignored.
+ keep
  */
 function str2binl(str)
 {
@@ -221,6 +223,7 @@ function binl2str(bin)
 
 /*
  * Convert an array of little-endian words to a hex string.
+ keep
  */
 function binl2hex(binarray)
 {
@@ -254,3 +257,7 @@ function binl2b64(binarray)
   }
   return str;
 }
+
+if (typeof exports != 'undefined') {
+    exports.hex = hex_md5;
+};
