@@ -1,8 +1,8 @@
-// !code helpers/md5.js
+var md5 = require("views/lib/md5");
 
 exports.withGravatar = function(doc) {
   if (doc.commenter && doc.commenter.email && !doc.commenter.gravatar_url) {
-    var hashed = hex_md5(doc.commenter.email);
+    var hashed = md5.hex(doc.commenter.email);
     var k, newDoc = {};
     for (k in doc) {
       if (doc.hasOwnProperty(k)) {
