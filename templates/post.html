@@ -21,9 +21,11 @@
         </ul>
         <div id="profile"></div>
       </div>
+      <div id="comment-preview"></div>
     </div>    
   </body>
   {{>scripts}}
+  <script src="../../script/jquery.scrollTo.js"></script>
   <script type="text/javascript" charset="utf-8">
   $.CouchApp(function(app) {
     app.post_id = "{{post_id}}";
